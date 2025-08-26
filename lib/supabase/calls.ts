@@ -127,3 +127,54 @@ export class CallService {
       .eq('id', callId);
   }
 }
+
+// Individual function exports for webhook compatibility
+export async function createCallRecord(callData: CallInsert): Promise<Call | null> {
+  const callService = new CallService();
+  return await callService.createCall(callData);
+}
+
+export async function updateCallWithRecording(
+  twilioSid: string, 
+  recordingData: { 
+    recording_url: string;
+    recording_sid?: string;
+    duration?: number | null;
+    status: string;
+  }
+): Promise<Call | null> {
+  const callService = new CallService();
+  
+  // First get the call by Twilio SID
+  const call = await callService.getCallByTwilioSid(twilioSid);
+  if (!call) {
+    console.error('Call not found for Twilio SID:', twilioSid);
+    return null;
+  }
+
+  // Update the call with recording information
+  return await callService.updateCall(call.id, {
+    recording_url: recordingData.recording_url,
+    recording_sid: recordingData.recording_sid,
+    duration: recordingData.duration,
+    status: recordingData.status,
+    updated_at: new Date().toISOString()
+  });
+}
+
+export async function updateCallStatus(twilioSid: string, status: string): Promise<void> {
+  const callService = new CallService();
+  
+  // First get the call by Twilio SID
+  const call = await callService.getCallByTwilioSid(twilioSid);
+  if (!call) {
+    console.error('Call not found for Twilio SID:', twilioSid);
+    return;
+  }
+
+  // Update the call status
+  await callService.updateCall(call.id, {
+    status: status,
+    updated_at: new Date().toISOString()
+  });
+}
