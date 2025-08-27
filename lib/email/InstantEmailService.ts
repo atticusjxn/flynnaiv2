@@ -87,7 +87,7 @@ export class InstantEmailService {
         
         // Send email via Resend
         const emailResult = await getResendClient().emails.send({
-          from: 'Flynn.ai <appointments@flynnai.com>',
+          from: 'Flynn.ai <onboarding@resend.dev>',
           to: [request.userEmail],
           subject: emailContent.subject,
           html: emailContent.html,
