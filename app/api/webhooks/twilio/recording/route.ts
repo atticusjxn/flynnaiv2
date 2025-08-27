@@ -29,9 +29,17 @@ export async function POST(request: NextRequest) {
       status: 'recorded'
     });
 
-    // TODO: Trigger AI processing pipeline here
-    // This will be implemented in the next task
-    console.log('Call recording completed, ready for AI processing:', callSid);
+    // Trigger AI processing pipeline
+    console.log('Call recording completed, starting AI processing:', callSid);
+    
+    // Import and trigger the AI extraction pipeline
+    await import('@/lib/ai/AIExtractionPipeline').then(async (module) => {
+      try {
+        await module.processRecordedCall(callSid, recordingUrl);
+      } catch (error) {
+        console.error('Error in AI extraction pipeline:', error);
+      }
+    });
 
     return NextResponse.json({ success: true });
 

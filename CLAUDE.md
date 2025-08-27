@@ -1103,27 +1103,6 @@ The project follows S-Tier SaaS design standards inspired by Stripe, Airbnb, and
 
 This verification ensures changes meet design standards and user requirements.
 
-### Comprehensive Design Review
-
-For significant UI changes or before merging PRs, use the design review agent:
-
-```bash
-# Option 1: Use the slash command
-/design-review
-
-# Option 2: Invoke the agent directly
-@agent-design-review
-```
-
-The design review agent will:
-
-- Test all interactive states and user flows
-- Verify responsiveness (desktop/tablet/mobile)
-- Check accessibility (WCAG 2.1 AA compliance)
-- Validate visual polish and consistency
-- Test edge cases and error states
-- Provide categorized feedback (Blockers/High/Medium/Nitpicks)
-
 ### Playwright MCP Integration
 
 #### Essential Commands for UI Testing

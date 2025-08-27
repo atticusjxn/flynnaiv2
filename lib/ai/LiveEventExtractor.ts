@@ -1,7 +1,15 @@
 // Live Event Extractor for Flynn.ai v2 - Real-time appointment extraction
+// Enhanced with industry-specific prompts and advanced confidence scoring
 
 import OpenAI from 'openai';
 import { createAdminClient } from '@/utils/supabase/server';
+import { buildPlumbingPrompt } from '@/lib/ai/prompts/plumbing';
+import { buildRealEstatePrompt } from '@/lib/ai/prompts/real-estate';
+import { buildLegalPrompt } from '@/lib/ai/prompts/legal';
+import { buildMedicalPrompt } from '@/lib/ai/prompts/medical';
+import { buildSystemPrompt } from '@/lib/ai/prompts/base';
+import { calculateEventConfidence } from '@/lib/ai/ConfidenceScoring';
+import { classifyEvent } from '@/lib/ai/EventClassificationSystem';
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -35,7 +43,24 @@ export interface LiveExtractionResult {
 }
 
 export class LiveEventExtractor {
-  private industryPrompts: { [key: string]: string } = {
+  // Enhanced industry prompt builders
+  private getIndustryPrompt(industry: string, context?: any): string {
+    switch (industry) {
+      case 'plumbing':
+        return buildPlumbingPrompt(context);
+      case 'real_estate':
+        return buildRealEstatePrompt(context);
+      case 'legal':
+        return buildLegalPrompt(context);
+      case 'medical':
+        return buildMedicalPrompt(context);
+      default:
+        return buildSystemPrompt(industry, context);
+    }
+  }
+
+  // Legacy industry prompts for fallback
+  private legacyIndustryPrompts: { [key: string]: string } = {
     plumbing: `
 INDUSTRY: Plumbing/HVAC Services
 FOCUS: Service addresses, problem descriptions, emergency indicators, time preferences, price estimates
@@ -78,57 +103,25 @@ CRITICAL INFO: Service needed, contact info, timing, location if applicable
   };
 
   /**
-   * Extract events from live transcription with industry context
+   * Extract events from live transcription with enhanced industry context
    */
   public async extractEventsFromLiveTranscription(
     callSid: string,
     transcriptionText: string,
     industry: string = 'general',
-    confidence: number = 0.8
+    transcriptionConfidence: number = 0.8,
+    context?: any
   ): Promise<LiveExtractionResult> {
     const startTime = Date.now();
     
     try {
-      console.log(`Starting live event extraction for call ${callSid} (${industry})`);
+      console.log(`Starting enhanced live event extraction for call ${callSid} (${industry})`);
       
-      const industryContext = this.industryPrompts[industry] || this.industryPrompts.general;
+      // Use enhanced industry-specific prompts
+      const systemPrompt = this.getIndustryPrompt(industry, context);
       
-      const systemPrompt = `You are Flynn.ai's live event extraction AI for ${industry} businesses. Extract appointment information from live phone call transcriptions.
+      console.log(`Using enhanced ${industry} prompt for extraction`);
 
-${industryContext}
-
-EXTRACTION RULES:
-1. Extract ALL potential appointments, service requests, or scheduled events
-2. Be aggressive in extracting partial information - better to capture something than nothing
-3. Mark confidence levels honestly (0.0 = uncertain, 1.0 = completely certain)
-4. For uncertain dates/times, extract relative references ("tomorrow", "next week")
-5. Extract contact info aggressively (names, phones, addresses mentioned anywhere)
-6. Identify urgency from tone, keywords, and context
-7. Don't make up information - mark as null if not mentioned
-
-RESPONSE FORMAT: Return ONLY valid JSON, no additional text:
-{
-  "events": [
-    {
-      "type": "service_call|appointment|meeting|quote|emergency",
-      "title": "Brief descriptive title",
-      "customer_name": "Full name if mentioned or null",
-      "customer_phone": "Phone number if mentioned or null",
-      "customer_email": "Email if mentioned or null", 
-      "location": "Full address or partial location or null",
-      "proposed_datetime": "ISO datetime if specific or relative time if mentioned or null",
-      "description": "Detailed description of what's needed",
-      "urgency": "low|medium|high|emergency",
-      "price_estimate": "Dollar amount if mentioned or null",
-      "confidence": 0.0-1.0,
-      "service_type": "Specific service category or null",
-      "notes": "Additional important details or null"
-    }
-  ],
-  "overall_confidence": 0.0-1.0,
-  "industry_context": "${industry}",
-  "key_indicators": ["list", "of", "key", "words", "that", "triggered", "extraction"]
-}`;
 
       const completion = await openai.chat.completions.create({
         model: 'gpt-4',
@@ -160,19 +153,48 @@ RESPONSE FORMAT: Return ONLY valid JSON, no additional text:
 
       const processingTime = Date.now() - startTime;
       
+      // Enhance each extracted event with advanced confidence scoring
+      const enhancedEvents = extractedData.events?.map((event: any) => {
+        // Calculate enhanced confidence score
+        const confidenceResult = calculateEventConfidence(
+          event, 
+          transcriptionText, 
+          industry, 
+          transcriptionConfidence
+        );
+        
+        // Classify the event type with industry context
+        const classification = classifyEvent(event, transcriptionText, industry);
+        
+        return {
+          ...event,
+          confidence: confidenceResult.overallConfidence,
+          type: classification.eventType,
+          confidence_breakdown: confidenceResult.factors,
+          quality_level: confidenceResult.qualityLevel,
+          classification_reasoning: classification.reasoning,
+          recommendations: confidenceResult.recommendations
+        };
+      }) || [];
+      
+      // Calculate overall confidence from enhanced events
+      const overallConfidence = enhancedEvents.length > 0 
+        ? enhancedEvents.reduce((sum, event) => sum + event.confidence, 0) / enhancedEvents.length
+        : 0;
+      
       const result: LiveExtractionResult = {
         callSid,
-        events: extractedData.events || [],
-        overall_confidence: extractedData.overall_confidence || confidence,
+        events: enhancedEvents,
+        overall_confidence: overallConfidence,
         industry_context: industry,
         transcription_text: transcriptionText,
         extraction_timestamp: new Date().toISOString(),
         processing_time_ms: processingTime
       };
 
-      console.log(`Live extraction completed for call ${callSid}: ${result.events.length} events found in ${processingTime}ms`);
+      console.log(`Enhanced live extraction completed for call ${callSid}: ${result.events.length} events found in ${processingTime}ms with ${overallConfidence.toFixed(2)} average confidence`);
       
-      // Store the results
+      // Store the enhanced results
       await this.storeLiveExtractionResults(result);
       
       return result;
@@ -274,25 +296,42 @@ RESPONSE FORMAT: Return ONLY valid JSON, no additional text:
     callSid: string,
     newTranscription: string,
     previousExtractions: ExtractedEvent[],
-    industry: string = 'general'
+    industry: string = 'general',
+    transcriptionConfidence: number = 0.8
   ): Promise<LiveExtractionResult> {
     // Combine previous context for better extraction
     const contextText = previousExtractions.length > 0 
       ? `Previous context: ${previousExtractions.map(e => e.description).join('; ')}\n\nNew transcription: ${newTranscription}`
       : newTranscription;
 
-    return await this.extractEventsFromLiveTranscription(callSid, contextText, industry);
+    return await this.extractEventsFromLiveTranscription(callSid, contextText, industry, transcriptionConfidence);
   }
 
   /**
-   * Validate extracted events for quality
+   * Enhanced validation of extracted events for quality
    */
-  public validateExtractedEvents(events: ExtractedEvent[]): ExtractedEvent[] {
+  public validateExtractedEvents(events: ExtractedEvent[], industry: string = 'general'): ExtractedEvent[] {
     return events.filter(event => {
-      // Basic validation rules
+      // Enhanced validation rules
       if (!event.title || event.title.trim().length < 5) return false;
-      if (!event.description || event.description.trim().length < 10) return false;
+      if (!event.description || event.description.trim().length < 15) return false;
       if (event.confidence < 0.3) return false; // Too low confidence
+      
+      // Industry-specific validation
+      if (industry === 'plumbing' && !event.location && event.type === 'service_call') {
+        console.warn(`Plumbing service call without location: ${event.title}`);
+        return false;
+      }
+      
+      if (industry === 'real_estate' && !event.location && (event.type === 'showing' || event.type === 'meeting')) {
+        console.warn(`Real estate showing without property location: ${event.title}`);
+        return false;
+      }
+      
+      if (industry === 'medical' && event.urgency === 'emergency') {
+        console.warn(`Medical emergency should be directed to ER, not appointment scheduling`);
+        return false;
+      }
       
       return true;
     });
@@ -303,18 +342,20 @@ RESPONSE FORMAT: Return ONLY valid JSON, no additional text:
 export const liveEventExtractor = new LiveEventExtractor();
 
 /**
- * Export function for use in RealTimeProcessor
+ * Enhanced export function for use in RealTimeProcessor
  */
 export async function extractLiveEvents(
   callSid: string,
   transcriptionText: string,
   industry: string = 'general',
-  confidence: number = 0.8
+  transcriptionConfidence: number = 0.8,
+  context?: any
 ): Promise<LiveExtractionResult> {
   return await liveEventExtractor.extractEventsFromLiveTranscription(
     callSid, 
     transcriptionText, 
     industry, 
-    confidence
+    transcriptionConfidence,
+    context
   );
 }
