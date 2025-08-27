@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { User } from '@supabase/supabase-js';
-import { createClient } from '@/utils/supabase/client';
+import { getSupabaseClient } from '@/utils/supabase/client';
 import { Database } from '@/types/database.types';
 
 type UserProfile = Database['public']['Tables']['users']['Row'];
@@ -26,13 +26,13 @@ export function useAuth(): AuthState {
   console.log('useAuth: Initializing...');
   
   // Create supabase client with error handling
-  let supabase: any = null;
-  try {
-    console.log('Creating Supabase client...');
-    supabase = createClient();
+  console.log('Creating Supabase client...');
+  const supabase = getSupabaseClient();
+  
+  if (supabase) {
     console.log('Supabase client created successfully');
-  } catch (error) {
-    console.error('Failed to create Supabase client:', error);
+  } else {
+    console.error('Failed to create Supabase client - missing environment variables');
   }
 
   useEffect(() => {
