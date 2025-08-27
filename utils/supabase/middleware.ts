@@ -10,10 +10,20 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  const supabase = createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  // Check if environment variables are available
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.warn('Supabase environment variables missing in middleware, skipping auth');
+    return response;
+  }
+
+  try {
+    const supabase = createServerClient<Database>(
+      supabaseUrl,
+      supabaseAnonKey,
+      {
       cookies: {
         get(name: string) {
           return request.cookies.get(name)?.value;
@@ -54,10 +64,15 @@ export async function updateSession(request: NextRequest) {
         },
       },
     }
-  );
+    );
 
-  // Refresh session if expired
-  await supabase.auth.getUser();
+    // Refresh session if expired
+    await supabase.auth.getUser();
 
-  return response;
+    return response;
+  } catch (error) {
+    console.error('Middleware error:', error);
+    // Return response without auth processing if there's an error
+    return response;
+  }
 }
