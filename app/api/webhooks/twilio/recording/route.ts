@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/utils/supabase/server';
 import { updateCallWithRecording } from '@/lib/supabase/calls';
 
 export async function POST(request: NextRequest) {
@@ -23,8 +22,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Update the call record with recording information
-    const supabase = createServerClient();
-    
     await updateCallWithRecording(callSid, {
       recording_url: recordingUrl,
       recording_sid: recordingSid,

@@ -11,6 +11,7 @@ Flynn.ai v2 is a universal AI-powered platform that transforms business phone ca
 Replace manual scheduling friction with intelligent automation that adapts to any industry - from plumbers handling emergencies to real estate agents scheduling showings to lawyers managing consultations.
 
 ### Core Value Proposition
+- **Silent Keypad Activation**: Press *7 during any call for invisible AI processing
 - **Universal Industry Support**: One platform adapts to all business types
 - **AI-Powered Intelligence**: Extract events, not just transcripts
 - **Complete Workflow**: Call → AI Processing → Email → Calendar → Management
@@ -43,8 +44,9 @@ Caching: Redis (production)
 
 // AI & Voice Processing
 AI: OpenAI GPT-4 + Whisper
-Voice: Twilio Voice API + Media Streams
+Voice: Twilio Voice API + Media Streams + DTMF Detection
 Transcription: Real-time with confidence scoring
+Keypad Processing: Silent *7 activation with real-time audio streaming
 
 // Communication
 Email: React Email + Resend
@@ -60,15 +62,17 @@ Payments: Stripe
 
 ### System Architecture
 ```
-[Incoming Call] → [Twilio Webhook] → [Call Recording]
-       ↓
-[OpenAI Whisper] → [AI Event Extraction] → [Database Storage]
-       ↓                    ↓                      ↓
-[GPT-4 Processing] → [Email Generation] → [Dashboard Update]
-       ↓                    ↓                      ↓
-[Industry Adaptation] → [Professional Email] → [Real-time UI]
-       ↓                    ↓                      ↓
-[Event Classification] → [Calendar Sync] → [User Management]
+[Incoming Call] → [DTMF Detection] → [*7 Pressed?] → [Silent AI Activation]
+       ↓                    ↓                    ↓
+[Continue Normal Call] → [Real-time Audio Stream] → [Live Transcription]
+       ↓                    ↓                    ↓
+[Call Continues] → [AI Event Extraction] → [Database Storage]
+       ↓                    ↓                    ↓
+[Call Ends] → [Email Generation] → [Dashboard Update]
+       ↓                    ↓                    ↓
+[Caller Unaware] → [Professional Email] → [Calendar Sync]
+       ↓                    ↓                    ↓
+[Business Continues] → [Event Management] → [User Management]
 ```
 
 ### Core Data Models
@@ -88,6 +92,40 @@ Industry (1:many) Event Types
 ```
 
 ## 🎨 Industry-Adaptive Design
+
+### Keypad-Activated Silent Processing
+```typescript
+interface KeypadActivatedFeatures {
+  activation: {
+    trigger: '*7 keypress during active call';
+    user_feedback: 'None - completely silent activation';
+    caller_awareness: 'Zero - no indication of AI processing';
+    processing_mode: 'Real-time audio streaming and transcription';
+  };
+  
+  silent_operation: {
+    audio_processing: 'Background Whisper transcription';
+    ai_extraction: 'Live GPT-4 event detection';
+    user_experience: 'Continue conversation naturally';
+    system_behavior: 'No sounds, vibrations, or visual indicators';
+  };
+  
+  post_call_delivery: {
+    timeline: 'Within 2 minutes of call end';
+    deliverables: ['Professional email summary', 'Structured appointment details', '.ics calendar file'];
+    accuracy: '90%+ event extraction from live audio';
+    industries: 'Optimized for service businesses';
+  };
+  
+  technical_implementation: {
+    dtmf_detection: 'Real-time keypad monitoring via Twilio';
+    audio_streaming: 'Media Streams API for live processing';
+    transcription: 'Streaming Whisper API integration';
+    ai_processing: 'Real-time GPT-4 event extraction';
+    email_generation: 'Automated professional communication';
+  };
+}
+```
 
 ### Supported Industries & Event Types
 ```typescript
@@ -203,6 +241,8 @@ flynnv2/
 │   │   ├── webhooks/      # External webhooks
 │   │   │   ├── twilio/    # Twilio voice webhooks
 │   │   │   │   ├── voice/ # Incoming call handling
+│   │   │   │   ├── dtmf/  # Keypad press detection
+│   │   │   │   ├── media-stream/ # Real-time audio processing
 │   │   │   │   ├── recording/ # Recording completion
 │   │   │   │   └── transcription/ # Transcription ready
 │   │   │   └── stripe/    # Stripe billing webhooks
@@ -250,6 +290,8 @@ flynnv2/
 ├── lib/                  # Core business logic
 │   ├── ai/               # AI processing logic
 │   │   ├── AIExtractionPipeline.ts # Main AI orchestrator
+│   │   ├── RealTimeProcessor.ts # Live audio processing
+│   │   ├── KeypadActivation.ts # Silent *7 activation handling
 │   │   ├── prompts/      # Industry-specific prompts
 │   │   │   ├── base.ts   # Universal prompts
 │   │   │   ├── plumbing.ts # Plumbing-specific
@@ -280,6 +322,8 @@ flynnv2/
 │   ├── twilio/           # Twilio integrations
 │   │   ├── webhookHandler.ts # Webhook processing
 │   │   ├── callManager.ts # Call lifecycle management
+│   │   ├── dtmfHandler.ts # Keypad press detection
+│   │   ├── mediaStreamHandler.ts # Real-time audio streaming
 │   │   └── twimlGenerator.ts # TwiML response generation
 │   └── supabase/         # Database operations
 │       ├── calls.ts      # Call CRUD operations
@@ -408,8 +452,32 @@ describe('Component/Function Name', () => {
 interface ProcessingPipeline {
   1. CallReceived: {
     trigger: 'Twilio webhook';
-    action: 'Store call metadata';
-    next: 'RecordingComplete';
+    action: 'Monitor for DTMF *7';
+    next: 'DTMFDetection';
+  };
+  
+  1a. DTMFDetection: {
+    trigger: '*7 keypress detected';
+    action: 'Activate silent AI processing';
+    next: 'RealTimeTranscription';
+  };
+  
+  1b. RealTimeTranscription: {
+    trigger: 'Audio stream active';
+    action: 'Begin live Whisper transcription';
+    next: 'ContinuousProcessing';
+  };
+  
+  2. ContinuousProcessing: {
+    trigger: 'Real-time audio stream';
+    action: 'Process audio chunks with AI';
+    next: 'CallEndDetection';
+  };
+  
+  3. CallEndDetection: {
+    trigger: 'Call disconnection';
+    action: 'Finalize AI extraction';
+    next: 'EventExtraction';
   };
   
   2. RecordingComplete: {

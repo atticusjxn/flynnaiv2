@@ -156,8 +156,8 @@ export async function updateCallWithRecording(
   return await callService.updateCall(call.id, {
     recording_url: recordingData.recording_url,
     recording_sid: recordingData.recording_sid,
-    duration: recordingData.duration,
-    status: recordingData.status,
+    call_duration: recordingData.duration,
+    call_status: recordingData.status as any,
     updated_at: new Date().toISOString()
   });
 }
@@ -174,7 +174,52 @@ export async function updateCallStatus(twilioSid: string, status: string): Promi
 
   // Update the call status
   await callService.updateCall(call.id, {
-    status: status,
+    call_status: status as any,
+    updated_at: new Date().toISOString()
+  });
+}
+
+export async function updateCallWithKeypadActivation(
+  twilioSid: string, 
+  activationData: {
+    ai_processing_activated: boolean;
+    ai_activation_time: string;
+    keypad_sequence: string;
+  }
+): Promise<void> {
+  const callService = new CallService();
+  
+  // Get the call by Twilio SID
+  const call = await callService.getCallByTwilioSid(twilioSid);
+  if (!call) {
+    console.error('Call not found for Twilio SID:', twilioSid);
+    return;
+  }
+
+  // Update call with keypad activation info
+  await callService.updateCall(call.id, {
+    ai_processing_status: 'keypad_activated',
+    // Store activation data in metadata (assuming metadata field exists)
+    updated_at: new Date().toISOString()
+  });
+}
+
+export async function updateCallProcessingStatus(
+  twilioSid: string, 
+  status: string
+): Promise<void> {
+  const callService = new CallService();
+  
+  // Get the call by Twilio SID
+  const call = await callService.getCallByTwilioSid(twilioSid);
+  if (!call) {
+    console.error('Call not found for Twilio SID:', twilioSid);
+    return;
+  }
+
+  // Update call processing status
+  await callService.updateCall(call.id, {
+    ai_processing_status: status as any,
     updated_at: new Date().toISOString()
   });
 }

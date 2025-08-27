@@ -46,7 +46,7 @@ TWILIO_PHONE_NUMBER=+1234567890
 #### Voice Configuration
 - **Webhook URL:** `https://your-domain.com/api/webhooks/twilio/voice`
 - **HTTP Method:** POST
-- **Call Status Changes:** `https://your-domain.com/api/webhooks/twilio/recording-status`
+- **Call Status Changes:** `https://your-domain.com/api/webhooks/ `
 
 #### Messaging Configuration (Optional)
 - **Webhook URL:** `https://your-domain.com/api/webhooks/twilio/sms` (if implementing SMS features later)

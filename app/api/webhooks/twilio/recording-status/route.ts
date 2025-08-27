@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/utils/supabase/server';
 import { updateCallStatus } from '@/lib/supabase/calls';
 
 export async function POST(request: NextRequest) {

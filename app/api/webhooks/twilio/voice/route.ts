@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/utils/supabase/server';
 import { createCallRecord } from '@/lib/supabase/calls';
-import { generateCallHandlingTwiML, generateErrorTwiML, industryGreetings, IndustryType } from '@/lib/twilio/twiml';
+import { generateEnhancedCallHandlingTwiML, generateErrorTwiML, industryGreetings, IndustryType } from '@/lib/twilio/twiml';
+import { initializeCallProcessing } from '@/lib/ai/CallProcessingManager';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,7 +15,7 @@ export async function POST(request: NextRequest) {
     const direction = formData.get('Direction') as string;
 
     // Get the authenticated user (for now, we'll need to determine user by phone number)
-    const supabase = createServerClient();
+    const supabase = createAdminClient();
 
     // Find user by their Twilio phone number (this will be configured later)
     const { data: user } = await supabase
@@ -32,21 +33,24 @@ export async function POST(request: NextRequest) {
     const callData = {
       user_id: user.id,
       twilio_call_sid: callSid,
-      caller_phone: from,
-      recipient_phone: to,
-      status: callStatus,
-      direction: direction,
-      started_at: new Date().toISOString(),
+      caller_number: from,
+      call_status: callStatus as any,
+      call_direction: direction as any,
+      created_at: new Date().toISOString(),
     };
 
     const call = await createCallRecord(callData);
+
+    // Initialize silent call processing management
+    await initializeCallProcessing(callSid);
 
     // Get user's industry configuration for greeting
     const industry = (user.industry as IndustryType) || 'general';
     const greeting = industryGreetings[industry];
 
-    // Generate TwiML response to handle the call with industry-specific greeting
-    const twimlResponse = generateCallHandlingTwiML(
+    // Generate enhanced TwiML response with DTMF detection and media streams
+    const twimlResponse = generateEnhancedCallHandlingTwiML(
+      callSid,
       {
         message: greeting,
         voice: 'alice'
