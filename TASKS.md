@@ -213,20 +213,6 @@
 - Calendar file correctly formatted
 - Industry-specific terminology used
 
-### Task 10f: Legal Compliance & Privacy Protection (2-3 hours)
-**Description**: Ensure legal compliance for silent call processing
-**Deliverables**:
-- Call recording consent verification
-- Privacy policy updates for AI processing
-- Data retention and deletion policies
-- Industry compliance documentation (HIPAA, etc.)
-**Dependencies**: Task 10e
-**Acceptance Criteria**:
-- Legal compliance verified
-- Privacy policies updated and clear
-- User consent mechanisms implemented
-- Industry-specific regulations addressed
-
 ### Task 11: Twilio Voice Integration Setup (4-5 hours)
 **Description**: Configure Twilio Voice API, webhooks, and recording
 **Deliverables**:

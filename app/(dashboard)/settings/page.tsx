@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthContext } from '@/components/AuthProvider';
+import CalendarIntegrationSection from '@/components/calendar/CalendarIntegrationSection';
 
 interface PhoneSetup {
   phoneNumber: string;
@@ -360,6 +361,22 @@ export default function SettingsPage() {
           )}
         </div>
 
+        {/* Calendar Integration */}
+        <div className="mt-8 bg-card border border-border rounded-lg shadow-sm p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-xl font-semibold text-card-foreground mb-2">
+                Calendar Integration
+              </h3>
+              <p className="text-muted-foreground">
+                Sync extracted appointments directly to your calendar
+              </p>
+            </div>
+          </div>
+
+          <CalendarIntegrationSection />
+        </div>
+
         {/* How it Works */}
         <div className="mt-8 bg-card border border-border rounded-lg shadow-sm p-6">
           <h3 className="text-lg font-semibold text-card-foreground mb-4">How Flynn.ai Works</h3>
@@ -379,6 +396,10 @@ export default function SettingsPage() {
             <div className="flex items-start space-x-3">
               <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-xs font-bold flex-shrink-0">4</div>
               <p>Receive a professional email summary with calendar events within 2 minutes</p>
+            </div>
+            <div className="flex items-start space-x-3">
+              <div className="w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-xs font-bold flex-shrink-0">5</div>
+              <p>Appointments automatically sync to your connected calendar</p>
             </div>
           </div>
         </div>

@@ -10,6 +10,7 @@ export interface ICSEventData {
   attendee?: string; // email or phone
   url?: string;
   uid?: string;
+  urgency?: 'low' | 'medium' | 'high' | 'emergency';
 }
 
 /**
@@ -98,9 +99,25 @@ export async function generateICSFile(eventData: ICSEventData): Promise<string> 
   icsLines.push('STATUS:TENTATIVE');
   icsLines.push('CLASS:PUBLIC');
   icsLines.push('SEQUENCE:0');
-  icsLines.push('PRIORITY:5');
+  
+  // Set priority based on urgency
+  const getPriority = (urgency?: string): number => {
+    switch (urgency) {
+      case 'emergency': return 1;
+      case 'high': return 2;
+      case 'medium': return 5;
+      case 'low': return 9;
+      default: return 5;
+    }
+  };
+  
+  icsLines.push(`PRIORITY:${getPriority(eventData.urgency)}`);
   icsLines.push('X-MICROSOFT-CDO-BUSYSTATUS:TENTATIVE');
   icsLines.push('X-FLYNN-AI:true');
+  
+  if (eventData.urgency) {
+    icsLines.push(`X-FLYNN-URGENCY:${eventData.urgency.toUpperCase()}`);
+  }
   
   // Add reminders
   icsLines.push('BEGIN:VALARM');
