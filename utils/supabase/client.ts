@@ -2,34 +2,51 @@
 import { createBrowserClient } from '@supabase/ssr';
 import { Database } from '@/types/database.types';
 
+// Sanitize environment variables
+const sanitizeEnvVar = (value: string | undefined): string | undefined => {
+  if (!value) return undefined;
+  return value.trim().replace(/[\r\n\t]/g, '');
+};
+
 export const createClient = () => {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = sanitizeEnvVar(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  const anonKey = sanitizeEnvVar(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
   if (!url || !anonKey) {
-    console.error('Missing Supabase environment variables:', {
-      url: !!url,
-      anonKey: !!anonKey,
-      urlValue: url,
-    });
-    throw new Error('Missing required Supabase environment variables');
+    throw new Error('Missing Supabase environment variables');
   }
 
   // Validate URL format
   try {
     new URL(url);
   } catch (error) {
-    console.error('Invalid Supabase URL:', url);
     throw new Error('Invalid Supabase URL format');
   }
 
-  return createBrowserClient<Database>(url, anonKey);
+  return createBrowserClient<Database>(url, anonKey, {
+    auth: {
+      persistSession: true,
+      detectSessionInUrl: true,
+      autoRefreshToken: true,
+    },
+  });
 };
 
-// Export a function to get client safely
+// Single client instance with proper error handling
 let clientInstance: ReturnType<typeof createClient> | null = null;
 
 export const getSupabaseClient = () => {
+  if (typeof window === 'undefined') {
+    // Server-side: create new client each time
+    try {
+      return createClient();
+    } catch (error) {
+      console.error('Failed to create Supabase client:', error);
+      return null;
+    }
+  }
+
+  // Client-side: use singleton
   if (!clientInstance) {
     try {
       clientInstance = createClient();
@@ -41,12 +58,5 @@ export const getSupabaseClient = () => {
   return clientInstance;
 };
 
-// Export a default client instance for convenience (with error handling)
-export const supabase = (() => {
-  try {
-    return createClient();
-  } catch (error) {
-    console.error('Failed to create default Supabase client:', error);
-    return null;
-  }
-})();
+// Default export for convenience
+export const supabase = getSupabaseClient();

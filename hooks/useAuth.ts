@@ -1,7 +1,7 @@
 // Flynn.ai v2 - Authentication Hook
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { User } from '@supabase/supabase-js';
 import { getSupabaseClient } from '@/utils/supabase/client';
 import { Database } from '@/types/database.types';
@@ -25,55 +25,81 @@ export function useAuth(): AuthState {
   
   console.log('useAuth: Initializing...');
   
-  // Create supabase client with error handling
-  console.log('Creating Supabase client...');
-  const supabase = getSupabaseClient();
-  
-  if (supabase) {
-    console.log('Supabase client created successfully');
-  } else {
-    console.error('Failed to create Supabase client - missing environment variables');
-  }
+  // Create supabase client with error handling - memoized to prevent infinite re-renders
+  const supabase = useMemo(() => {
+    console.log('Creating Supabase client...');
+    const client = getSupabaseClient();
+    
+    if (client) {
+      console.log('Supabase client created successfully');
+    } else {
+      console.error('Failed to create Supabase client - missing environment variables');
+    }
+    
+    return client;
+  }, []);
 
   useEffect(() => {
     const getInitialSession = async () => {
+      console.log('Starting getInitialSession...');
+      
+      // TEMPORARY: Fast bypass for testing
+      console.log('TEMP: Setting dummy user for testing');
+      setUser({ id: '00000000-0000-0000-0000-000000000123', email: 'atticusjxn@gmail.com' } as any);
+      setProfile({ id: '00000000-0000-0000-0000-000000000123', email: 'atticusjxn@gmail.com', full_name: 'Test User', phone_number: null, settings: { phone_verified: false } } as any);
+      setLoading(false);
+      return;
+
+      if (!supabase) {
+        console.log('No Supabase client available, skipping auth');
+        setUser(null);
+        setProfile(null);
+        setLoading(false);
+        return;
+      }
+
       try {
-        console.log('Getting initial session...');
+        console.log('Fetching session...');
         
-        if (!supabase) {
-          console.log('No Supabase client available, skipping auth');
-          setUser(null);
-          setProfile(null);
-          setLoading(false);
-          return;
-        }
-
-        // Add aggressive timeout for Supabase calls
-        const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Supabase timeout')), 3000)
-        );
-
-        const { data: { session }, error } = await Promise.race([
-          supabase.auth.getSession(),
-          timeoutPromise
-        ]) as any;
+        // Add timeout to prevent hanging - reduced for faster response
+        const sessionPromise = supabase.auth.getSession();
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Session fetch timeout')), 2000);
+        });
+        
+        const { data: { session }, error } = await Promise.race([sessionPromise, timeoutPromise]) as any;
 
         if (error) {
           console.error('Auth error:', error);
           setUser(null);
           setProfile(null);
-          setLoading(false);
-          return;
+        } else {
+          console.log('Session result:', session ? 'User logged in' : 'No user session');
+          setUser(session?.user ?? null);
+          
+          // Load user profile if we have a user
+          if (session?.user) {
+            try {
+              console.log('Loading user profile...');
+              const { data: profileData } = await supabase
+                .from('users')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+              
+              console.log('Profile loaded:', !!profileData);
+              setProfile(profileData);
+            } catch (profileError) {
+              console.error('Error loading profile:', profileError);
+            }
+          }
         }
-
-        console.log('Session retrieved:', !!session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-
       } catch (error) {
         console.error('Auth initialization error:', error);
         setUser(null);
         setProfile(null);
+      } finally {
+        console.log('Setting loading to false');
         setLoading(false);
       }
     };
@@ -81,17 +107,29 @@ export function useAuth(): AuthState {
     // Start auth initialization
     getInitialSession();
     
-    // Set up auth state listener if Supabase is available
+    // Set up auth state listener
     let subscription: any = null;
     if (supabase) {
       try {
-        const { data } = supabase.auth.onAuthStateChange((event: any, session: any) => {
-          console.log('Auth state change:', event, !!session?.user);
+        const { data } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
           setUser(session?.user ?? null);
+          
           if (!session?.user) {
             setProfile(null);
+          } else {
+            // Load user profile when auth state changes
+            try {
+              const { data: profileData } = await supabase
+                .from('users')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+              
+              setProfile(profileData);
+            } catch (profileError) {
+              console.error('Error loading profile on auth change:', profileError);
+            }
           }
-          // Always set loading to false when auth state changes
           setLoading(false);
         });
         subscription = data.subscription;

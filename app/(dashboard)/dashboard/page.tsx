@@ -135,13 +135,13 @@ export default function DashboardPage() {
                   <h4 className="font-semibold text-card-foreground">Events</h4>
                   <p className="text-sm text-muted-foreground">Manage extracted calendar events</p>
                 </div>
-                <div className="bg-card border border-border rounded-lg shadow-sm p-4">
+                <Link href="/settings" className="bg-card border border-border rounded-lg shadow-sm p-4 hover:bg-card/80 transition-colors">
                   <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center mb-2">
                     <div className="w-4 h-4 bg-primary rounded-full"></div>
                   </div>
                   <h4 className="font-semibold text-card-foreground">Settings</h4>
-                  <p className="text-sm text-muted-foreground">Configure your preferences</p>
-                </div>
+                  <p className="text-sm text-muted-foreground">Configure your Twilio integration</p>
+                </Link>
               </div>
 
               <div className="mt-8">

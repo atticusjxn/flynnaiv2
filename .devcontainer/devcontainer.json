@@ -1,0 +1,44 @@
+{
+  "name": "Flynn.ai v2 Development Environment",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:20",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "typescript.preferences.includePackageJsonAutoImports": "auto",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+      },
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "ms-vscode.vscode-typescript-next",
+        "formulahendry.auto-rename-tag",
+        "christian-kohler.path-intellisense",
+        "ms-vscode-remote.remote-containers",
+        "github.copilot"
+      ]
+    }
+  },
+  "forwardPorts": [3000, 4040],
+  "portsAttributes": {
+    "3000": {
+      "label": "Next.js Dev Server",
+      "onAutoForward": "notify"
+    },
+    "4040": {
+      "label": "ngrok Inspector",
+      "onAutoForward": "silent"
+    }
+  },
+  "postCreateCommand": "npm install",
+  "postStartCommand": "echo '🚀 Flynn.ai v2 Development Container Ready!'",
+  "remoteUser": "node",
+  "mounts": [
+    "source=flynn-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+  ]
+}
