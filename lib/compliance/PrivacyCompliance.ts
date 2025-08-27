@@ -364,7 +364,7 @@ Version: ${this.CURRENT_PRIVACY_VERSION}
       financial: '\n• Financial data protection\n• Regulatory compliance maintained\n• Audit trail preserved'
     };
 
-    return baseNotice + (industryAdditions[industry] || '');
+    return baseNotice + ((industryAdditions as any)[industry] || '');
   }
 }
 

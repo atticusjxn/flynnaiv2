@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: 'Internal server error',
         timestamp: new Date().toISOString(),
-        details: error.message
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );

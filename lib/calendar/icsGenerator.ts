@@ -265,7 +265,7 @@ export async function generateIndustryICSFile(
     }
   };
 
-  const config = industryConfig[industry] || {
+  const config = (industryConfig as any)[industry] || {
     defaultDuration: 60,
     category: 'Appointment',
     priority: 5

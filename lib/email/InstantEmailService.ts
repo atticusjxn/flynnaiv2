@@ -5,8 +5,19 @@ import { createAdminClient } from '@/utils/supabase/server';
 import { generateAppointmentSummaryEmail } from '@/lib/email/EmailTemplates';
 import { generateICSFile } from '@/lib/calendar/icsGenerator';
 
-// Initialize Resend client
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy initialize Resend client
+let resend: Resend | null = null;
+
+function getResendClient(): Resend {
+  if (!resend) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      throw new Error('RESEND_API_KEY environment variable is required');
+    }
+    resend = new Resend(apiKey);
+  }
+  return resend;
+}
 
 export interface EmailDeliveryRequest {
   callSid: string;
@@ -75,7 +86,7 @@ export class InstantEmailService {
         const attachments = await this.generateAttachments(request);
         
         // Send email via Resend
-        const emailResult = await resend.emails.send({
+        const emailResult = await getResendClient().emails.send({
           from: 'Flynn.ai <appointments@flynnai.com>',
           to: [request.userEmail],
           subject: emailContent.subject,
@@ -112,13 +123,13 @@ export class InstantEmailService {
         const elapsedTime = Date.now() - startTime;
         if (attempts >= this.RETRY_ATTEMPTS || elapsedTime > this.MAX_DELIVERY_TIME - 30000) {
           
-          await this.updateEmailDeliveryStatus(request.callSid, false, undefined, elapsedTime, error.message);
+          await this.updateEmailDeliveryStatus(request.callSid, false, undefined, elapsedTime, error instanceof Error ? error.message : 'Unknown error');
           this.deliveryQueue.delete(request.callSid);
           
           return {
             success: false,
             deliveryTime: elapsedTime,
-            error: error.message,
+            error: error instanceof Error ? error.message : 'Unknown error',
             attachments: 0
           };
         }
@@ -213,7 +224,8 @@ export class InstantEmailService {
 
     try {
       // Generate ICS file for each event with date/time
-      for (const [index, event] of request.extractedEvents.entries()) {
+      for (let index = 0; index < request.extractedEvents.length; index++) {
+        const event = request.extractedEvents[index];
         if (event.proposed_datetime) {
           const icsContent = await generateICSFile({
             title: event.title,

@@ -198,7 +198,7 @@ export async function updateCallWithKeypadActivation(
 
   // Update call with keypad activation info
   await callService.updateCall(call.id, {
-    ai_processing_status: 'keypad_activated',
+    ai_processing_status: 'processing' as any,
     // Store activation data in metadata (assuming metadata field exists)
     updated_at: new Date().toISOString()
   });

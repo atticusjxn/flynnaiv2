@@ -160,8 +160,9 @@ export class DataRetentionManager {
 
         } catch (error) {
           stats.failed++;
-          stats.errors.push(`Job ${job.id}: ${error.message}`);
-          await this.markDeletionJobFailed(job.id, error.message);
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          (stats.errors as string[]).push(`Job ${job.id}: ${errorMessage}`);
+          await this.markDeletionJobFailed(job.id, errorMessage);
         }
       }
 
@@ -170,7 +171,7 @@ export class DataRetentionManager {
 
     } catch (error) {
       console.error('Error processing pending deletions:', error);
-      stats.errors.push(error.message);
+      (stats.errors as string[]).push(error instanceof Error ? error.message : 'Unknown error');
       return stats;
     }
   }
@@ -485,7 +486,7 @@ export class DataRetentionManager {
       return {
         success: false,
         deletedRecords: 0,
-        error: error.message
+        error: error instanceof Error ? error.message : 'Unknown error'
       };
     }
   }

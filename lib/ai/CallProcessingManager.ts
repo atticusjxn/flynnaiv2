@@ -114,12 +114,12 @@ export class CallProcessingManager {
     const callerPhone = await this.getCallerPhoneForCall(callSid);
     
     if (userId) {
-      const complianceCheck = await validateCallCompliance(callSid, userId, callerPhone);
+      const complianceCheck = await validateCallCompliance(callSid, userId, callerPhone || undefined);
       
       if (!complianceCheck.compliant) {
         console.warn(`Compliance check failed for call ${callSid}: ${complianceCheck.reason}`);
         state.status = 'failed';
-        state.lastError = complianceCheck.reason;
+        state.lastError = complianceCheck.reason || 'Compliance check failed';
         await this.updateCallStatus(callSid, 'failed');
         return;
       }
@@ -157,7 +157,7 @@ export class CallProcessingManager {
 
     } catch (error) {
       console.error(`Error starting processing pipeline for call ${callSid}:`, error);
-      await this.handleProcessingError(callSid, error.message);
+      await this.handleProcessingError(callSid, error instanceof Error ? error.message : 'Unknown error');
     }
   }
 
@@ -244,7 +244,7 @@ export class CallProcessingManager {
 
     } catch (error) {
       console.error(`Error triggering email generation for call ${callSid}:`, error);
-      await this.handleProcessingError(callSid, error.message);
+      await this.handleProcessingError(callSid, error instanceof Error ? error.message : 'Unknown error');
     }
   }
 
@@ -334,7 +334,7 @@ export class CallProcessingManager {
 
     } catch (error) {
       console.error(`Error finalizing processing for call ${callSid}:`, error);
-      await this.handleProcessingError(callSid, error.message);
+      await this.handleProcessingError(callSid, error instanceof Error ? error.message : 'Unknown error');
     }
   }
 
@@ -563,7 +563,7 @@ export class CallProcessingManager {
         .eq('twilio_call_sid', callSid)
         .single();
 
-      return call?.users?.industry || 'general';
+      return (call?.users as any)?.industry || 'general';
     } catch (error) {
       console.error(`Error fetching user industry for call ${callSid}:`, error);
       return 'general';

@@ -453,7 +453,7 @@ function getIndustryEmailConfig(industry: string) {
     }
   };
   
-  return configs[industry] || configs.general;
+  return (configs as any)[industry] || configs.general;
 }
 
 /**

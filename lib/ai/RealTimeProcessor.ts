@@ -111,7 +111,7 @@ export class RealTimeAudioProcessor {
       const wavBuffer = this.convertMulawToWav(audioBuffer);
       
       // Create a temporary file for Whisper API
-      const audioBlob = new Blob([wavBuffer], { type: 'audio/wav' });
+      const audioBlob = new Blob([wavBuffer as any], { type: 'audio/wav' });
       const audioFile = new File([audioBlob], `${callSid}-${timestamp}.wav`, { 
         type: 'audio/wav' 
       });

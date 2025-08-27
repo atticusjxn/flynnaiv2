@@ -155,7 +155,7 @@ RESPONSE FORMAT: Return ONLY valid JSON, no additional text:
       } catch (parseError) {
         console.error(`Failed to parse OpenAI response for call ${callSid}:`, parseError);
         console.error('Raw response:', response);
-        throw new Error(`Invalid JSON response: ${parseError.message}`);
+        throw new Error(`Invalid JSON response: ${parseError instanceof Error ? parseError.message : 'Unknown parse error'}`);
       }
 
       const processingTime = Date.now() - startTime;
