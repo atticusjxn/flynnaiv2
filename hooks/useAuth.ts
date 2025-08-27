@@ -111,14 +111,25 @@ export function useAuth(): AuthState {
   const signIn = async (email: string, password: string) => {
     if (!supabase) return { error: new Error('Supabase not available') };
     
+    console.log('Starting signIn process for:', email);
     setLoading(true);
+    
     try {
+      console.log('Attempting sign in...');
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
+      
+      console.log('SignIn result:', { error: !!error });
+      
+      if (error) {
+        console.error('SignIn error:', error);
+      }
+      
       return { error };
     } catch (error) {
+      console.error('SignIn catch block error:', error);
       return { error };
     } finally {
       setLoading(false);
@@ -128,37 +139,53 @@ export function useAuth(): AuthState {
   const signUp = async (email: string, password: string, userData?: any) => {
     if (!supabase) return { error: new Error('Supabase not available') };
     
+    console.log('Starting signUp process for:', email);
     setLoading(true);
+    
     try {
+      // First, try a simple signup without redirect URL to isolate the issue
+      console.log('Attempting basic signup...');
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          data: userData,
-          emailRedirectTo: `${window.location.origin}/confirm`,
-        },
       });
 
-      if (!error && data.user) {
+      console.log('Signup result:', { data: !!data, error: !!error });
+      
+      if (error) {
+        console.error('Signup error:', error);
+        return { error };
+      }
+
+      if (data.user) {
+        console.log('User created, attempting to create profile...');
         // Create user profile in database
-        const { error: profileError } = await supabase
-          .from('users')
-          .insert({
-            id: data.user.id,
-            email: data.user.email!,
-            full_name: userData?.full_name || null,
-            company_name: userData?.company_name || null,
-            industry_type: userData?.industry_type || null,
-            phone_number: userData?.phone_number || null,
-          });
-        
-        if (profileError) {
-          console.error('Error creating profile:', profileError);
+        try {
+          const { error: profileError } = await supabase
+            .from('users')
+            .insert({
+              id: data.user.id,
+              email: data.user.email!,
+              full_name: userData?.full_name || null,
+              company_name: userData?.company_name || null,
+              industry_type: userData?.industry_type || null,
+              phone_number: userData?.phone_number || null,
+            });
+          
+          if (profileError) {
+            console.error('Error creating profile:', profileError);
+            // Don't fail the whole signup for profile creation errors
+          } else {
+            console.log('Profile created successfully');
+          }
+        } catch (profileErr) {
+          console.error('Profile creation failed:', profileErr);
         }
       }
 
       return { error };
     } catch (error) {
+      console.error('Signup catch block error:', error);
       return { error };
     } finally {
       setLoading(false);
