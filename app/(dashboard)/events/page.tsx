@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import EventsFilters from '@/components/events/EventsFilters';
 import EventsList from '@/components/events/EventsList';
 
@@ -131,6 +132,7 @@ interface FilterOptions {
 }
 
 export default function EventsPage() {
+  const router = useRouter();
   const [selectedEventIds, setSelectedEventIds] = useState<string[]>([]);
   const [filters, setFilters] = useState<FilterOptions>({
     status: [],
@@ -234,8 +236,12 @@ export default function EventsPage() {
     setSelectedEventIds([]);
   };
 
+  const handleEventEdit = (eventId: string) => {
+    router.push(`/events/${eventId}`);
+  };
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 min-h-full">
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -290,6 +296,7 @@ export default function EventsPage() {
           onEventSelectAll={handleEventSelectAll}
           onStatusUpdate={handleStatusUpdate}
           onBulkAction={handleBulkAction}
+          onEdit={handleEventEdit}
         />
       ) : (
         <div className="bg-card border border-border rounded-lg p-12 text-center">

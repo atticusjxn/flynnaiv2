@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -37,18 +36,6 @@ const CogIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const ChevronLeftIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-  </svg>
-);
-
-const ChevronRightIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-  </svg>
-);
-
 const CreditCardIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
@@ -68,7 +55,6 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ className }: SidebarProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
 
   const navigation: NavigationItem[] = [
@@ -114,16 +100,12 @@ export default function Sidebar({ className }: SidebarProps) {
 
   return (
     <div className={cn(
-      "flex flex-col h-full bg-sidebar border-r border-sidebar-border transition-all duration-300 ease-in-out",
-      isCollapsed ? "w-16" : "w-64",
+      "flex flex-col h-full bg-sidebar border-r border-sidebar-border w-64",
       className
     )}>
-      {/* Logo & Collapse Toggle */}
-      <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
-        <div className={cn(
-          "flex items-center space-x-3 transition-opacity duration-200",
-          isCollapsed && "opacity-0 pointer-events-none"
-        )}>
+      {/* Logo */}
+      <div className="flex items-center p-4 border-b border-sidebar-border">
+        <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
             <div className="w-4 h-4 bg-white rounded-full" />
           </div>
@@ -132,17 +114,6 @@ export default function Sidebar({ className }: SidebarProps) {
             <span className="text-xs text-sidebar-foreground/60 font-medium">v2</span>
           </div>
         </div>
-        
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-1.5 rounded-lg hover:bg-sidebar-accent text-sidebar-foreground/60 hover:text-sidebar-foreground transition-all duration-200 hover:scale-110"
-        >
-          {isCollapsed ? (
-            <ChevronRightIcon className="w-4 h-4" />
-          ) : (
-            <ChevronLeftIcon className="w-4 h-4" />
-          )}
-        </button>
       </div>
 
       {/* Navigation */}
@@ -160,19 +131,13 @@ export default function Sidebar({ className }: SidebarProps) {
                   : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-sm hover:scale-[1.02]"
               )}
             >
-              <Icon className={cn(
-                "w-5 h-5 transition-colors duration-200",
-                isCollapsed ? "mx-auto" : "mr-3"
-              )} />
+              <Icon className="w-5 h-5 mr-3 transition-colors duration-200" />
               
-              <span className={cn(
-                "transition-all duration-200",
-                isCollapsed && "opacity-0 pointer-events-none absolute"
-              )}>
+              <span>
                 {item.name}
               </span>
               
-              {item.badge && !isCollapsed && (
+              {item.badge && (
                 <span className={cn(
                   "ml-auto px-2 py-0.5 text-xs font-semibold rounded-full transition-colors duration-200",
                   item.isActive
@@ -194,20 +159,15 @@ export default function Sidebar({ className }: SidebarProps) {
 
       {/* User Section */}
       <div className="p-4 border-t border-sidebar-border">
-        <div className={cn(
-          "flex items-center space-x-3 p-3 rounded-xl bg-sidebar-accent/50 transition-all duration-200 hover:bg-sidebar-accent",
-          isCollapsed && "justify-center"
-        )}>
+        <div className="flex items-center space-x-3 p-3 rounded-xl bg-sidebar-accent/50 transition-all duration-200 hover:bg-sidebar-accent">
           <div className="w-8 h-8 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full flex items-center justify-center">
             <span className="text-xs font-bold text-white">U</span>
           </div>
           
-          {!isCollapsed && (
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-sidebar-foreground truncate">User Name</p>
-              <p className="text-xs text-sidebar-foreground/60 truncate">Professional Plan</p>
-            </div>
-          )}
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-sidebar-foreground truncate">User Name</p>
+            <p className="text-xs text-sidebar-foreground/60 truncate">Professional Plan</p>
+          </div>
         </div>
       </div>
     </div>

@@ -37,16 +37,16 @@ export default function DashboardLayout({
 
   return (
     <ProtectedRoute>
-      <div className="flex h-screen bg-background">
+      <div className="flex h-screen w-full bg-background min-h-screen">
         {/* Sidebar */}
         <Sidebar className="flex-shrink-0" />
         
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 flex flex-col min-w-0 relative w-full min-h-screen">
           {/* Top Navigation Bar */}
-          <header className="bg-card border-b border-border shadow-sm z-10">
-            <div className="px-6 py-4">
-              <div className="flex items-center justify-between">
+          <header className="bg-card border-b border-border shadow-sm relative z-10 w-full">
+            <div className="px-6 py-4 w-full">
+              <div className="flex items-center justify-between w-full">
                 <div className="flex items-center space-x-4">
                   <div>
                     <h1 className="text-xl font-bold text-foreground">
@@ -81,8 +81,8 @@ export default function DashboardLayout({
           </header>
           
           {/* Page Content */}
-          <main className="flex-1 overflow-auto">
-            <div className="p-6">
+          <main className="flex-1 overflow-auto w-full min-h-0">
+            <div className="p-6 w-full min-h-full">
               {children}
             </div>
           </main>
