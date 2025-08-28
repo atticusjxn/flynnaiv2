@@ -144,8 +144,22 @@ export default function SettingsPage() {
     }
   };
 
+  // Temporarily disabled for testing
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center bg-background">
+  //       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  //     </div>
+  //   );
+  // }
+
+  // if (!user) {
+  //   return null;
+  // }
+
   return (
     <div className="space-y-8">
+      {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold text-foreground mb-2">Settings</h1>
         <p className="text-muted-foreground text-lg">
@@ -371,6 +385,5 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
-    </div>
   );
 }

@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { useAuthContext } from '@/components/AuthProvider';
+import KPICards from '@/components/dashboard/KPICards';
+import RecentActivity from '@/components/dashboard/RecentActivity';
+import QuickActions from '@/components/dashboard/QuickActions';
 
 const formatIndustryName = (industryType: string) => {
   const industryNames: Record<string, string> = {
@@ -17,142 +17,111 @@ const formatIndustryName = (industryType: string) => {
     other: 'Other',
   };
   
-  return industryNames[industryType] || industryType.replace('_', ' ').toUpperCase();
+  return industryNames[industryType] || industryType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
 };
 
 export default function DashboardPage() {
-  const { user, profile, loading, signOut } = useAuthContext();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
-    }
-  }, [user, loading, router]);
+  const { user, profile, loading } = useAuthContext();
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      <div className="min-h-full flex items-center justify-center">
+        <div className="flex items-center space-x-3">
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
+          <span className="text-muted-foreground font-medium">Loading dashboard...</span>
+        </div>
       </div>
     );
   }
 
-  if (!user) {
-    return null; // Will redirect to login
-  }
-
-  const handleLogout = async () => {
-    await signOut();
-    router.push('/');
-  };
-
   return (
-    <div className="min-h-screen bg-background">
-      {/* Navigation Header */}
-      <header className="bg-card border-b border-border shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                  <div className="w-4 h-4 bg-primary-foreground rounded-full"></div>
-                </div>
-                <h1 className="text-xl font-bold text-card-foreground">Flynn.ai v2</h1>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-muted-foreground">
-                Welcome, {profile?.full_name || user.email}
-              </span>
-              <button
-                onClick={handleLogout}
-                className="bg-secondary hover:bg-secondary/90 px-3 py-1 rounded-lg text-sm font-medium text-secondary-foreground transition-colors"
-              >
-                Sign out
-              </button>
-            </div>
+    <div className="space-y-8 animate-in fade-in duration-700">
+      {/* Welcome Section */}
+      <div className="mb-8">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              Welcome back{profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''}!
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Here's what's happening with your AI call automation today.
+            </p>
           </div>
+          
+          {profile?.industry_type && (
+            <div className="mt-4 lg:mt-0">
+              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl">
+                <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+                <span className="text-sm font-semibold text-blue-700">
+                  {formatIndustryName(profile.industry_type)}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
-      </header>
+      </div>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-border rounded-lg p-8">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-foreground mb-4">
-                Welcome to Flynn.ai Dashboard!
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                Your AI-powered call-to-calendar automation platform is ready to go.
-              </p>
+      {/* KPI Cards */}
+      <section>
+        <KPICards />
+      </section>
 
-              {/* User Profile Card */}
-              <div className="bg-card border border-border rounded-lg shadow-sm p-6 mb-6 text-left max-w-md mx-auto">
-                <h3 className="text-lg font-semibold text-card-foreground mb-4">Your Profile</h3>
-                <div className="space-y-2 text-sm">
-                  <div>
-                    <span className="font-medium text-card-foreground">Name:</span>{' '}
-                    <span className="text-muted-foreground">{profile?.full_name || 'Not set'}</span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-card-foreground">Email:</span>{' '}
-                    <span className="text-muted-foreground">{user.email}</span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-card-foreground">Company:</span>{' '}
-                    <span className="text-muted-foreground">{profile?.company_name || 'Not set'}</span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-card-foreground">Industry:</span>{' '}
-                    <span className="text-muted-foreground">
-                      {profile?.industry_type ? formatIndustryName(profile.industry_type) : 'Not set'}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-card-foreground">Subscription:</span>{' '}
-                    <span className="text-muted-foreground capitalize">
-                      {profile?.subscription_tier || 'Basic'}
-                    </span>
-                  </div>
-                </div>
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+        {/* Recent Activity - Takes up 2/3 on large screens */}
+        <div className="xl:col-span-2">
+          <RecentActivity />
+        </div>
+        
+        {/* Quick Actions - Takes up 1/3 on large screens */}
+        <div className="space-y-8">
+          {/* Profile Overview Card */}
+          <div className="bg-card border border-border rounded-2xl shadow-sm p-6">
+            <div className="flex items-start space-x-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <span className="text-xl font-bold text-white">
+                  {(profile?.full_name || user?.email || 'U').charAt(0).toUpperCase()}
+                </span>
               </div>
-
-              {/* Quick Actions */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
-                <div className="bg-card border border-border rounded-lg shadow-sm p-4">
-                  <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center mb-2">
-                    <div className="w-4 h-4 bg-primary rounded-full"></div>
-                  </div>
-                  <h4 className="font-semibold text-card-foreground">Calls</h4>
-                  <p className="text-sm text-muted-foreground">View and manage your call history</p>
-                </div>
-                <div className="bg-card border border-border rounded-lg shadow-sm p-4">
-                  <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center mb-2">
-                    <div className="w-4 h-4 bg-primary rounded-full"></div>
-                  </div>
-                  <h4 className="font-semibold text-card-foreground">Events</h4>
-                  <p className="text-sm text-muted-foreground">Manage extracted calendar events</p>
-                </div>
-                <Link href="/settings" className="bg-card border border-border rounded-lg shadow-sm p-4 hover:bg-card/80 transition-colors">
-                  <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center mb-2">
-                    <div className="w-4 h-4 bg-primary rounded-full"></div>
-                  </div>
-                  <h4 className="font-semibold text-card-foreground">Settings</h4>
-                  <p className="text-sm text-muted-foreground">Configure your Twilio integration</p>
-                </Link>
-              </div>
-
-              <div className="mt-8">
-                <p className="text-sm text-muted-foreground">
-                  Authentication system is working! Next: Set up Twilio integration.
+              
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-bold text-foreground mb-1">
+                  {profile?.full_name || 'User'}
+                </h3>
+                <p className="text-sm text-muted-foreground mb-2">
+                  {profile?.company_name || user?.email}
                 </p>
+                
+                <div className="flex items-center space-x-2">
+                  <div className="inline-flex items-center px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-semibold">
+                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5"></div>
+                    {profile?.subscription_tier?.toUpperCase() || 'BASIC'} PLAN
+                  </div>
+                </div>
               </div>
+            </div>
+            
+            {/* Setup Progress */}
+            <div className="mt-6 pt-6 border-t border-border">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-foreground">Setup Progress</span>
+                <span className="text-sm text-muted-foreground">3/5 Complete</span>
+              </div>
+              <div className="w-full bg-muted rounded-full h-2">
+                <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500" style={{ width: '60%' }}></div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                Complete your Twilio and calendar integration to unlock full automation.
+              </p>
             </div>
           </div>
         </div>
-      </main>
+      </div>
+
+      {/* Quick Actions Section */}
+      <section>
+        <QuickActions />
+      </section>
     </div>
   );
 }
