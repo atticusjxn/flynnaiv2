@@ -1,0 +1,333 @@
+/* Advanced Search Interface Styles */
+
+.searchContainer {
+  position: relative;
+}
+
+/* Premium Slider Styling */
+.slider {
+  background: linear-gradient(to right, #e2e8f0, #e2e8f0);
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  transition: all 0.2s ease;
+  border: 2px solid white;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  border: 2px solid white;
+  transition: all 0.2s ease;
+}
+
+.slider::-moz-range-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+/* Search Suggestions Animation */
+.suggestions {
+  animation: slideDown 0.2s ease-out;
+  transform-origin: top;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Suggestion Item Hover Effect */
+.suggestionItem {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.suggestionItem::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.05), transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border-radius: 8px;
+}
+
+.suggestionItem:hover::before {
+  opacity: 1;
+}
+
+/* Loading Shimmer Effect */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Filter Badge Animation */
+.filterBadge {
+  animation: fadeInScale 0.3s ease-out;
+  transition: all 0.2s ease;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.filterBadge:hover {
+  transform: scale(1.05);
+}
+
+/* Search Results Animation */
+.searchResult {
+  animation: fadeInUp 0.4s ease-out;
+  animation-fill-mode: both;
+}
+
+.searchResult:nth-child(1) { animation-delay: 0.05s; }
+.searchResult:nth-child(2) { animation-delay: 0.1s; }
+.searchResult:nth-child(3) { animation-delay: 0.15s; }
+.searchResult:nth-child(4) { animation-delay: 0.2s; }
+.searchResult:nth-child(5) { animation-delay: 0.25s; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Glassmorphism Effect */
+.glassCard {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.glassCard:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 
+    0 12px 48px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 0 0 1px rgba(59, 130, 246, 0.1);
+}
+
+/* Premium Button Hover Effects */
+.premiumButton {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.premiumButton::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  transition: all 0.5s ease;
+  transform: translate(-50%, -50%);
+}
+
+.premiumButton:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Advanced Filter Panel Animation */
+.advancedFilters {
+  animation: expandDown 0.3s ease-out;
+  transform-origin: top;
+}
+
+@keyframes expandDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    transform: scaleY(0.8);
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+    transform: scaleY(1);
+  }
+}
+
+/* Status Badge Glow Effects */
+.urgencyEmergency {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #dc2626;
+  box-shadow: 0 0 0 1px #fee2e2, 0 0 16px rgba(220, 38, 38, 0.2);
+}
+
+.urgencyHigh {
+  background: linear-gradient(135deg, #fed7aa, #fdba74);
+  color: #ea580c;
+  box-shadow: 0 0 0 1px #fed7aa, 0 0 16px rgba(234, 88, 12, 0.2);
+}
+
+.urgencyMedium {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #d97706;
+  box-shadow: 0 0 0 1px #fef3c7, 0 0 16px rgba(217, 119, 6, 0.2);
+}
+
+.urgencyLow {
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  color: #16a34a;
+  box-shadow: 0 0 0 1px #dcfce7, 0 0 16px rgba(22, 163, 74, 0.2);
+}
+
+/* Export Modal Animation */
+.exportModal {
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .searchContainer {
+    padding: 1rem;
+  }
+  
+  .suggestionItem {
+    padding: 0.75rem;
+  }
+  
+  .filterBadge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+/* Dark Mode Adjustments */
+@media (prefers-color-scheme: dark) {
+  .glassCard {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  .glassCard:hover {
+    background: rgba(0, 0, 0, 0.6);
+    border-color: rgba(59, 130, 246, 0.4);
+  }
+  
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.05),
+      transparent
+    );
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .suggestionItem:hover {
+    outline: 2px solid;
+  }
+  
+  .filterBadge {
+    border: 1px solid;
+  }
+  
+  .premiumButton {
+    border: 2px solid;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .suggestions,
+  .searchResult,
+  .advancedFilters,
+  .exportModal {
+    animation: none;
+  }
+  
+  .suggestionItem,
+  .filterBadge,
+  .premiumButton,
+  .glassCard {
+    transition: none;
+  }
+  
+  .slider::-webkit-slider-thumb,
+  .slider::-moz-range-thumb {
+    transition: none;
+  }
+}

@@ -18,6 +18,8 @@ export default function DashboardLayout({
     switch (pathname) {
       case '/dashboard':
         return { title: 'Dashboard', subtitle: 'AI-powered call-to-calendar automation' };
+      case '/search':
+        return { title: 'Advanced Search', subtitle: 'Search across calls, events, customers, and transcripts' };
       case '/calls':
         return { title: 'Calls', subtitle: 'Manage your call history and recordings' };
       case '/events':
