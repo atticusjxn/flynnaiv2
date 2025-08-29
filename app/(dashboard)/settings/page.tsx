@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthContext } from '@/components/AuthProvider';
 import CalendarIntegrationSection from '@/components/calendar/CalendarIntegrationSection';
+import IndustryConfigurationSection from '@/components/industry/IndustryConfigurationSection';
 
 interface PhoneSetup {
   phoneNumber: string;
@@ -326,6 +327,11 @@ export default function SettingsPage() {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Industry Configuration */}
+        <div className="mt-8">
+          <IndustryConfigurationSection />
         </div>
 
         {/* Calendar Integration */}
