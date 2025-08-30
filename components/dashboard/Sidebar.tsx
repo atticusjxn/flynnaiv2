@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
 // Professional SVG Icons
@@ -48,6 +49,12 @@ const CreditCardIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const XMarkIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
+
 interface NavigationItem {
   name: string;
   href: string;
@@ -58,10 +65,43 @@ interface NavigationItem {
 
 interface SidebarProps {
   className?: string;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export default function Sidebar({ className }: SidebarProps) {
+export default function Sidebar({ className, isOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  
+  // Handle clicks outside sidebar to close on mobile
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isOpen && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        onClose?.();
+      }
+    };
+    
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+  
+  // Prevent body scroll when sidebar is open on mobile
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   const navigation: NavigationItem[] = [
     {
@@ -111,77 +151,116 @@ export default function Sidebar({ className }: SidebarProps) {
   ];
 
   return (
-    <div className={cn(
-      "flex flex-col h-full bg-sidebar border-r border-sidebar-border w-64",
-      className
-    )}>
-      {/* Logo */}
-      <div className="flex items-center p-4 border-b border-sidebar-border">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
-            <div className="w-4 h-4 bg-white rounded-full" />
-          </div>
-          <div className="flex flex-col">
-            <h1 className="text-lg font-bold text-sidebar-foreground tracking-tight">Flynn.ai</h1>
-            <span className="text-xs text-sidebar-foreground/60 font-medium">v2</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-1">
-        {navigation.map((item) => {
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "group flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 ease-in-out relative",
-                item.isActive 
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm" 
-                  : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-sm hover:scale-[1.02]"
-              )}
-            >
-              <Icon className="w-5 h-5 mr-3 transition-colors duration-200" />
-              
-              <span>
-                {item.name}
-              </span>
-              
-              {item.badge && (
-                <span className={cn(
-                  "ml-auto px-2 py-0.5 text-xs font-semibold rounded-full transition-colors duration-200",
-                  item.isActive
-                    ? "bg-sidebar-primary-foreground/20 text-sidebar-primary-foreground"
-                    : "bg-sidebar-accent text-sidebar-accent-foreground"
-                )}>
-                  {item.badge}
-                </span>
-              )}
-              
-              {/* Active indicator */}
-              {item.isActive && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-sidebar-primary-foreground rounded-r-full" />
-              )}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* User Section */}
-      <div className="p-4 border-t border-sidebar-border">
-        <div className="flex items-center space-x-3 p-3 rounded-xl bg-sidebar-accent/50 transition-all duration-200 hover:bg-sidebar-accent">
-          <div className="w-8 h-8 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full flex items-center justify-center">
-            <span className="text-xs font-bold text-white">U</span>
+    <>
+      {/* Mobile backdrop overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <div 
+        ref={sidebarRef}
+        className={cn(
+          "flex flex-col h-full bg-sidebar border-r border-sidebar-border",
+          // Desktop styles
+          "lg:w-64 lg:relative lg:translate-x-0",
+          // Mobile styles
+          "fixed top-0 left-0 z-50 w-80 max-w-[85vw]",
+          "transform transition-transform duration-300 ease-in-out",
+          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+          className
+        )}
+      >
+        {/* Logo Header */}
+        <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-4 h-4 bg-white rounded-full" />
+            </div>
+            <div className="flex flex-col">
+              <h1 className="text-lg font-bold text-sidebar-foreground tracking-tight">Flynn.ai</h1>
+              <span className="text-xs text-sidebar-foreground/60 font-medium">v2</span>
+            </div>
           </div>
           
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-sidebar-foreground truncate">User Name</p>
-            <p className="text-xs text-sidebar-foreground/60 truncate">Professional Plan</p>
+          {/* Close button for mobile */}
+          <button
+            onClick={onClose}
+            className={cn(
+              "lg:hidden p-2 rounded-lg transition-colors duration-200",
+              "hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground",
+              "touch-target focus-ring"
+            )}
+          >
+            <XMarkIcon className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 p-4 space-y-1 custom-scrollbar overflow-y-auto">
+          {navigation.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={() => {
+                  // Close mobile menu when navigating
+                  if (window.innerWidth < 1024) {
+                    onClose?.();
+                  }
+                }}
+                className={cn(
+                  "group flex items-center px-3 py-3 text-sm font-medium rounded-xl transition-all duration-200 ease-in-out relative",
+                  "touch-target focus-ring", // Enhanced touch targets
+                  item.isActive 
+                    ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm" 
+                    : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-sm hover:scale-[1.02]"
+                )}
+              >
+                <Icon className="w-5 h-5 mr-3 transition-colors duration-200 flex-shrink-0" />
+                
+                <span className="truncate">
+                  {item.name}
+                </span>
+                
+                {item.badge && (
+                  <span className={cn(
+                    "ml-auto px-2 py-0.5 text-xs font-semibold rounded-full transition-colors duration-200 flex-shrink-0",
+                    item.isActive
+                      ? "bg-sidebar-primary-foreground/20 text-sidebar-primary-foreground"
+                      : "bg-sidebar-accent text-sidebar-accent-foreground"
+                  )}>
+                    {item.badge}
+                  </span>
+                )}
+                
+                {/* Active indicator */}
+                {item.isActive && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-sidebar-primary-foreground rounded-r-full" />
+                )}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* User Section */}
+        <div className="p-4 border-t border-sidebar-border flex-shrink-0">
+          <div className="flex items-center space-x-3 p-3 rounded-xl bg-sidebar-accent/50 transition-all duration-200 hover:bg-sidebar-accent touch-target">
+            <div className="w-8 h-8 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-xs font-bold text-white">U</span>
+            </div>
+            
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-sidebar-foreground truncate">User Name</p>
+              <p className="text-xs text-sidebar-foreground/60 truncate">Professional Plan</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
