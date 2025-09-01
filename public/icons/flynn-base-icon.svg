@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Premium gradient backgrounds -->
+    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5"/>
+      <stop offset="30%" style="stop-color:#7C3AED"/>
+      <stop offset="70%" style="stop-color:#3B82F6"/>
+      <stop offset="100%" style="stop-color:#2563EB"/>
+    </linearGradient>
+    
+    <!-- AI accent gradient -->
+    <linearGradient id="aiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981"/>
+      <stop offset="50%" style="stop-color:#34D399"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    
+    <!-- Highlight gradient -->
+    <linearGradient id="highlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF" stop-opacity="0.3"/>
+      <stop offset="100%" style="stop-color:#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    
+    <!-- Shadow filter -->
+    <filter id="dropshadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="8"/>
+      <feOffset dx="0" dy="4" result="offset"/>
+      <feFlood flood-color="#000000" flood-opacity="0.15"/>
+      <feComposite in="SourceGraphic" result="composite"/>
+    </filter>
+  </defs>
+  
+  <!-- Main background with premium rounded corners -->
+  <rect width="512" height="512" rx="108" ry="108" fill="url(#primaryGradient)" filter="url(#dropshadow)"/>
+  
+  <!-- Subtle highlight overlay -->
+  <rect width="512" height="512" rx="108" ry="108" fill="url(#highlight)"/>
+  
+  <!-- Phone device representation -->
+  <g transform="translate(156, 96)">
+    <!-- Phone body -->
+    <rect width="200" height="320" rx="24" ry="24" fill="white" stroke="none"/>
+    
+    <!-- Phone screen -->
+    <rect x="16" y="24" width="168" height="240" rx="12" ry="12" fill="url(#primaryGradient)" opacity="0.9"/>
+    
+    <!-- Screen content lines (representing interface) -->
+    <rect x="32" y="48" width="136" height="4" rx="2" fill="white" opacity="0.6"/>
+    <rect x="32" y="64" width="100" height="4" rx="2" fill="white" opacity="0.4"/>
+    <rect x="32" y="80" width="120" height="4" rx="2" fill="white" opacity="0.4"/>
+    
+    <!-- Screen call interface mockup -->
+    <circle cx="100" cy="140" r="20" fill="url(#aiGradient)" opacity="0.8"/>
+    <rect x="70" y="170" width="60" height="6" rx="3" fill="white" opacity="0.5"/>
+    <rect x="80" y="185" width="40" height="4" rx="2" fill="white" opacity="0.3"/>
+    
+    <!-- Phone speaker -->
+    <rect x="80" y="12" width="40" height="4" rx="2" fill="#E5E7EB"/>
+    
+    <!-- Phone home indicator -->
+    <rect x="96" y="290" width="8" height="8" rx="4" fill="#E5E7EB"/>
+  </g>
+  
+  <!-- AI Processing Indicator - Stylized bolt/spark -->
+  <g transform="translate(320, 200)">
+    <!-- Main AI spark -->
+    <path d="M0 40 L-20 80 L20 60 L40 20 L0 40 Z" fill="url(#aiGradient)" filter="url(#dropshadow)"/>
+    
+    <!-- Secondary sparks -->
+    <circle cx="30" cy="30" r="6" fill="url(#aiGradient)" opacity="0.8"/>
+    <circle cx="-15" cy="55" r="4" fill="url(#aiGradient)" opacity="0.6"/>
+    <circle cx="25" cy="70" r="3" fill="url(#aiGradient)" opacity="0.5"/>
+    
+    <!-- Spark trails -->
+    <path d="M-25 45 Q-30 40 -25 35" stroke="url(#aiGradient)" stroke-width="3" fill="none" opacity="0.7" stroke-linecap="round"/>
+    <path d="M45 25 Q50 20 45 15" stroke="url(#aiGradient)" stroke-width="2" fill="none" opacity="0.6" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Connection waves indicating "always-on" -->
+  <g transform="translate(120, 220)">
+    <path d="M0 0 Q-30 20 0 40" stroke="white" stroke-width="6" fill="none" opacity="0.4" stroke-linecap="round"/>
+    <path d="M0 10 Q-20 25 0 40" stroke="white" stroke-width="4" fill="none" opacity="0.6" stroke-linecap="round"/>
+    <path d="M0 20 Q-10 25 0 30" stroke="white" stroke-width="3" fill="none" opacity="0.8" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Right side connection waves -->
+  <g transform="translate(392, 220) scale(-1, 1)">
+    <path d="M0 0 Q-30 20 0 40" stroke="white" stroke-width="6" fill="none" opacity="0.4" stroke-linecap="round"/>
+    <path d="M0 10 Q-20 25 0 40" stroke="white" stroke-width="4" fill="none" opacity="0.6" stroke-linecap="round"/>
+    <path d="M0 20 Q-10 25 0 30" stroke="white" stroke-width="3" fill="none" opacity="0.8" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Flynn.ai brand indicator -->
+  <g transform="translate(256, 80)">
+    <circle r="16" fill="url(#aiGradient)" filter="url(#dropshadow)"/>
+    <circle r="8" fill="white"/>
+    <circle r="3" fill="url(#aiGradient)"/>
+  </g>
+  
+  <!-- Subtle premium border highlight -->
+  <rect width="512" height="512" rx="108" ry="108" fill="none" stroke="white" stroke-width="2" opacity="0.1"/>
+</svg>
