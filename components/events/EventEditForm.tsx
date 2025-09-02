@@ -187,7 +187,7 @@ export default function EventEditForm({ event, onSave, onCancel, loading = false
         
         {/* Premium modal container */}
         <motion.div 
-          className="relative bg-card/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-border/50"
+          className="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-border shadow-lg"
           initial={{ scale: 0.95, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -254,7 +254,7 @@ export default function EventEditForm({ event, onSave, onCancel, loading = false
                     type="text"
                     value={formData.title}
                     onChange={(e) => handleInputChange('title', e.target.value)}
-                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-background/50 backdrop-blur-sm focus:border-primary focus:bg-background transition-all duration-300 peer placeholder-transparent focus-ring"
+                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-white dark:bg-gray-800 focus:border-primary focus:bg-white dark:focus:bg-gray-800 transition-all duration-300 peer placeholder-transparent focus-ring"
                     placeholder="Enter event title..."
                     disabled={isSubmitting}
                     id="event-title"
@@ -295,7 +295,7 @@ export default function EventEditForm({ event, onSave, onCancel, loading = false
                     type="date"
                     value={formatDateForInput(formData.date)}
                     onChange={(e) => handleInputChange('date', e.target.value)}
-                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-background/50 backdrop-blur-sm focus:border-primary focus:bg-background transition-all duration-300 focus-ring"
+                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-white dark:bg-gray-800 focus:border-primary focus:bg-white dark:focus:bg-gray-800 transition-all duration-300 focus-ring"
                     disabled={isSubmitting}
                     id="event-date"
                   />
@@ -325,7 +325,7 @@ export default function EventEditForm({ event, onSave, onCancel, loading = false
                     type="time"
                     value={formData.time}
                     onChange={(e) => handleInputChange('time', e.target.value)}
-                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-background/50 backdrop-blur-sm focus:border-primary focus:bg-background transition-all duration-300 focus-ring"
+                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-white dark:bg-gray-800 focus:border-primary focus:bg-white dark:focus:bg-gray-800 transition-all duration-300 focus-ring"
                     disabled={isSubmitting}
                     id="event-time"
                   />
@@ -379,7 +379,7 @@ export default function EventEditForm({ event, onSave, onCancel, loading = false
                     type="text"
                     value={formData.customer.name}
                     onChange={(e) => handleInputChange('customer.name', e.target.value)}
-                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-background/50 backdrop-blur-sm focus:border-primary focus:bg-background transition-all duration-300 peer placeholder-transparent focus-ring"
+                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-white dark:bg-gray-800 focus:border-primary focus:bg-white dark:focus:bg-gray-800 transition-all duration-300 peer placeholder-transparent focus-ring"
                     placeholder="Enter customer name..."
                     disabled={isSubmitting}
                     id="customer-name"
@@ -412,7 +412,7 @@ export default function EventEditForm({ event, onSave, onCancel, loading = false
                       type="tel"
                       value={formData.customer.phone}
                       onChange={(e) => handleInputChange('customer.phone', e.target.value)}
-                      className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-background/50 backdrop-blur-sm focus:border-primary focus:bg-background transition-all duration-300 peer placeholder-transparent focus-ring"
+                      className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-white dark:bg-gray-800 focus:border-primary focus:bg-white dark:focus:bg-gray-800 transition-all duration-300 peer placeholder-transparent focus-ring"
                       placeholder="+1 (555) 123-4567"
                       disabled={isSubmitting}
                       id="customer-phone"
@@ -443,7 +443,7 @@ export default function EventEditForm({ event, onSave, onCancel, loading = false
                       type="email"
                       value={formData.customer.email}
                       onChange={(e) => handleInputChange('customer.email', e.target.value)}
-                      className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-background/50 backdrop-blur-sm focus:border-primary focus:bg-background transition-all duration-300 peer placeholder-transparent focus-ring"
+                      className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-white dark:bg-gray-800 focus:border-primary focus:bg-white dark:focus:bg-gray-800 transition-all duration-300 peer placeholder-transparent focus-ring"
                       placeholder="customer@example.com"
                       disabled={isSubmitting}
                       id="customer-email"
@@ -483,7 +483,7 @@ export default function EventEditForm({ event, onSave, onCancel, loading = false
                   type="text"
                   value={formData.location}
                   onChange={(e) => handleInputChange('location', e.target.value)}
-                  className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-background/50 backdrop-blur-sm focus:border-primary focus:bg-background transition-all duration-300 peer placeholder-transparent focus-ring"
+                  className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-white dark:bg-gray-800 focus:border-primary focus:bg-white dark:focus:bg-gray-800 transition-all duration-300 peer placeholder-transparent focus-ring"
                   placeholder="Enter location or address..."
                   disabled={isSubmitting}
                   id="event-location"
@@ -527,7 +527,7 @@ export default function EventEditForm({ event, onSave, onCancel, loading = false
                   <select
                     value={formData.status}
                     onChange={(e) => handleInputChange('status', e.target.value)}
-                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-background/50 backdrop-blur-sm focus:border-primary focus:bg-background transition-all duration-300 focus-ring appearance-none cursor-pointer"
+                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-white dark:bg-gray-800 focus:border-primary focus:bg-white dark:focus:bg-gray-800 transition-all duration-300 focus-ring appearance-none cursor-pointer"
                     disabled={isSubmitting}
                     id="event-status"
                   >
@@ -568,7 +568,7 @@ export default function EventEditForm({ event, onSave, onCancel, loading = false
                   <select
                     value={formData.urgency}
                     onChange={(e) => handleInputChange('urgency', e.target.value)}
-                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-background/50 backdrop-blur-sm focus:border-primary focus:bg-background transition-all duration-300 focus-ring appearance-none cursor-pointer"
+                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-white dark:bg-gray-800 focus:border-primary focus:bg-white dark:focus:bg-gray-800 transition-all duration-300 focus-ring appearance-none cursor-pointer"
                     disabled={isSubmitting}
                     id="event-urgency"
                   >
@@ -609,7 +609,7 @@ export default function EventEditForm({ event, onSave, onCancel, loading = false
                   <select
                     value={formData.industry}
                     onChange={(e) => handleInputChange('industry', e.target.value)}
-                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-background/50 backdrop-blur-sm focus:border-primary focus:bg-background transition-all duration-300 focus-ring appearance-none cursor-pointer"
+                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-white dark:bg-gray-800 focus:border-primary focus:bg-white dark:focus:bg-gray-800 transition-all duration-300 focus-ring appearance-none cursor-pointer"
                     disabled={isSubmitting}
                     id="event-industry"
                   >
@@ -659,7 +659,7 @@ export default function EventEditForm({ event, onSave, onCancel, loading = false
                     value={formData.notes}
                     onChange={(e) => handleInputChange('notes', e.target.value)}
                     rows={5}
-                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-background/50 backdrop-blur-sm focus:border-primary focus:bg-background transition-all duration-300 resize-none peer placeholder-transparent focus-ring"
+                    className="w-full px-4 pt-6 pb-2 text-lg rounded-xl border-2 border-border bg-white dark:bg-gray-800 focus:border-primary focus:bg-white dark:focus:bg-gray-800 transition-all duration-300 resize-none peer placeholder-transparent focus-ring"
                     placeholder="Add any additional notes or details about this event..."
                     disabled={isSubmitting}
                     id="event-notes"
@@ -707,7 +707,7 @@ export default function EventEditForm({ event, onSave, onCancel, loading = false
           
           {/* Premium Form Actions */}
           <motion.div 
-            className="relative px-8 py-6 border-t border-border/30 bg-card/50 backdrop-blur-sm"
+            className="relative px-8 py-6 border-t border-border/30 bg-gray-50 dark:bg-gray-800"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.4 }}
@@ -751,7 +751,7 @@ export default function EventEditForm({ event, onSave, onCancel, loading = false
                 type="button"
                 onClick={onCancel}
                 disabled={isSubmitting}
-                className="group relative flex-1 bg-secondary/50 hover:bg-secondary text-secondary-foreground px-8 py-4 rounded-xl font-bold text-lg border-2 border-border hover:border-border/50 focus:ring-4 focus:ring-secondary/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] backdrop-blur-sm touch-target"
+                className="group relative flex-1 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white px-8 py-4 rounded-xl font-bold text-lg border-2 border-border hover:border-border/50 focus:ring-4 focus:ring-secondary/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] touch-target"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 initial={{ opacity: 0, y: 10 }}

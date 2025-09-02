@@ -81,7 +81,7 @@ export default function EventsFilters({
   return (
     <div className="space-y-6">
       {/* Search and Quick Status Filters */}
-      <div className="bg-card border border-border rounded-lg p-6">
+      <div className="bg-white dark:bg-gray-900 border border-border rounded-lg p-6 shadow-sm">
         <div className="space-y-4">
           {/* Search Bar */}
           <div className="relative">
@@ -204,7 +204,7 @@ export default function EventsFilters({
 
       {/* Advanced Filters */}
       {showAdvancedFilters && (
-        <div className="bg-card border border-border rounded-lg p-6 space-y-6">
+        <div className="bg-white dark:bg-gray-900 border border-border rounded-lg p-6 space-y-6 shadow-sm">
           <h3 className="font-semibold text-foreground">Advanced Filters</h3>
 
           {/* Priority/Urgency Filter */}

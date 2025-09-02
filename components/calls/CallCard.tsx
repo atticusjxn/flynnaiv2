@@ -76,7 +76,7 @@ const CallCard = memo(function CallCard({
 
   return (
     <Card 
-      className="group hover:shadow-lg transition-all duration-300 ease-out hover:scale-[1.01] hover:border-primary/20 bg-card/80 backdrop-blur-sm border border-border/50"
+      className="group hover:shadow-lg transition-all duration-300 ease-out hover:scale-[1.01] hover:border-primary/20 bg-card border border-border shadow-sm"
     >
       <CardBody className="p-6">
         {/* Header with caller info and timestamp */}

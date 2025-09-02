@@ -391,13 +391,11 @@
 **Deliverables**:
 - Call history list
 - Transcript viewer
-- Audio playback controls
 - Search functionality
 **Dependencies**: Task 18, 17
 **Acceptance Criteria**:
 - Calls display chronologically
 - Transcripts are readable
-- Audio controls work
 
 ### Task 25: Customer Communication (4-5 hours)
 **Description**: Implement customer notification system

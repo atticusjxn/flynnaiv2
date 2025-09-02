@@ -86,14 +86,21 @@ export async function POST(request: NextRequest) {
       if (updateError) {
         console.error('Failed to update user settings, attempting to create user:', updateError);
         
-        // If update failed (user might not exist), try to create the user
+        // If update failed (user might not exist), try to create the user with free trial
+        const trialStart = new Date();
+        const trialEnd = new Date();
+        trialEnd.setDate(trialStart.getDate() + 30);
+        
         const { error: insertError } = await supabase
           .from('users')
           .insert({
             id: effectiveUser.id,
             email: effectiveUser.email || 'atticusjxn@gmail.com',
             full_name: 'Test User',
-            subscription_tier: 'basic',
+            subscription_tier: 'trial',
+            subscription_status: 'trial',
+            trial_start_date: trialStart.toISOString(),
+            trial_end_date: trialEnd.toISOString(),
             settings: {
               phone_number_pending: formattedNumber,
               verification_timestamp: new Date().toISOString()

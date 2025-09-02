@@ -11,7 +11,8 @@ Flynn.ai v2 is a universal AI-powered platform that transforms business phone ca
 Replace manual scheduling friction with intelligent automation that adapts to any industry - from plumbers handling emergencies to real estate agents scheduling showings to lawyers managing consultations.
 
 ### Core Value Proposition
-- **Silent Keypad Activation**: Press *7 during any call for invisible AI processing
+- **Always-On Call Intelligence**: Every business call automatically processed and organized
+- **10-Second Setup**: Simple call forwarding - works with any phone, any carrier
 - **Universal Industry Support**: One platform adapts to all business types
 - **AI-Powered Intelligence**: Extract events, not just transcripts
 - **Complete Workflow**: Call → AI Processing → Email → Calendar → Management
@@ -44,9 +45,9 @@ Caching: Redis (production)
 
 // AI & Voice Processing
 AI: OpenAI GPT-4 + Whisper
-Voice: Twilio Voice API + Media Streams + DTMF Detection
+Voice: Twilio Voice API + Media Streams + Call Forwarding
 Transcription: Real-time with confidence scoring
-Keypad Processing: Silent *7 activation with real-time audio streaming
+Call Processing: Always-on automatic processing with dashboard toggle
 
 // Communication
 Email: React Email + Resend
@@ -62,17 +63,15 @@ Payments: Stripe
 
 ### System Architecture
 ```
-[Incoming Call] → [DTMF Detection] → [*7 Pressed?] → [Silent AI Activation]
-       ↓                    ↓                    ↓
-[Continue Normal Call] → [Real-time Audio Stream] → [Live Transcription]
-       ↓                    ↓                    ↓
-[Call Continues] → [AI Event Extraction] → [Database Storage]
-       ↓                    ↓                    ↓
-[Call Ends] → [Email Generation] → [Dashboard Update]
-       ↓                    ↓                    ↓
-[Caller Unaware] → [Professional Email] → [Calendar Sync]
-       ↓                    ↓                    ↓
-[Business Continues] → [Event Management] → [User Management]
+[Customer Calls User] → [Call Forwarding] → [Flynn.ai Twilio Number] → [User's Phone]
+         ↓                       ↓                      ↓                    ↓
+[Call Connects Immediately] → [AI Processing Check] → [Dashboard Toggle ON?] → [Normal Call]
+         ↓                       ↓                      ↓                    
+[AI Listens & Transcribes] → [Business Call Detection] → [Real-time Processing]
+         ↓                       ↓                      ↓                    
+[Event Extraction] → [Calendar Event Creation] → [SMS Summary Sent]
+         ↓                       ↓                      ↓                    
+[Dashboard Update] → [Email Summary] → [User Receives Organized Info]
 ```
 
 ### Core Data Models
@@ -93,36 +92,36 @@ Industry (1:many) Event Types
 
 ## 🎨 Industry-Adaptive Design
 
-### Keypad-Activated Silent Processing
+### Always-On Call Intelligence
 ```typescript
-interface KeypadActivatedFeatures {
-  activation: {
-    trigger: '*7 keypress during active call';
-    user_feedback: 'None - completely silent activation';
-    caller_awareness: 'Zero - no indication of AI processing';
-    processing_mode: 'Real-time audio streaming and transcription';
+interface AlwaysOnCallFeatures {
+  setup: {
+    method: 'Simple call forwarding - 10 second setup';
+    compatibility: 'Any phone, any carrier, any location';
+    user_experience: 'SMS with forwarding code, done forever';
+    activation_time: 'Immediate - all calls processed automatically';
   };
   
-  silent_operation: {
-    audio_processing: 'Background Whisper transcription';
-    ai_extraction: 'Live GPT-4 event detection';
-    user_experience: 'Continue conversation naturally';
-    system_behavior: 'No sounds, vibrations, or visual indicators';
+  automatic_processing: {
+    audio_processing: 'Every call recorded and transcribed';
+    ai_extraction: 'Automatic business call detection and processing';
+    user_control: 'Dashboard toggle to enable/disable processing';
+    caller_experience: 'Normal call experience, zero awareness of AI';
   };
   
   post_call_delivery: {
     timeline: 'Within 2 minutes of call end';
-    deliverables: ['Professional email summary', 'Structured appointment details', '.ics calendar file'];
-    accuracy: '90%+ event extraction from live audio';
-    industries: 'Optimized for service businesses';
+    deliverables: ['SMS summary', 'Professional email', 'Calendar events', '.ics file'];
+    accuracy: '90%+ event extraction from full conversation';
+    scope: 'All business-relevant calls automatically detected';
   };
   
   technical_implementation: {
-    dtmf_detection: 'Real-time keypad monitoring via Twilio';
-    audio_streaming: 'Media Streams API for live processing';
-    transcription: 'Streaming Whisper API integration';
-    ai_processing: 'Real-time GPT-4 event extraction';
-    email_generation: 'Automated professional communication';
+    call_forwarding: 'Standard telecom forwarding via Twilio';
+    always_on_transcription: 'Full conversation Whisper processing';
+    business_detection: 'AI determines business vs personal calls';
+    processing_control: 'User dashboard toggle for AI processing';
+    multi_carrier_support: 'Works with all Australian carriers';
   };
 }
 ```
@@ -447,52 +446,55 @@ describe('Component/Function Name', () => {
 
 ## 🤖 AI Processing Pipeline
 
-### Event Extraction Workflow
+### Always-On Processing Workflow
 ```typescript
 interface ProcessingPipeline {
-  1. CallReceived: {
-    trigger: 'Twilio webhook';
-    action: 'Monitor for DTMF *7';
-    next: 'DTMFDetection';
+  1. CallForwarded: {
+    trigger: 'Incoming call via forwarding';
+    action: 'Connect caller to user immediately';
+    next: 'ProcessingCheck';
   };
   
-  1a. DTMFDetection: {
-    trigger: '*7 keypress detected';
-    action: 'Activate silent AI processing';
-    next: 'RealTimeTranscription';
+  2. ProcessingCheck: {
+    trigger: 'Call connected';
+    action: 'Check user dashboard AI toggle setting';
+    next: 'ConditionalProcessing';
   };
   
-  1b. RealTimeTranscription: {
-    trigger: 'Audio stream active';
-    action: 'Begin live Whisper transcription';
+  3. ConditionalProcessing: {
+    condition: 'AI_PROCESSING_ENABLED';
+    when_enabled: 'StartAutomaticTranscription';
+    when_disabled: 'PassThroughCall';
+  };
+  
+  4. StartAutomaticTranscription: {
+    trigger: 'AI processing enabled';
+    action: 'Begin full-call Whisper transcription';
     next: 'ContinuousProcessing';
   };
   
-  2. ContinuousProcessing: {
+  5. ContinuousProcessing: {
     trigger: 'Real-time audio stream';
-    action: 'Process audio chunks with AI';
+    action: 'Process full conversation with AI';
     next: 'CallEndDetection';
   };
   
-  3. CallEndDetection: {
+  6. CallEndDetection: {
     trigger: 'Call disconnection';
-    action: 'Finalize AI extraction';
+    action: 'Finalize full conversation processing';
+    next: 'BusinessCallDetection';
+  };
+  
+  7. BusinessCallDetection: {
+    process: [
+      'Determine if call was business-related',
+      'Filter out personal/spam calls',
+      'Classify conversation type'
+    ];
     next: 'EventExtraction';
   };
   
-  2. RecordingComplete: {
-    trigger: 'Recording webhook';
-    action: 'Start transcription';
-    next: 'TranscriptionReady';
-  };
-  
-  3. TranscriptionReady: {
-    trigger: 'Whisper completion';
-    action: 'Begin AI extraction';
-    next: 'EventExtraction';
-  };
-  
-  4. EventExtraction: {
+  8. EventExtraction: {
     process: [
       'Industry classification',
       'Event type detection',
@@ -504,7 +506,7 @@ interface ProcessingPipeline {
     next: 'ValidationAndConfidence';
   };
   
-  5. ValidationAndConfidence: {
+  9. ValidationAndConfidence: {
     process: [
       'Confidence scoring',
       'Data validation',
@@ -514,23 +516,22 @@ interface ProcessingPipeline {
     next: 'DatabaseStorage';
   };
   
-  6. DatabaseStorage: {
+  10. DatabaseStorage: {
     action: 'Store call and events';
-    triggers: ['EmailGeneration', 'DashboardUpdate'];
+    triggers: ['SMSGeneration', 'EmailGeneration', 'CalendarCreation'];
   };
   
-  7. EmailGeneration: {
+  11. SMSGeneration: {
     process: [
-      'Template selection',
-      'Industry adaptation',
-      'Content generation',
-      'ICS file creation'
+      'Create concise SMS summary',
+      'Include key appointment details',
+      'Add calendar event confirmation'
     ];
-    next: 'EmailDelivery';
+    next: 'SMSDelivery';
   };
   
-  8. EmailDelivery: {
-    action: 'Send via Resend';
+  12. SMSDelivery: {
+    action: 'Send via Twilio SMS';
     success: 'NotifySuccess';
     failure: 'RetryOrAlert';
   };

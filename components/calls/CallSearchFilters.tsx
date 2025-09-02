@@ -134,7 +134,7 @@ const CallSearchFilters = memo(function CallSearchFilters({
   return (
     <div className="space-y-6 mb-8">
       {/* Search and Filter Controls */}
-      <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6">
+      <div className="bg-white dark:bg-gray-900 border border-border rounded-2xl p-6 shadow-sm">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
           {/* Search Input */}
           <div className="lg:col-span-2">
@@ -163,12 +163,22 @@ const CallSearchFilters = memo(function CallSearchFilters({
             selectedKeys={new Set(filters.status)}
             onSelectionChange={(keys) => handleStatusChange(keys as Set<string>)}
             aria-label="Filter by call status"
+            style={{
+              '--nextui-popover-background': '#ffffff',
+              '--nextui-content1': '#ffffff',
+              '--nextui-content2': '#ffffff',
+              '--nextui-content3': '#ffffff',
+              '--nextui-content4': '#ffffff',
+            } as React.CSSProperties}
             classNames={{
               trigger: "hover:border-primary/30 focus:border-primary/50 transition-colors duration-200",
+              popoverContent: "!bg-white dark:!bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700 [&>*]:!bg-white dark:[&>*]:!bg-gray-900",
+              listbox: "!bg-white dark:!bg-gray-900 [&>*]:!bg-white dark:[&>*]:!bg-gray-900",
+              listboxWrapper: "!bg-white dark:!bg-gray-900",
             }}
           >
             {statusOptions.map((option) => (
-              <SelectItem key={option.key} value={option.key}>
+              <SelectItem key={option.key} value={option.key} className="!bg-white dark:!bg-gray-900 hover:!bg-gray-50 dark:hover:!bg-gray-800">
                 {option.label}
               </SelectItem>
             ))}
@@ -181,12 +191,22 @@ const CallSearchFilters = memo(function CallSearchFilters({
             selectedKeys={new Set(filters.aiStatus)}
             onSelectionChange={(keys) => handleAIStatusChange(keys as Set<string>)}
             aria-label="Filter by AI processing status"
+            style={{
+              '--nextui-popover-background': '#ffffff',
+              '--nextui-content1': '#ffffff',
+              '--nextui-content2': '#ffffff',
+              '--nextui-content3': '#ffffff',
+              '--nextui-content4': '#ffffff',
+            } as React.CSSProperties}
             classNames={{
               trigger: "hover:border-primary/30 focus:border-primary/50 transition-colors duration-200",
+              popoverContent: "!bg-white dark:!bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700 [&>*]:!bg-white dark:[&>*]:!bg-gray-900",
+              listbox: "!bg-white dark:!bg-gray-900 [&>*]:!bg-white dark:[&>*]:!bg-gray-900",
+              listboxWrapper: "!bg-white dark:!bg-gray-900",
             }}
           >
             {aiStatusOptions.map((option) => (
-              <SelectItem key={option.key} value={option.key}>
+              <SelectItem key={option.key} value={option.key} className="!bg-white dark:!bg-gray-900 hover:!bg-gray-50 dark:hover:!bg-gray-800">
                 {option.label}
               </SelectItem>
             ))}
@@ -201,12 +221,22 @@ const CallSearchFilters = memo(function CallSearchFilters({
             selectedKeys={new Set(filters.urgency)}
             onSelectionChange={(keys) => handleUrgencyChange(keys as Set<string>)}
             aria-label="Filter by urgency level"
+            style={{
+              '--nextui-popover-background': '#ffffff',
+              '--nextui-content1': '#ffffff',
+              '--nextui-content2': '#ffffff',
+              '--nextui-content3': '#ffffff',
+              '--nextui-content4': '#ffffff',
+            } as React.CSSProperties}
             classNames={{
               trigger: "hover:border-primary/30 focus:border-primary/50 transition-colors duration-200",
+              popoverContent: "!bg-white dark:!bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700 [&>*]:!bg-white dark:[&>*]:!bg-gray-900",
+              listbox: "!bg-white dark:!bg-gray-900 [&>*]:!bg-white dark:[&>*]:!bg-gray-900",
+              listboxWrapper: "!bg-white dark:!bg-gray-900",
             }}
           >
             {urgencyOptions.map((option) => (
-              <SelectItem key={option.key} value={option.key}>
+              <SelectItem key={option.key} value={option.key} className="!bg-white dark:!bg-gray-900 hover:!bg-gray-50 dark:hover:!bg-gray-800">
                 {option.label}
               </SelectItem>
             ))}
@@ -231,7 +261,7 @@ const CallSearchFilters = memo(function CallSearchFilters({
             )}
             
             {/* Results Count */}
-            <div className="text-sm text-muted-foreground bg-muted/50 px-3 py-2 rounded-lg">
+            <div className="text-sm text-muted-foreground bg-gray-100 dark:bg-gray-800 px-3 py-2 rounded-lg">
               {hasActiveFilters ? (
                 <>
                   <span className="font-medium text-foreground">{filteredCount}</span>

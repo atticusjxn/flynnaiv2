@@ -66,61 +66,81 @@ function KPICard({
 }: KPICardProps) {
   return (
     <div className={cn(
-      "group relative overflow-hidden rounded-2xl bg-card border border-border/50 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-black/5 hover:border-border hover:-translate-y-1",
+      "group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-900 border border-border/50 p-6 cursor-pointer shadow-sm",
+      "transition-all duration-500 ease-out",
+      "hover:shadow-2xl hover:shadow-black/10 hover:border-border/80 hover:-translate-y-2 hover:scale-[1.02]",
+      "active:scale-[0.98] active:translate-y-0",
+      "before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/0 before:via-white/5 before:to-white/0",
+      "before:translate-x-[-100%] before:transition-transform before:duration-700",
+      "hover:before:translate-x-[100%]",
       className
     )}>
       {/* Background Gradient Overlay */}
       <div className={cn(
-        "absolute top-0 right-0 w-32 h-32 opacity-5 rounded-full blur-2xl transition-opacity duration-300 group-hover:opacity-10",
+        "absolute top-0 right-0 w-40 h-40 opacity-5 rounded-full blur-3xl transition-all duration-700 group-hover:opacity-15 group-hover:scale-150 group-hover:rotate-45",
         gradient
+      )} />
+      
+      {/* Animated border glow */}
+      <div className={cn(
+        "absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-20",
+        "bg-gradient-to-r from-transparent via-white to-transparent",
+        "animate-pulse"
       )} />
       
       {/* Content */}
       <div className="relative z-10">
         <div className="flex items-start justify-between mb-4">
           <div className={cn(
-            "p-3 rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-3",
+            "p-3 rounded-xl shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-xl",
+            "relative overflow-hidden",
             iconColor
           )}>
-            <Icon className="w-6 h-6 text-white" />
+            {/* Icon glow effect */}
+            <div className="absolute inset-0 bg-white/20 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <Icon className="w-6 h-6 text-white relative z-10 transition-transform duration-300 group-hover:scale-110" />
           </div>
           
           {trend && (
             <div className={cn(
-              "flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-semibold",
+              "flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm",
+              "transition-all duration-300 group-hover:scale-105 group-hover:shadow-md",
               trend.direction === 'up' 
-                ? "bg-emerald-50 text-emerald-700 border border-emerald-200" 
-                : "bg-red-50 text-red-700 border border-red-200"
+                ? "bg-emerald-50 text-emerald-700 border border-emerald-200 group-hover:bg-emerald-100" 
+                : "bg-red-50 text-red-700 border border-red-200 group-hover:bg-red-100"
             )}>
               {trend.direction === 'up' ? (
-                <ArrowUpIcon className="w-3 h-3" />
+                <ArrowUpIcon className="w-3 h-3 transition-transform duration-300 group-hover:animate-pulse" />
               ) : (
-                <ArrowDownIcon className="w-3 h-3" />
+                <ArrowDownIcon className="w-3 h-3 transition-transform duration-300 group-hover:animate-pulse" />
               )}
-              <span>{trend.value}</span>
+              <span className="transition-all duration-300">{trend.value}</span>
             </div>
           )}
         </div>
         
         <div className="space-y-1">
-          <h3 className="text-sm font-medium text-muted-foreground tracking-wide uppercase">
+          <h3 className="text-sm font-medium text-muted-foreground tracking-wide uppercase transition-colors duration-300 group-hover:text-muted-foreground/80">
             {title}
           </h3>
-          <p className="text-3xl font-bold text-card-foreground tracking-tight">
+          <p className="text-3xl font-bold text-card-foreground tracking-tight transition-all duration-300 group-hover:text-card-foreground/90 group-hover:scale-105">
             {value}
           </p>
           {subtitle && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground transition-colors duration-300 group-hover:text-muted-foreground/80">
               {subtitle}
             </p>
           )}
           {trend?.label && (
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-xs text-muted-foreground mt-2 transition-all duration-300 group-hover:text-muted-foreground/80 group-hover:translate-x-1">
               {trend.label}
             </p>
           )}
         </div>
       </div>
+
+      {/* Premium shimmer effect */}
+      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out bg-gradient-to-r from-transparent via-white/10 to-transparent" />
     </div>
   );
 }
@@ -188,18 +208,21 @@ export default function KPICards({ className }: KPICardsProps) {
   return (
     <div className={cn(
       "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6",
+      "animate-in fade-in slide-in-from-bottom-8 duration-700",
       className
     )}>
       {kpiData.map((kpi, index) => (
         <KPICard
           key={kpi.title}
           {...kpi}
-          className="animate-in fade-in slide-in-from-bottom-4"
-          style={{ 
-            animationDelay: `${index * 100}ms`,
-            animationDuration: '600ms',
-            animationFillMode: 'both'
-          } as React.CSSProperties}
+          className={cn(
+            "animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both",
+            // Staggered animation delays for premium effect
+            index === 0 && "delay-100",
+            index === 1 && "delay-200", 
+            index === 2 && "delay-300",
+            index === 3 && "delay-500"
+          )}
         />
       ))}
     </div>

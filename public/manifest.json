@@ -1,62 +1,62 @@
 {
-  "name": "Flynn.ai v2 - AI-Powered Call to Calendar",
+  "name": "Flynn.ai v2 - Always-On AI Call Intelligence",
   "short_name": "Flynn.ai",
-  "description": "Transform business phone calls into organized calendar events within 2 minutes",
+  "description": "Premium AI-powered call processing that transforms every business call into calendar events within 2 minutes. Australian-focused professional services automation.",
   "start_url": "/dashboard",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#4880ff",
+  "theme_color": "#4F46E5",
   "orientation": "portrait-primary",
-  "categories": ["business", "productivity", "utilities"],
-  "lang": "en",
+  "categories": ["business", "productivity", "utilities", "finance"],
+  "lang": "en-AU",
   "scope": "/",
   "icons": [
     {
-      "src": "/icons/icon-72x72.png",
+      "src": "/icons/icon-72x72.svg",
       "sizes": "72x72",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-96x96.png",
+      "src": "/icons/icon-96x96.svg",
       "sizes": "96x96",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-128x128.png",
+      "src": "/icons/icon-128x128.svg",
       "sizes": "128x128",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-144x144.png",
+      "src": "/icons/icon-144x144.svg",
       "sizes": "144x144",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-152x152.png",
+      "src": "/icons/icon-152x152.svg",
       "sizes": "152x152",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-192x192.png",
+      "src": "/icons/icon-192x192.svg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-384x384.png",
+      "src": "/icons/icon-384x384.svg",
       "sizes": "384x384",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "/icons/icon-512x512.png",
+      "src": "/icons/icon-512x512.svg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     }
   ],
@@ -68,8 +68,9 @@
       "url": "/dashboard",
       "icons": [
         {
-          "src": "/icons/dashboard-96x96.png",
-          "sizes": "96x96"
+          "src": "/icons/dashboard-96x96.svg",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
         }
       ]
     },
@@ -80,8 +81,9 @@
       "url": "/calls",
       "icons": [
         {
-          "src": "/icons/calls-96x96.png",
-          "sizes": "96x96"
+          "src": "/icons/calls-96x96.svg",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
         }
       ]
     },
@@ -92,8 +94,9 @@
       "url": "/events",
       "icons": [
         {
-          "src": "/icons/events-96x96.png",
-          "sizes": "96x96"
+          "src": "/icons/events-96x96.svg",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
         }
       ]
     }

@@ -69,43 +69,105 @@ function QuickActionCard({ action, index }: QuickActionCardProps) {
   const content = (
     <div 
       className={cn(
-        "group relative overflow-hidden rounded-2xl bg-card border border-border/50 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-black/5 hover:border-border hover:-translate-y-1",
-        action.comingSoon && "opacity-75 cursor-not-allowed"
+        "group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-900 border border-border/50 p-6 cursor-pointer shadow-sm",
+        "transition-all duration-500 ease-out",
+        "hover:shadow-2xl hover:shadow-black/10 hover:border-border/80 hover:-translate-y-3 hover:scale-105",
+        "active:scale-95 active:translate-y-0",
+        !action.comingSoon && "hover:bg-gray-50/50 dark:hover:bg-gray-800/50",
+        action.comingSoon && "opacity-75 cursor-not-allowed hover:scale-100 hover:translate-y-0"
       )}
       style={{ 
-        animationDelay: `${index * 100}ms`,
-        animationDuration: '600ms',
+        animationDelay: `${index * 150}ms`,
+        animationDuration: '700ms',
         animationFillMode: 'both'
       } as React.CSSProperties}
     >
+      {/* Premium Background Effects */}
+      <div className={cn(
+        "absolute inset-0 opacity-0 transition-all duration-700",
+        "bg-gradient-to-br from-white/5 via-transparent to-transparent",
+        "group-hover:opacity-100"
+      )} />
+      
       {/* Background Gradient Overlay */}
       <div className={cn(
-        "absolute top-0 right-0 w-24 h-24 opacity-10 rounded-full blur-2xl transition-opacity duration-300 group-hover:opacity-20",
+        "absolute top-0 right-0 w-32 h-32 opacity-5 rounded-full blur-3xl transition-all duration-700 group-hover:opacity-15 group-hover:scale-150 group-hover:rotate-45",
         action.gradient
+      )} />
+      
+      {/* Premium shimmer effect */}
+      <div className={cn(
+        "absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out",
+        "bg-gradient-to-r from-transparent via-white/8 to-transparent"
       )} />
       
       {/* Content */}
       <div className="relative z-10 text-center">
-        <div className={cn(
-          "inline-flex p-4 rounded-2xl mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3",
-          action.iconColor
-        )}>
-          <Icon className="w-8 h-8 text-white" />
+        <div className="relative mb-6">
+          <div className={cn(
+            "inline-flex p-4 rounded-2xl shadow-lg transition-all duration-500",
+            "group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-2xl",
+            !action.comingSoon && "group-hover:-translate-y-1",
+            action.iconColor
+          )}>
+            {/* Icon backdrop glow */}
+            <div className="absolute inset-0 rounded-2xl bg-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            
+            <Icon className={cn(
+              "w-8 h-8 text-white relative z-10 transition-all duration-300",
+              "group-hover:scale-110",
+              !action.comingSoon && "group-hover:drop-shadow-lg"
+            )} />
+          </div>
+          
+          {/* Floating particles effect */}
+          <div className={cn(
+            "absolute -top-2 -right-1 w-2 h-2 rounded-full opacity-0 transition-all duration-500",
+            "group-hover:opacity-60 group-hover:-translate-y-4 group-hover:translate-x-2",
+            action.gradient
+          )} />
+          <div className={cn(
+            "absolute -bottom-1 -left-2 w-1.5 h-1.5 rounded-full opacity-0 transition-all duration-700 delay-100",
+            "group-hover:opacity-40 group-hover:translate-y-3 group-hover:-translate-x-1",
+            action.gradient
+          )} />
         </div>
         
-        <h3 className="text-lg font-bold text-card-foreground mb-2 group-hover:text-primary transition-colors duration-200">
+        <h3 className={cn(
+          "text-lg font-bold text-card-foreground mb-3 transition-all duration-300",
+          "group-hover:text-primary group-hover:scale-105 group-hover:-translate-y-1"
+        )}>
           {action.title}
         </h3>
         
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p className={cn(
+          "text-sm text-muted-foreground leading-relaxed transition-all duration-300",
+          "group-hover:text-muted-foreground/90"
+        )}>
           {action.description}
         </p>
         
         {action.comingSoon && (
-          <div className="mt-3">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-muted text-muted-foreground">
+          <div className="mt-4">
+            <span className={cn(
+              "inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold",
+              "bg-gradient-to-r from-gray-100 to-gray-200 text-gray-600",
+              "border border-gray-300 shadow-sm",
+              "transition-all duration-300 group-hover:shadow-md"
+            )}>
+              <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mr-2 animate-pulse" />
               Coming Soon
             </span>
+          </div>
+        )}
+        
+        {/* Hover action indicator */}
+        {!action.comingSoon && (
+          <div className={cn(
+            "mt-4 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0",
+            "translate-y-2"
+          )}>
+            <div className="w-8 h-0.5 bg-gradient-to-r from-primary to-primary/60 rounded-full mx-auto" />
           </div>
         )}
       </div>
@@ -114,7 +176,11 @@ function QuickActionCard({ action, index }: QuickActionCardProps) {
 
   if (action.href && !action.comingSoon) {
     return (
-      <Link href={action.href} className="block animate-in fade-in slide-in-from-bottom-4">
+      <Link href={action.href} className={cn(
+        "block animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both",
+        // Staggered delays
+        `delay-[${index * 150}ms]`
+      )}>
         {content}
       </Link>
     );
@@ -122,14 +188,20 @@ function QuickActionCard({ action, index }: QuickActionCardProps) {
 
   if (action.onClick && !action.comingSoon) {
     return (
-      <button onClick={action.onClick} className="block w-full text-left animate-in fade-in slide-in-from-bottom-4">
+      <button onClick={action.onClick} className={cn(
+        "block w-full text-left animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both",
+        `delay-[${index * 150}ms]`
+      )}>
         {content}
       </button>
     );
   }
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4">
+    <div className={cn(
+      "animate-in fade-in slide-in-from-bottom-6 duration-700 fill-mode-both",
+      `delay-[${index * 150}ms]`
+    )}>
       {content}
     </div>
   );
@@ -194,13 +266,28 @@ export default function QuickActions({ className }: QuickActionsProps) {
   ];
 
   return (
-    <div className={cn("space-y-6", className)}>
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-foreground">Quick Actions</h2>
-        <p className="text-sm text-muted-foreground">Get started with Flynn.ai</p>
+    <div className={cn(
+      "space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700",
+      className
+    )}>
+      {/* Premium Header */}
+      <div className="flex items-center justify-between animate-in fade-in slide-in-from-left-4 duration-700 delay-100">
+        <div>
+          <h2 className="text-2xl font-bold text-foreground mb-1 transition-colors duration-300 hover:text-primary">
+            Quick Actions
+          </h2>
+          <div className="w-12 h-0.5 bg-gradient-to-r from-primary to-primary/60 rounded-full" />
+        </div>
+        <p className="text-sm text-muted-foreground transition-colors duration-300 hover:text-muted-foreground/80">
+          Get started with Flynn.ai
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Enhanced Grid Container */}
+      <div className={cn(
+        "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6",
+        "animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200"
+      )}>
         {quickActions.map((action, index) => (
           <QuickActionCard 
             key={action.title} 

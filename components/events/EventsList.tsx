@@ -199,8 +199,9 @@ function StatusDropdown({
 
       {isOpen && !disabled && (
         <div className="
-          absolute right-0 top-full mt-2 bg-card border border-border rounded-lg shadow-xl z-50 
-          min-w-[140px] animate-in fade-in slide-in-from-bottom-4 duration-200
+          absolute right-0 top-full mt-2 bg-white dark:bg-gray-900 border border-border 
+          rounded-lg shadow-xl z-50 min-w-[140px] animate-in fade-in slide-in-from-bottom-4 duration-200
+          backdrop-blur-sm ring-1 ring-black/5 dark:ring-white/10
         ">
           <div className="p-1">
             {statusOptions.map((option) => {
@@ -217,7 +218,7 @@ function StatusDropdown({
                     transition-all duration-150 text-left
                     ${isSelected 
                       ? optionToken.bg + ' ' + optionToken.text + ' font-medium' 
-                      : 'hover:bg-muted text-muted-foreground hover:text-foreground'
+                      : 'hover:bg-gray-50 dark:hover:bg-gray-800 text-muted-foreground hover:text-foreground'
                     }
                   `}
                 >
@@ -521,7 +522,7 @@ export default function EventsList({
       {/* Dynamic Content Based on View Mode */}
       {viewMode === 'table' ? (
         // Premium Table View
-        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden animate-in fade-in duration-300">
+        <div className="bg-white dark:bg-gray-900 border border-border rounded-xl shadow-sm overflow-hidden animate-in fade-in duration-300">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-muted/30 border-b border-border">
@@ -738,7 +739,7 @@ export default function EventsList({
               <div 
                 key={event.id} 
                 className={`
-                  bg-card border border-border rounded-xl p-6 shadow-sm
+                  bg-white dark:bg-gray-900 border border-border rounded-xl p-6 shadow-sm
                   transition-all duration-200 hover:shadow-md hover:scale-[1.02]
                   ${selectedEventIds.includes(event.id) ? 'ring-2 ring-primary/30 bg-primary/5' : ''}
                   animate-in slide-in-from-bottom-4 duration-${300 + index * 50}
@@ -887,7 +888,7 @@ export default function EventsList({
       {/* Premium Pagination */}
       {totalPages > 1 && (
         <div className="
-          bg-card border border-border rounded-xl p-6 shadow-sm
+          bg-white dark:bg-gray-900 border border-border rounded-xl p-6 shadow-sm
           animate-in fade-in duration-300
         ">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">

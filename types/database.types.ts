@@ -449,7 +449,11 @@ export interface Database {
           full_name: string | null;
           company_name: string | null;
           industry_type: 'plumbing' | 'real_estate' | 'legal' | 'medical' | 'sales' | 'consulting' | 'general_services' | 'other' | null;
-          subscription_tier: 'basic' | 'professional' | 'enterprise' | null;
+          subscription_tier: 'trial' | 'basic' | 'professional' | 'enterprise' | null;
+          subscription_status: 'trial' | 'active' | 'past_due' | 'cancelled' | 'incomplete' | null;
+          trial_start_date: string | null;
+          trial_end_date: string | null;
+          stripe_subscription_id: string | null;
           phone_number: string | null;
           timezone: string | null;
           created_at: string;
@@ -465,7 +469,11 @@ export interface Database {
           full_name?: string | null;
           company_name?: string | null;
           industry_type?: 'plumbing' | 'real_estate' | 'legal' | 'medical' | 'sales' | 'consulting' | 'general_services' | 'other' | null;
-          subscription_tier?: 'basic' | 'professional' | 'enterprise' | null;
+          subscription_tier?: 'trial' | 'basic' | 'professional' | 'enterprise' | null;
+          subscription_status?: 'trial' | 'active' | 'past_due' | 'cancelled' | 'incomplete' | null;
+          trial_start_date?: string | null;
+          trial_end_date?: string | null;
+          stripe_subscription_id?: string | null;
           phone_number?: string | null;
           timezone?: string | null;
           created_at?: string;
@@ -481,7 +489,11 @@ export interface Database {
           full_name?: string | null;
           company_name?: string | null;
           industry_type?: 'plumbing' | 'real_estate' | 'legal' | 'medical' | 'sales' | 'consulting' | 'general_services' | 'other' | null;
-          subscription_tier?: 'basic' | 'professional' | 'enterprise' | null;
+          subscription_tier?: 'trial' | 'basic' | 'professional' | 'enterprise' | null;
+          subscription_status?: 'trial' | 'active' | 'past_due' | 'cancelled' | 'incomplete' | null;
+          trial_start_date?: string | null;
+          trial_end_date?: string | null;
+          stripe_subscription_id?: string | null;
           phone_number?: string | null;
           timezone?: string | null;
           created_at?: string;

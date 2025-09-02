@@ -6,6 +6,7 @@
     "dev": "next dev --turbo",
     "dev:normal": "next dev",
     "build": "next build",
+    "build:analyze": "ANALYZE=true npm run build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
@@ -13,7 +14,21 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "dev:full": "concurrently \"npm run dev\" \"npm run ngrok\"",
     "ngrok": "ngrok http 3000 --subdomain=flynn-dev",
-    "test:webhook": "node scripts/test-webhook.js"
+    "test:webhook": "node scripts/test-webhook.js",
+    "test": "jest",
+    "test:unit": "jest --testPathPatterns=__tests__",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:all": "npm run test:unit && npm run test:e2e",
+    "perf:analyze": "node scripts/analyze-bundle.js",
+    "perf:audit": "node scripts/performance-audit.js",
+    "perf:lighthouse": "lighthouse http://localhost:3000 --output-path=./lighthouse-report.html --view",
+    "perf:monitor": "node scripts/performance-monitor.js",
+    "db:optimize": "node scripts/optimize-database.js",
+    "cache:warm": "node scripts/warm-cache.js",
+    "health:check": "curl http://localhost:3000/api/performance/health"
   },
   "dependencies": {
     "@google-cloud/local-auth": "^3.0.1",
@@ -41,6 +56,7 @@
     "react-dom": "^18",
     "react-email": "^1.10.1",
     "resend": "^4.0.0",
+    "stripe": "^18.5.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss": "^3.4.1",
     "twilio": "^5.3.2",
@@ -48,15 +64,27 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.0.0",
     "@playwright/test": "^1.55.0",
+    "@supabase/mcp-server-supabase": "^0.5.1",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/eslint": "^8",
+    "@types/jest": "^30.0.0",
     "@typescript-eslint/eslint-plugin": "^8.8.0",
     "@typescript-eslint/parser": "^8.8.0",
     "concurrently": "^8.2.2",
+    "dotenv": "^17.2.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.13",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "prettier": "^3.3.3"
+    "jest": "^30.1.2",
+    "jest-environment-jsdom": "^30.1.2",
+    "msw": "^2.11.1",
+    "node-mocks-http": "^1.17.2",
+    "prettier": "^3.3.3",
+    "ts-jest": "^29.4.1"
   }
 }

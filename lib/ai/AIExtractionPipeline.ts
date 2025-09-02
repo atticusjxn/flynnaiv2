@@ -5,10 +5,16 @@ import OpenAI from 'openai';
 import { createAdminClient } from '@/utils/supabase/server';
 import { liveEventExtractor, ExtractedEvent, LiveExtractionResult } from '@/lib/ai/LiveEventExtractor';
 import { callProcessingManager } from '@/lib/ai/CallProcessingManager';
+import { BusinessCallDetection } from '@/lib/ai/BusinessCallDetection';
+import { validateEnvironment } from '@/lib/validation/schemas';
+import { Logger, withRetry, withMemoryCleanup, CallProcessingError } from '@/lib/utils/errorHandling';
 
-// Initialize OpenAI client
+// Validate environment on startup
+validateEnvironment();
+
+// Initialize OpenAI client with validation
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY!,
 });
 
 export interface CallProcessingResult {
@@ -20,8 +26,32 @@ export interface CallProcessingResult {
   errorMessage?: string;
 }
 
+interface CallDetailsForProcessing {
+  id: string;
+  user_id: string;
+  twilio_call_sid: string;
+  duration: number | null;
+  caller_number: string | null;
+  created_at: string;
+  users: {
+    id: string;
+    email: string;
+    company_name: string | null;
+    industry_type: string | null;
+    phone_number: string | null;
+  };
+}
+
+interface TranscriptionUpdateData {
+  transcription: string | null;
+  mainTopic: string | null;
+  urgencyLevel: 'low' | 'medium' | 'high' | 'emergency';
+  aiProcessingStatus: string;
+}
+
 export class AIExtractionPipeline {
   private static instance: AIExtractionPipeline;
+  private logger = new Logger('AIExtractionPipeline');
 
   public static getInstance(): AIExtractionPipeline {
     if (!AIExtractionPipeline.instance) {
@@ -31,31 +61,65 @@ export class AIExtractionPipeline {
   }
 
   /**
-   * Main entry point - process a recorded call
+   * Main entry point - process a recorded call with retry logic
    */
   public async processRecordedCall(callSid: string, recordingUrl: string): Promise<CallProcessingResult> {
+    return withRetry(
+      () => this.processRecordedCallInternal(callSid, recordingUrl),
+      {
+        maxRetries: 3,
+        baseDelay: 1000,
+        retryIf: (error) => {
+          // Retry on network errors and temporary failures, not on validation errors
+          return !error.message.includes('Validation') && 
+                 !error.message.includes('Invalid') &&
+                 !error.message.includes('No call details found');
+        }
+      }
+    );
+  }
+
+  /**
+   * Internal processing method with comprehensive error handling
+   */
+  private async processRecordedCallInternal(callSid: string, recordingUrl: string): Promise<CallProcessingResult> {
     const startTime = Date.now();
     
     try {
-      console.log(`Starting AI extraction pipeline for call ${callSid}`);
+      this.logger.info('Starting AI extraction pipeline', { callSid, recordingUrl });
 
       // Step 1: Get call details and user info
       const callDetails = await this.getCallDetails(callSid);
       if (!callDetails) {
-        throw new Error(`No call details found for ${callSid}`);
+        throw new CallProcessingError(
+          `No call details found for ${callSid}`,
+          'CALL_NOT_FOUND',
+          callSid,
+          'high',
+          false
+        );
       }
 
-      // Step 2: Transcribe the recording
-      console.log(`Transcribing recording for call ${callSid}`);
-      const transcription = await this.transcribeRecording(recordingUrl);
+      // Step 2: Transcribe the recording with memory management
+      this.logger.info('Starting transcription', { callSid });
+      const transcription = await withMemoryCleanup(
+        () => this.transcribeRecording(recordingUrl),
+        this.logger
+      );
       
       if (!transcription || transcription.trim().length < 20) {
-        throw new Error('Transcription failed or too short');
+        throw new CallProcessingError(
+          'Transcription failed or too short',
+          'TRANSCRIPTION_FAILED',
+          callSid,
+          'high',
+          true
+        );
       }
 
       // Step 3: Extract events using the live extractor with industry context
-      console.log(`Extracting events from transcription for call ${callSid}`);
-      const industry = callDetails.users?.industry || 'general';
+      this.logger.info('Extracting events from transcription', { callSid, transcriptionLength: transcription.length });
+      const industry = callDetails.users?.industry_type || 'general';
       
       const extractionResult = await liveEventExtractor.extractEventsFromLiveTranscription(
         callSid,
@@ -77,7 +141,11 @@ export class AIExtractionPipeline {
 
       const processingTime = Date.now() - startTime;
       
-      console.log(`AI extraction pipeline completed for call ${callSid}: ${extractionResult.events.length} events in ${processingTime}ms`);
+      this.logger.info('AI extraction pipeline completed', { 
+        callSid, 
+        eventCount: extractionResult.events.length, 
+        processingTime 
+      });
 
       return {
         callSid,
@@ -89,36 +157,47 @@ export class AIExtractionPipeline {
 
     } catch (error) {
       const processingTime = Date.now() - startTime;
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       
-      console.error(`AI extraction pipeline failed for call ${callSid}:`, error);
+      this.logger.error('AI extraction pipeline failed', error instanceof Error ? error : new Error(String(error)));
       
       // Update call status with error
-      await this.updateCallWithTranscription(callSid, {
-        transcription: null,
-        mainTopic: null,
-        urgencyLevel: 'medium',
-        aiProcessingStatus: 'extraction_failed'
-      });
+      try {
+        await this.updateCallWithTranscription(callSid, {
+          transcription: null,
+          mainTopic: null,
+          urgencyLevel: 'medium',
+          aiProcessingStatus: 'extraction_failed'
+        });
+      } catch (updateError) {
+        this.logger.error('Failed to update call status', updateError instanceof Error ? updateError : new Error(String(updateError)));
+      }
 
-      return {
+      if (error instanceof CallProcessingError) {
+        throw error;
+      }
+
+      throw new CallProcessingError(
+        error instanceof Error ? error.message : 'Unknown error',
+        'PROCESSING_FAILED',
         callSid,
-        success: false,
-        events: [],
-        processingTime,
-        errorMessage
-      };
+        'high',
+        true,
+        { processingTime, originalError: error }
+      );
     }
   }
 
   /**
-   * Transcribe audio recording using OpenAI Whisper
+   * Transcribe audio recording using OpenAI Whisper with memory management
    */
   private async transcribeRecording(recordingUrl: string): Promise<string> {
+    let audioBuffer: ArrayBuffer | undefined;
+    let audioFile: File | undefined;
+    
     try {
-      console.log(`Starting transcription for recording: ${recordingUrl}`);
+      this.logger.info('Starting transcription', { recordingUrl });
 
-      // Download the recording from Twilio
+      // Download the recording from Twilio with proper auth
       const response = await fetch(recordingUrl + '.wav', {
         method: 'GET',
         headers: {
@@ -129,57 +208,119 @@ export class AIExtractionPipeline {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to download recording: ${response.statusText}`);
+        throw new CallProcessingError(
+          `Failed to download recording: ${response.statusText}`,
+          'RECORDING_DOWNLOAD_FAILED',
+          'unknown',
+          'high',
+          true
+        );
       }
 
-      // Convert to file-like object for OpenAI
-      const audioBuffer = await response.arrayBuffer();
-      const audioFile = new File([audioBuffer], 'recording.wav', { type: 'audio/wav' });
+      // Convert to file-like object for OpenAI with size limits
+      audioBuffer = await response.arrayBuffer();
+      const audioSizeMB = audioBuffer.byteLength / (1024 * 1024);
+      
+      if (audioSizeMB > 100) { // 100MB limit for safety
+        throw new CallProcessingError(
+          `Recording too large: ${audioSizeMB.toFixed(1)}MB`,
+          'RECORDING_TOO_LARGE',
+          'unknown',
+          'medium',
+          false
+        );
+      }
 
-      // Transcribe using Whisper
+      this.logger.info('Audio downloaded', { sizeMB: audioSizeMB.toFixed(2) });
+
+      audioFile = new File([audioBuffer], 'recording.wav', { type: 'audio/wav' });
+
+      // Transcribe using Whisper with Australian English optimization
       const transcription = await openai.audio.transcriptions.create({
         file: audioFile,
         model: 'whisper-1',
         language: 'en',
         response_format: 'text',
-        temperature: 0.2
+        temperature: 0.1, // Lower temperature for more accurate transcription
+        prompt: 'This is a business phone call in Australian English. Please transcribe accurately, including proper names, addresses, phone numbers, and technical terms related to trades, real estate, legal, and medical services.'
       });
 
-      console.log(`Transcription completed, length: ${transcription.length} characters`);
+      this.logger.info('Transcription completed', { 
+        transcriptionLength: transcription.length,
+        audioSizeMB: audioSizeMB.toFixed(2)
+      });
       
       return transcription;
 
     } catch (error) {
-      console.error('Transcription error:', error);
-      throw new Error(`Transcription failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      this.logger.error('Transcription failed', error instanceof Error ? error : new Error(String(error)));
+      
+      if (error instanceof CallProcessingError) {
+        throw error;
+      }
+      
+      throw new CallProcessingError(
+        `Transcription failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'TRANSCRIPTION_FAILED',
+        'unknown',
+        'high',
+        true
+      );
+    } finally {
+      // Explicit memory cleanup
+      try {
+        if (audioBuffer) {
+          audioBuffer = undefined;
+        }
+        if (audioFile) {
+          audioFile = undefined;
+        }
+        
+        // Force garbage collection if available (Node.js)
+        if (global.gc && typeof global.gc === 'function') {
+          global.gc();
+        }
+      } catch (cleanupError) {
+        this.logger.warn('Memory cleanup warning', cleanupError instanceof Error ? cleanupError : new Error(String(cleanupError)));
+      }
     }
   }
 
   /**
-   * Get call details from database
+   * Get call details from database with proper typing
    */
-  private async getCallDetails(callSid: string): Promise<any> {
+  private async getCallDetails(callSid: string): Promise<CallDetailsForProcessing | null> {
     try {
       const supabase = createAdminClient();
       
-      const { data: call } = await supabase
+      const { data: call, error } = await supabase
         .from('calls')
         .select(`
-          *,
-          users (
+          id,
+          user_id,
+          twilio_call_sid,
+          duration,
+          caller_number,
+          created_at,
+          users!inner (
             id,
             email,
             company_name,
-            industry,
-            twilio_phone_number
+            industry_type,
+            phone_number
           )
         `)
         .eq('twilio_call_sid', callSid)
         .single();
 
-      return call;
+      if (error) {
+        this.logger.error('Database error fetching call details', error);
+        return null;
+      }
+
+      return call as CallDetailsForProcessing;
     } catch (error) {
-      console.error(`Error fetching call details for ${callSid}:`, error);
+      this.logger.error('Error fetching call details', error instanceof Error ? error : new Error(String(error)));
       return null;
     }
   }
@@ -187,16 +328,11 @@ export class AIExtractionPipeline {
   /**
    * Update call record with transcription and extraction results
    */
-  private async updateCallWithTranscription(callSid: string, data: {
-    transcription: string | null;
-    mainTopic: string | null;
-    urgencyLevel: string;
-    aiProcessingStatus: string;
-  }): Promise<void> {
+  private async updateCallWithTranscription(callSid: string, data: TranscriptionUpdateData): Promise<void> {
     try {
       const supabase = createAdminClient();
       
-      await supabase
+      const { error } = await supabase
         .from('calls')
         .update({
           transcription_text: data.transcription,
@@ -207,8 +343,13 @@ export class AIExtractionPipeline {
         })
         .eq('twilio_call_sid', callSid);
 
+      if (error) {
+        this.logger.error('Database error updating call', error);
+        throw error;
+      }
+
     } catch (error) {
-      console.error(`Error updating call ${callSid} with transcription:`, error);
+      this.logger.error(`Error updating call ${callSid} with transcription`, error instanceof Error ? error : new Error(String(error)));
       throw error;
     }
   }
@@ -308,6 +449,86 @@ export class AIExtractionPipeline {
         failedExtractions: 0,
         averageProcessingTime: 0
       };
+    }
+  }
+
+  /**
+   * Business call detection - determines if a call should be processed for events
+   */
+  public async detectBusinessCall(
+    transcription: string,
+    industry?: string,
+    companyName?: string
+  ): Promise<boolean> {
+    try {
+      const detector = new BusinessCallDetection();
+      const result = await detector.detectBusinessCall(transcription, industry, companyName);
+      
+      console.log(`Business call detection: ${result.isBusinessCall} (confidence: ${result.confidence}, type: ${result.callType})`);
+      
+      return result.isBusinessCall && result.confidence > 0.3; // Require minimum confidence
+    } catch (error) {
+      console.error('Business call detection failed:', error);
+      // Default to true for business processing if detection fails
+      return true;
+    }
+  }
+
+  /**
+   * Enhanced transcription that handles Australian phone numbers and accents
+   */
+  public async transcribeRecording(recordingUrl: string): Promise<string> {
+    try {
+      // Download the recording
+      const response = await fetch(recordingUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to download recording: ${response.statusText}`);
+      }
+
+      const audioBuffer = await response.arrayBuffer();
+      const audioFile = new File([audioBuffer], 'recording.wav', { type: 'audio/wav' });
+
+      // Use OpenAI Whisper for transcription with Australian English optimization
+      const transcription = await openai.audio.transcriptions.create({
+        file: audioFile,
+        model: 'whisper-1',
+        language: 'en', // English
+        prompt: 'This is a business phone call in Australian English. Please transcribe accurately, including proper names, addresses, phone numbers, and technical terms related to trades, real estate, legal, and medical services.',
+        temperature: 0.1 // Lower temperature for more accurate transcription
+      });
+
+      return transcription.text || '';
+    } catch (error) {
+      console.error('Transcription failed:', error);
+      throw new Error(`Transcription failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Enhanced event extraction with Australian context
+   */
+  public async extractEvents(
+    transcription: string,
+    industry: string,
+    companyName?: string
+  ): Promise<ExtractedEvent[]> {
+    try {
+      const events = await liveEventExtractor.extractEventsFromTranscription(
+        transcription,
+        industry,
+        {
+          companyName,
+          timezone: 'Australia/Sydney', // Default Australian timezone
+          currency: 'AUD',
+          dateFormat: 'DD/MM/YYYY', // Australian date format
+          phoneFormat: 'Australian', // Handle 04xx mobile numbers, 02/03/07/08 landlines
+        }
+      );
+
+      return events;
+    } catch (error) {
+      console.error('Event extraction failed:', error);
+      return [];
     }
   }
 }
