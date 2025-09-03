@@ -12,9 +12,12 @@ const customJestConfig = {
     '<rootDir>/node_modules/',
     '<rootDir>/e2e/',
   ],
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
+  transformIgnorePatterns: [
+    'node_modules/(?!(@faker-js/faker)/)',
+  ],
   collectCoverageFrom: [
     'lib/**/*.{js,ts,tsx}',
     'app/**/*.{js,ts,tsx}',
