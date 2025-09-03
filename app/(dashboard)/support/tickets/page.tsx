@@ -6,12 +6,12 @@ import { Button } from '@nextui-org/button';
 import { Link } from '@nextui-org/link';
 import { Chip } from '@nextui-org/chip';
 import { Select, SelectItem } from '@nextui-org/select';
-import { 
-  PlusIcon, 
+import {
+  PlusIcon,
   ClockIcon,
   CheckCircleIcon,
   XCircleIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline';
 import { Database } from '@/types/database.types';
 
@@ -55,10 +55,10 @@ export default function SupportTicketsPage() {
     try {
       const params = new URLSearchParams();
       if (statusFilter) params.append('status', statusFilter);
-      
+
       const response = await fetch(`/api/support/tickets?${params}`);
       const data = await response.json();
-      
+
       if (response.ok) {
         setTickets(data.tickets);
         setError('');
@@ -84,11 +84,11 @@ export default function SupportTicketsPage() {
   };
 
   const getStatusLabel = (status: string) => {
-    return status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    return status.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase());
   };
 
   const getCategoryLabel = (category: string) => {
-    return category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    return category.replace('-', ' ').replace(/\b\w/g, (l) => l.toUpperCase());
   };
 
   if (error) {
@@ -97,7 +97,9 @@ export default function SupportTicketsPage() {
         <Card>
           <CardBody className="text-center py-12">
             <XCircleIcon className="h-12 w-12 text-danger mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-danger mb-2">Error Loading Tickets</h3>
+            <h3 className="text-lg font-semibold text-danger mb-2">
+              Error Loading Tickets
+            </h3>
             <p className="text-default-600 mb-4">{error}</p>
             <Button color="primary" onClick={fetchTickets}>
               Try Again
@@ -113,8 +115,12 @@ export default function SupportTicketsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">My Support Tickets</h1>
-          <p className="text-default-600">Track your support requests and get help</p>
+          <h1 className="text-2xl font-bold text-foreground">
+            My Support Tickets
+          </h1>
+          <p className="text-default-600">
+            Track your support requests and get help
+          </p>
         </div>
         <Button
           as={Link}
@@ -135,20 +141,29 @@ export default function SupportTicketsPage() {
                 label="Filter by Status"
                 placeholder="All tickets"
                 selectedKeys={statusFilter ? [statusFilter] : []}
-                onSelectionChange={(keys) => setStatusFilter(Array.from(keys)[0] as string || '')}
+                onSelectionChange={(keys) =>
+                  setStatusFilter((Array.from(keys)[0] as string) || '')
+                }
               >
-                <SelectItem key="open" value="open">Open</SelectItem>
-                <SelectItem key="in_progress" value="in_progress">In Progress</SelectItem>
-                <SelectItem key="waiting_for_user" value="waiting_for_user">Waiting for You</SelectItem>
-                <SelectItem key="resolved" value="resolved">Resolved</SelectItem>
-                <SelectItem key="closed" value="closed">Closed</SelectItem>
+                <SelectItem key="open" value="open">
+                  Open
+                </SelectItem>
+                <SelectItem key="in_progress" value="in_progress">
+                  In Progress
+                </SelectItem>
+                <SelectItem key="waiting_for_user" value="waiting_for_user">
+                  Waiting for You
+                </SelectItem>
+                <SelectItem key="resolved" value="resolved">
+                  Resolved
+                </SelectItem>
+                <SelectItem key="closed" value="closed">
+                  Closed
+                </SelectItem>
               </Select>
             </div>
             {statusFilter && (
-              <Button
-                variant="flat"
-                onClick={() => setStatusFilter('')}
-              >
+              <Button variant="flat" onClick={() => setStatusFilter('')}>
                 Clear Filter
               </Button>
             )}
@@ -167,11 +182,12 @@ export default function SupportTicketsPage() {
       ) : tickets.length > 0 ? (
         <div className="space-y-4">
           {tickets.map((ticket) => {
-            const StatusIcon = statusIcons[ticket.status as keyof typeof statusIcons];
-            
+            const StatusIcon =
+              statusIcons[ticket.status as keyof typeof statusIcons];
+
             return (
-              <Card 
-                key={ticket.id} 
+              <Card
+                key={ticket.id}
                 isPressable
                 as={Link}
                 href={`/support/tickets/${ticket.id}`}
@@ -182,7 +198,7 @@ export default function SupportTicketsPage() {
                     <div className="flex-shrink-0">
                       <StatusIcon className="h-6 w-6 text-default-400" />
                     </div>
-                    
+
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                         <h3 className="text-lg font-semibold text-foreground truncate">
@@ -190,14 +206,22 @@ export default function SupportTicketsPage() {
                         </h3>
                         <div className="flex gap-2">
                           <Chip
-                            color={statusColors[ticket.status as keyof typeof statusColors]}
+                            color={
+                              statusColors[
+                                ticket.status as keyof typeof statusColors
+                              ]
+                            }
                             size="sm"
                             variant="flat"
                           >
                             {getStatusLabel(ticket.status)}
                           </Chip>
                           <Chip
-                            color={priorityColors[ticket.priority as keyof typeof priorityColors]}
+                            color={
+                              priorityColors[
+                                ticket.priority as keyof typeof priorityColors
+                              ]
+                            }
                             size="sm"
                             variant="bordered"
                           >
@@ -205,24 +229,27 @@ export default function SupportTicketsPage() {
                           </Chip>
                         </div>
                       </div>
-                      
+
                       <p className="text-default-600 text-sm line-clamp-2 mb-3">
                         {ticket.description}
                       </p>
-                      
+
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-default-500">
                         <div className="flex items-center gap-4">
                           <span>
-                            <strong>Category:</strong> {getCategoryLabel(ticket.category)}
+                            <strong>Category:</strong>{' '}
+                            {getCategoryLabel(ticket.category)}
                           </span>
                           <span>
-                            <strong>Created:</strong> {formatDate(ticket.created_at)}
+                            <strong>Created:</strong>{' '}
+                            {formatDate(ticket.created_at)}
                           </span>
                         </div>
-                        
+
                         {ticket.updated_at !== ticket.created_at && (
                           <span>
-                            <strong>Updated:</strong> {formatDate(ticket.updated_at)}
+                            <strong>Updated:</strong>{' '}
+                            {formatDate(ticket.updated_at)}
                           </span>
                         )}
                       </div>
@@ -241,10 +268,9 @@ export default function SupportTicketsPage() {
               No support tickets found
             </h3>
             <p className="text-default-500 mb-6">
-              {statusFilter 
+              {statusFilter
                 ? `No tickets with status "${getStatusLabel(statusFilter)}" found.`
-                : "You haven't submitted any support tickets yet."
-              }
+                : "You haven't submitted any support tickets yet."}
             </p>
             <div className="flex gap-3 justify-center">
               <Button
@@ -255,11 +281,7 @@ export default function SupportTicketsPage() {
               >
                 Submit New Ticket
               </Button>
-              <Button
-                as={Link}
-                href="/support"
-                variant="bordered"
-              >
+              <Button as={Link} href="/support" variant="bordered">
                 Browse Help Articles
               </Button>
             </div>

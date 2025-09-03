@@ -108,14 +108,27 @@ export interface Database {
           twilio_call_sid: string;
           caller_number: string;
           caller_name: string | null;
-          call_status: 'ringing' | 'in_progress' | 'completed' | 'busy' | 'failed' | 'no_answer' | 'cancelled' | null;
+          call_status:
+            | 'ringing'
+            | 'in_progress'
+            | 'completed'
+            | 'busy'
+            | 'failed'
+            | 'no_answer'
+            | 'cancelled'
+            | null;
           call_direction: 'inbound' | 'outbound' | null;
           call_duration: number | null;
           recording_url: string | null;
           recording_sid: string | null;
           transcription_text: string | null;
           transcription_confidence: number | null;
-          ai_processing_status: 'pending' | 'processing' | 'completed' | 'failed' | null;
+          ai_processing_status:
+            | 'pending'
+            | 'processing'
+            | 'completed'
+            | 'failed'
+            | null;
           main_topic: string | null;
           call_summary: string | null;
           sentiment_analysis: Json | null;
@@ -132,14 +145,27 @@ export interface Database {
           twilio_call_sid: string;
           caller_number: string;
           caller_name?: string | null;
-          call_status?: 'ringing' | 'in_progress' | 'completed' | 'busy' | 'failed' | 'no_answer' | 'cancelled' | null;
+          call_status?:
+            | 'ringing'
+            | 'in_progress'
+            | 'completed'
+            | 'busy'
+            | 'failed'
+            | 'no_answer'
+            | 'cancelled'
+            | null;
           call_direction?: 'inbound' | 'outbound' | null;
           call_duration?: number | null;
           recording_url?: string | null;
           recording_sid?: string | null;
           transcription_text?: string | null;
           transcription_confidence?: number | null;
-          ai_processing_status?: 'pending' | 'processing' | 'completed' | 'failed' | null;
+          ai_processing_status?:
+            | 'pending'
+            | 'processing'
+            | 'completed'
+            | 'failed'
+            | null;
           main_topic?: string | null;
           call_summary?: string | null;
           sentiment_analysis?: Json | null;
@@ -156,14 +182,27 @@ export interface Database {
           twilio_call_sid?: string;
           caller_number?: string;
           caller_name?: string | null;
-          call_status?: 'ringing' | 'in_progress' | 'completed' | 'busy' | 'failed' | 'no_answer' | 'cancelled' | null;
+          call_status?:
+            | 'ringing'
+            | 'in_progress'
+            | 'completed'
+            | 'busy'
+            | 'failed'
+            | 'no_answer'
+            | 'cancelled'
+            | null;
           call_direction?: 'inbound' | 'outbound' | null;
           call_duration?: number | null;
           recording_url?: string | null;
           recording_sid?: string | null;
           transcription_text?: string | null;
           transcription_confidence?: number | null;
-          ai_processing_status?: 'pending' | 'processing' | 'completed' | 'failed' | null;
+          ai_processing_status?:
+            | 'pending'
+            | 'processing'
+            | 'completed'
+            | 'failed'
+            | null;
           main_topic?: string | null;
           call_summary?: string | null;
           sentiment_analysis?: Json | null;
@@ -184,7 +223,13 @@ export interface Database {
           recipient: string;
           subject: string | null;
           content: string | null;
-          status: 'pending' | 'sent' | 'delivered' | 'failed' | 'bounced' | null;
+          status:
+            | 'pending'
+            | 'sent'
+            | 'delivered'
+            | 'failed'
+            | 'bounced'
+            | null;
           external_id: string | null;
           error_message: string | null;
           sent_at: string | null;
@@ -200,7 +245,13 @@ export interface Database {
           recipient: string;
           subject?: string | null;
           content?: string | null;
-          status?: 'pending' | 'sent' | 'delivered' | 'failed' | 'bounced' | null;
+          status?:
+            | 'pending'
+            | 'sent'
+            | 'delivered'
+            | 'failed'
+            | 'bounced'
+            | null;
           external_id?: string | null;
           error_message?: string | null;
           sent_at?: string | null;
@@ -216,7 +267,13 @@ export interface Database {
           recipient?: string;
           subject?: string | null;
           content?: string | null;
-          status?: 'pending' | 'sent' | 'delivered' | 'failed' | 'bounced' | null;
+          status?:
+            | 'pending'
+            | 'sent'
+            | 'delivered'
+            | 'failed'
+            | 'bounced'
+            | null;
           external_id?: string | null;
           error_message?: string | null;
           sent_at?: string | null;
@@ -276,8 +333,25 @@ export interface Database {
           id: string;
           call_id: string;
           user_id: string;
-          event_type: 'service_call' | 'meeting' | 'appointment' | 'demo' | 'follow_up' | 'quote' | 'consultation' | 'inspection' | 'emergency' | null;
-          status: 'extracted' | 'pending' | 'confirmed' | 'tentative' | 'completed' | 'cancelled' | null;
+          event_type:
+            | 'service_call'
+            | 'meeting'
+            | 'appointment'
+            | 'demo'
+            | 'follow_up'
+            | 'quote'
+            | 'consultation'
+            | 'inspection'
+            | 'emergency'
+            | null;
+          status:
+            | 'extracted'
+            | 'pending'
+            | 'confirmed'
+            | 'tentative'
+            | 'completed'
+            | 'cancelled'
+            | null;
           title: string;
           description: string | null;
           proposed_datetime: string | null;
@@ -307,8 +381,25 @@ export interface Database {
           id?: string;
           call_id: string;
           user_id: string;
-          event_type?: 'service_call' | 'meeting' | 'appointment' | 'demo' | 'follow_up' | 'quote' | 'consultation' | 'inspection' | 'emergency' | null;
-          status?: 'extracted' | 'pending' | 'confirmed' | 'tentative' | 'completed' | 'cancelled' | null;
+          event_type?:
+            | 'service_call'
+            | 'meeting'
+            | 'appointment'
+            | 'demo'
+            | 'follow_up'
+            | 'quote'
+            | 'consultation'
+            | 'inspection'
+            | 'emergency'
+            | null;
+          status?:
+            | 'extracted'
+            | 'pending'
+            | 'confirmed'
+            | 'tentative'
+            | 'completed'
+            | 'cancelled'
+            | null;
           title: string;
           description?: string | null;
           proposed_datetime?: string | null;
@@ -338,8 +429,25 @@ export interface Database {
           id?: string;
           call_id?: string;
           user_id?: string;
-          event_type?: 'service_call' | 'meeting' | 'appointment' | 'demo' | 'follow_up' | 'quote' | 'consultation' | 'inspection' | 'emergency' | null;
-          status?: 'extracted' | 'pending' | 'confirmed' | 'tentative' | 'completed' | 'cancelled' | null;
+          event_type?:
+            | 'service_call'
+            | 'meeting'
+            | 'appointment'
+            | 'demo'
+            | 'follow_up'
+            | 'quote'
+            | 'consultation'
+            | 'inspection'
+            | 'emergency'
+            | null;
+          status?:
+            | 'extracted'
+            | 'pending'
+            | 'confirmed'
+            | 'tentative'
+            | 'completed'
+            | 'cancelled'
+            | null;
           title?: string;
           description?: string | null;
           proposed_datetime?: string | null;
@@ -448,9 +556,29 @@ export interface Database {
           email: string;
           full_name: string | null;
           company_name: string | null;
-          industry_type: 'plumbing' | 'real_estate' | 'legal' | 'medical' | 'sales' | 'consulting' | 'general_services' | 'other' | null;
-          subscription_tier: 'trial' | 'basic' | 'professional' | 'enterprise' | null;
-          subscription_status: 'trial' | 'active' | 'past_due' | 'cancelled' | 'incomplete' | null;
+          industry_type:
+            | 'plumbing'
+            | 'real_estate'
+            | 'legal'
+            | 'medical'
+            | 'sales'
+            | 'consulting'
+            | 'general_services'
+            | 'other'
+            | null;
+          subscription_tier:
+            | 'trial'
+            | 'basic'
+            | 'professional'
+            | 'enterprise'
+            | null;
+          subscription_status:
+            | 'trial'
+            | 'active'
+            | 'past_due'
+            | 'cancelled'
+            | 'incomplete'
+            | null;
           trial_start_date: string | null;
           trial_end_date: string | null;
           stripe_subscription_id: string | null;
@@ -468,9 +596,29 @@ export interface Database {
           email: string;
           full_name?: string | null;
           company_name?: string | null;
-          industry_type?: 'plumbing' | 'real_estate' | 'legal' | 'medical' | 'sales' | 'consulting' | 'general_services' | 'other' | null;
-          subscription_tier?: 'trial' | 'basic' | 'professional' | 'enterprise' | null;
-          subscription_status?: 'trial' | 'active' | 'past_due' | 'cancelled' | 'incomplete' | null;
+          industry_type?:
+            | 'plumbing'
+            | 'real_estate'
+            | 'legal'
+            | 'medical'
+            | 'sales'
+            | 'consulting'
+            | 'general_services'
+            | 'other'
+            | null;
+          subscription_tier?:
+            | 'trial'
+            | 'basic'
+            | 'professional'
+            | 'enterprise'
+            | null;
+          subscription_status?:
+            | 'trial'
+            | 'active'
+            | 'past_due'
+            | 'cancelled'
+            | 'incomplete'
+            | null;
           trial_start_date?: string | null;
           trial_end_date?: string | null;
           stripe_subscription_id?: string | null;
@@ -488,9 +636,29 @@ export interface Database {
           email?: string;
           full_name?: string | null;
           company_name?: string | null;
-          industry_type?: 'plumbing' | 'real_estate' | 'legal' | 'medical' | 'sales' | 'consulting' | 'general_services' | 'other' | null;
-          subscription_tier?: 'trial' | 'basic' | 'professional' | 'enterprise' | null;
-          subscription_status?: 'trial' | 'active' | 'past_due' | 'cancelled' | 'incomplete' | null;
+          industry_type?:
+            | 'plumbing'
+            | 'real_estate'
+            | 'legal'
+            | 'medical'
+            | 'sales'
+            | 'consulting'
+            | 'general_services'
+            | 'other'
+            | null;
+          subscription_tier?:
+            | 'trial'
+            | 'basic'
+            | 'professional'
+            | 'enterprise'
+            | null;
+          subscription_status?:
+            | 'trial'
+            | 'active'
+            | 'past_due'
+            | 'cancelled'
+            | 'incomplete'
+            | null;
           trial_start_date?: string | null;
           trial_end_date?: string | null;
           stripe_subscription_id?: string | null;
@@ -510,8 +678,24 @@ export interface Database {
           title: string;
           slug: string;
           content: string;
-          category: 'getting-started' | 'setup' | 'troubleshooting' | 'billing' | 'api' | 'industry-specific' | 'features';
-          industry_type: 'plumbing' | 'real_estate' | 'legal' | 'medical' | 'sales' | 'consulting' | 'general_services' | 'all' | null;
+          category:
+            | 'getting-started'
+            | 'setup'
+            | 'troubleshooting'
+            | 'billing'
+            | 'api'
+            | 'industry-specific'
+            | 'features';
+          industry_type:
+            | 'plumbing'
+            | 'real_estate'
+            | 'legal'
+            | 'medical'
+            | 'sales'
+            | 'consulting'
+            | 'general_services'
+            | 'all'
+            | null;
           tags: string[] | null;
           is_published: boolean | null;
           view_count: number | null;
@@ -527,8 +711,24 @@ export interface Database {
           title: string;
           slug: string;
           content: string;
-          category: 'getting-started' | 'setup' | 'troubleshooting' | 'billing' | 'api' | 'industry-specific' | 'features';
-          industry_type?: 'plumbing' | 'real_estate' | 'legal' | 'medical' | 'sales' | 'consulting' | 'general_services' | 'all' | null;
+          category:
+            | 'getting-started'
+            | 'setup'
+            | 'troubleshooting'
+            | 'billing'
+            | 'api'
+            | 'industry-specific'
+            | 'features';
+          industry_type?:
+            | 'plumbing'
+            | 'real_estate'
+            | 'legal'
+            | 'medical'
+            | 'sales'
+            | 'consulting'
+            | 'general_services'
+            | 'all'
+            | null;
           tags?: string[] | null;
           is_published?: boolean | null;
           view_count?: number | null;
@@ -544,8 +744,24 @@ export interface Database {
           title?: string;
           slug?: string;
           content?: string;
-          category?: 'getting-started' | 'setup' | 'troubleshooting' | 'billing' | 'api' | 'industry-specific' | 'features';
-          industry_type?: 'plumbing' | 'real_estate' | 'legal' | 'medical' | 'sales' | 'consulting' | 'general_services' | 'all' | null;
+          category?:
+            | 'getting-started'
+            | 'setup'
+            | 'troubleshooting'
+            | 'billing'
+            | 'api'
+            | 'industry-specific'
+            | 'features';
+          industry_type?:
+            | 'plumbing'
+            | 'real_estate'
+            | 'legal'
+            | 'medical'
+            | 'sales'
+            | 'consulting'
+            | 'general_services'
+            | 'all'
+            | null;
           tags?: string[] | null;
           is_published?: boolean | null;
           view_count?: number | null;
@@ -563,9 +779,20 @@ export interface Database {
           user_id: string;
           subject: string;
           description: string;
-          category: 'technical' | 'billing' | 'feature-request' | 'bug-report' | 'account' | 'general';
+          category:
+            | 'technical'
+            | 'billing'
+            | 'feature-request'
+            | 'bug-report'
+            | 'account'
+            | 'general';
           priority: 'low' | 'medium' | 'high' | 'urgent';
-          status: 'open' | 'in_progress' | 'waiting_for_user' | 'resolved' | 'closed';
+          status:
+            | 'open'
+            | 'in_progress'
+            | 'waiting_for_user'
+            | 'resolved'
+            | 'closed';
           assigned_to: string | null;
           tags: string[] | null;
           metadata: Json | null;
@@ -580,9 +807,20 @@ export interface Database {
           user_id: string;
           subject: string;
           description: string;
-          category: 'technical' | 'billing' | 'feature-request' | 'bug-report' | 'account' | 'general';
+          category:
+            | 'technical'
+            | 'billing'
+            | 'feature-request'
+            | 'bug-report'
+            | 'account'
+            | 'general';
           priority?: 'low' | 'medium' | 'high' | 'urgent';
-          status?: 'open' | 'in_progress' | 'waiting_for_user' | 'resolved' | 'closed';
+          status?:
+            | 'open'
+            | 'in_progress'
+            | 'waiting_for_user'
+            | 'resolved'
+            | 'closed';
           assigned_to?: string | null;
           tags?: string[] | null;
           metadata?: Json | null;
@@ -597,9 +835,20 @@ export interface Database {
           user_id?: string;
           subject?: string;
           description?: string;
-          category?: 'technical' | 'billing' | 'feature-request' | 'bug-report' | 'account' | 'general';
+          category?:
+            | 'technical'
+            | 'billing'
+            | 'feature-request'
+            | 'bug-report'
+            | 'account'
+            | 'general';
           priority?: 'low' | 'medium' | 'high' | 'urgent';
-          status?: 'open' | 'in_progress' | 'waiting_for_user' | 'resolved' | 'closed';
+          status?:
+            | 'open'
+            | 'in_progress'
+            | 'waiting_for_user'
+            | 'resolved'
+            | 'closed';
           assigned_to?: string | null;
           tags?: string[] | null;
           metadata?: Json | null;
@@ -643,7 +892,13 @@ export interface Database {
         Row: {
           id: string;
           user_id: string | null;
-          event_type: 'page_view' | 'feature_usage' | 'api_call' | 'conversion' | 'churn_risk' | 'support_interaction';
+          event_type:
+            | 'page_view'
+            | 'feature_usage'
+            | 'api_call'
+            | 'conversion'
+            | 'churn_risk'
+            | 'support_interaction';
           event_name: string;
           properties: Json | null;
           session_id: string | null;
@@ -658,7 +913,13 @@ export interface Database {
         Insert: {
           id?: string;
           user_id?: string | null;
-          event_type: 'page_view' | 'feature_usage' | 'api_call' | 'conversion' | 'churn_risk' | 'support_interaction';
+          event_type:
+            | 'page_view'
+            | 'feature_usage'
+            | 'api_call'
+            | 'conversion'
+            | 'churn_risk'
+            | 'support_interaction';
           event_name: string;
           properties?: Json | null;
           session_id?: string | null;
@@ -673,7 +934,13 @@ export interface Database {
         Update: {
           id?: string;
           user_id?: string | null;
-          event_type?: 'page_view' | 'feature_usage' | 'api_call' | 'conversion' | 'churn_risk' | 'support_interaction';
+          event_type?:
+            | 'page_view'
+            | 'feature_usage'
+            | 'api_call'
+            | 'conversion'
+            | 'churn_risk'
+            | 'support_interaction';
           event_name?: string;
           properties?: Json | null;
           session_id?: string | null;

@@ -4,22 +4,22 @@
 export interface UserSettings {
   // Account Settings
   profile: ProfileSettings;
-  
-  // Email Preferences  
+
+  // Email Preferences
   email: EmailSettings;
-  
+
   // Calendar Settings
   calendar: CalendarSettings;
-  
+
   // Notification Preferences
   notifications: NotificationSettings;
-  
+
   // AI & Processing Settings
   ai: AISettings;
-  
+
   // UI Preferences
   ui: UISettings;
-  
+
   // Version for settings migration
   version: number;
 }
@@ -45,73 +45,80 @@ export interface ProfileSettings {
 export interface BusinessDay {
   enabled: boolean;
   startTime: string; // "09:00"
-  endTime: string;   // "17:00"
+  endTime: string; // "17:00"
 }
 
 export interface EmailSettings {
   // Notification Frequency
   frequency: 'immediate' | 'hourly' | 'daily' | 'weekly';
-  
+
   // Email Format
   format: 'html' | 'text';
-  
+
   // Content Preferences
   includeTranscript: boolean;
   includeCallSummary: boolean;
   includeEventDetails: boolean;
   includeCustomerInfo: boolean;
   includeRecordingLink: boolean;
-  
+
   // Delivery Preferences
   businessHoursOnly: boolean;
   quietHours?: {
     enabled: boolean;
     startTime: string; // "22:00"
-    endTime: string;   // "08:00"
+    endTime: string; // "08:00"
   };
-  
+
   // Template Preferences
   templateStyle: 'professional' | 'modern' | 'minimal' | 'detailed';
   brandingEnabled: boolean;
   customSignature?: string;
-  
+
   // Auto-actions
   autoAttachICS: boolean;
   includeManageEventLinks: boolean;
-  
+
   // Digest Settings (for non-immediate frequencies)
   digestTime: string; // "09:00" for daily/weekly
-  weeklyDigestDay: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+  weeklyDigestDay:
+    | 'monday'
+    | 'tuesday'
+    | 'wednesday'
+    | 'thursday'
+    | 'friday'
+    | 'saturday'
+    | 'sunday';
 }
 
 export interface CalendarSettings {
   // Default Integration
   defaultCalendar?: string; // calendar integration ID
-  
+
   // Sync Preferences
   autoSync: boolean;
   syncOnlyConfirmed: boolean;
-  
+
   // Event Creation Settings
   defaultDuration: number; // minutes
   bufferTime: number; // minutes before/after events
-  
+
   // Conflict Resolution
   conflictResolution: 'manual' | 'auto_reschedule' | 'skip_conflicts';
   allowOverlappingEvents: boolean;
-  
+
   // Event Details
   includeCustomerInfo: boolean;
   includeCallTranscript: boolean;
   includeLocation: boolean;
   setReminders: boolean;
   reminderMinutes: number[];
-  
+
   // Advanced Settings
   privateEvents: boolean; // mark events as private
   eventColor?: string;
   eventPrefix?: string; // "Flynn.ai: " prefix for event titles
-  
+
   // Timezone Handling
   useBusinessTimezone: boolean;
   convertToLocalTime: boolean;
@@ -128,7 +135,7 @@ export interface NotificationSettings {
     weeklyDigest: boolean;
     urgentOnly: boolean;
   };
-  
+
   // SMS Notifications (if enabled)
   sms: {
     enabled: boolean;
@@ -136,7 +143,7 @@ export interface NotificationSettings {
     eventReminders: boolean;
     systemAlerts: boolean;
   };
-  
+
   // Push Notifications (for PWA)
   push: {
     enabled: boolean;
@@ -145,7 +152,7 @@ export interface NotificationSettings {
     eventConfirmed: boolean;
     showPreview: boolean;
   };
-  
+
   // In-App Notifications
   inApp: {
     enabled: boolean;
@@ -155,7 +162,7 @@ export interface NotificationSettings {
     showErrors: boolean;
     showInfo: boolean;
   };
-  
+
   // Do Not Disturb
   quietHours: {
     enabled: boolean;
@@ -168,29 +175,29 @@ export interface NotificationSettings {
 export interface AISettings {
   // Processing Preferences
   processingMode: 'speed' | 'balanced' | 'accuracy';
-  
+
   // Confidence Thresholds
   autoConfirmThreshold: number; // 0.0 to 1.0
   humanReviewThreshold: number; // 0.0 to 1.0
-  
+
   // Event Extraction
   extractMultipleEvents: boolean;
   requireExplicitTime: boolean;
   requireLocation: boolean;
-  
+
   // Industry-Specific Settings
   industryOptimizations: boolean;
   customKeywords: string[];
-  
+
   // Auto Actions
   autoConfirmHighConfidence: boolean;
   autoCreateCalendarEvents: boolean;
   autoSendCustomerEmails: boolean;
-  
+
   // Language Processing
   language: 'english' | 'auto-detect';
   transcriptionQuality: 'standard' | 'enhanced';
-  
+
   // Data Retention
   keepRecordings: boolean;
   recordingRetentionDays: number;
@@ -201,26 +208,26 @@ export interface AISettings {
 export interface UISettings {
   // Theme
   theme: 'light' | 'dark' | 'system';
-  
-  // Layout Preferences  
+
+  // Layout Preferences
   sidebarCollapsed: boolean;
   compactMode: boolean;
-  
+
   // Dashboard Preferences
   defaultView: 'calls' | 'events' | 'calendar';
   itemsPerPage: number;
   showAvatars: boolean;
-  
+
   // Table/List Preferences
   visibleColumns: string[];
   sortBy: string;
   sortOrder: 'asc' | 'desc';
-  
+
   // Accessibility
   reducedMotion: boolean;
   highContrast: boolean;
   fontSize: 'small' | 'medium' | 'large';
-  
+
   // Quick Actions
   favoriteActions: string[];
   showQuickActions: boolean;
@@ -264,7 +271,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
       sunday: { enabled: false, startTime: '09:00', endTime: '17:00' },
     },
   },
-  
+
   email: {
     frequency: 'immediate',
     format: 'html',
@@ -281,7 +288,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
     digestTime: '09:00',
     weeklyDigestDay: 'monday',
   },
-  
+
   calendar: {
     autoSync: true,
     syncOnlyConfirmed: false,
@@ -298,7 +305,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
     useBusinessTimezone: true,
     convertToLocalTime: true,
   },
-  
+
   notifications: {
     email: {
       newCall: true,
@@ -337,7 +344,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
       allowEmergency: true,
     },
   },
-  
+
   ai: {
     processingMode: 'balanced',
     autoConfirmThreshold: 0.85,
@@ -357,7 +364,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
     keepTranscripts: true,
     transcriptRetentionDays: 365,
   },
-  
+
   ui: {
     theme: 'system',
     sidebarCollapsed: false,
@@ -374,7 +381,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
     favoriteActions: ['confirm_event', 'reschedule', 'add_note'],
     showQuickActions: true,
   },
-  
+
   version: 1,
 };
 
@@ -392,7 +399,16 @@ export interface SettingsField {
   key: string;
   label: string;
   description?: string;
-  type: 'text' | 'email' | 'number' | 'boolean' | 'select' | 'multiselect' | 'time' | 'slider' | 'textarea';
+  type:
+    | 'text'
+    | 'email'
+    | 'number'
+    | 'boolean'
+    | 'select'
+    | 'multiselect'
+    | 'time'
+    | 'slider'
+    | 'textarea';
   options?: { value: string; label: string }[];
   min?: number;
   max?: number;

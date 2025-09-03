@@ -30,7 +30,7 @@ jest.mock('@/utils/supabase/server', () => ({
               ],
               error: null,
               count: 1
-            }))
+            })),
           }))
         }))
       })),

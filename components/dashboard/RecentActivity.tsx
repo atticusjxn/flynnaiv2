@@ -5,32 +5,82 @@ import { cn } from '@/lib/utils';
 
 // Professional SVG Icons
 const PhoneIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"
+    />
   </svg>
 );
 
 const CalendarIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+    />
   </svg>
 );
 
 const CheckCircleIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+    />
   </svg>
 );
 
 const ExclamationTriangleIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+    />
   </svg>
 );
 
 const ArrowTopRightOnSquareIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+    />
   </svg>
 );
 
@@ -103,17 +153,23 @@ function ActivityItemComponent({ item, index }: ActivityItemProps) {
 
   const Icon = getIcon();
   const content = (
-    <div className="group flex items-start space-x-4 p-4 rounded-xl hover:bg-muted/40 transition-all duration-200 hover:scale-[1.01]"
-         style={{ 
-           animationDelay: `${index * 50}ms`,
-           animationDuration: '400ms',
-           animationFillMode: 'both'
-         } as React.CSSProperties}>
+    <div
+      className="group flex items-start space-x-4 p-4 rounded-xl hover:bg-muted/40 transition-all duration-200 hover:scale-[1.01]"
+      style={
+        {
+          animationDelay: `${index * 50}ms`,
+          animationDuration: '400ms',
+          animationFillMode: 'both',
+        } as React.CSSProperties
+      }
+    >
       {/* Icon */}
-      <div className={cn(
-        "flex-shrink-0 w-10 h-10 rounded-xl border flex items-center justify-center transition-all duration-200 group-hover:scale-110",
-        getIconColor()
-      )}>
+      <div
+        className={cn(
+          'flex-shrink-0 w-10 h-10 rounded-xl border flex items-center justify-center transition-all duration-200 group-hover:scale-110',
+          getIconColor()
+        )}
+      >
         <Icon className="w-5 h-5" />
       </div>
 
@@ -127,7 +183,7 @@ function ActivityItemComponent({ item, index }: ActivityItemProps) {
             <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
               {item.description}
             </p>
-            
+
             {/* Metadata */}
             {item.metadata && (
               <div className="flex items-center space-x-3 mt-2">
@@ -147,10 +203,12 @@ function ActivityItemComponent({ item, index }: ActivityItemProps) {
                   </span>
                 )}
                 {item.metadata.urgency && (
-                  <span className={cn(
-                    "text-xs font-medium px-2 py-0.5 rounded-full border",
-                    getUrgencyColor(item.metadata.urgency)
-                  )}>
+                  <span
+                    className={cn(
+                      'text-xs font-medium px-2 py-0.5 rounded-full border',
+                      getUrgencyColor(item.metadata.urgency)
+                    )}
+                  >
                     {item.metadata.urgency}
                   </span>
                 )}
@@ -162,11 +220,9 @@ function ActivityItemComponent({ item, index }: ActivityItemProps) {
               </div>
             )}
           </div>
-          
+
           <div className="flex-shrink-0 ml-4 text-right">
-            <p className="text-xs text-muted-foreground">
-              {item.timestamp}
-            </p>
+            <p className="text-xs text-muted-foreground">{item.timestamp}</p>
             {item.href && (
               <ArrowTopRightOnSquareIcon className="w-4 h-4 text-muted-foreground mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
             )}
@@ -178,16 +234,17 @@ function ActivityItemComponent({ item, index }: ActivityItemProps) {
 
   if (item.href) {
     return (
-      <Link href={item.href} className="block animate-in fade-in slide-in-from-left-2">
+      <Link
+        href={item.href}
+        className="block animate-in fade-in slide-in-from-left-2"
+      >
         {content}
       </Link>
     );
   }
 
   return (
-    <div className="animate-in fade-in slide-in-from-left-2">
-      {content}
-    </div>
+    <div className="animate-in fade-in slide-in-from-left-2">{content}</div>
   );
 }
 
@@ -202,14 +259,15 @@ export default function RecentActivity({ className }: RecentActivityProps) {
       id: '1',
       type: 'call',
       title: 'New call processed',
-      description: 'Customer needs urgent plumbing repair for burst pipe in kitchen',
+      description:
+        'Customer needs urgent plumbing repair for burst pipe in kitchen',
       timestamp: '2 minutes ago',
       metadata: {
         caller: 'Sarah Johnson',
         duration: '4:32',
-        urgency: 'emergency'
+        urgency: 'emergency',
       },
-      href: '/calls/1'
+      href: '/calls/1',
     },
     {
       id: '2',
@@ -219,9 +277,9 @@ export default function RecentActivity({ className }: RecentActivityProps) {
       timestamp: '5 minutes ago',
       metadata: {
         confidence: 92,
-        urgency: 'high'
+        urgency: 'high',
       },
-      href: '/events/2'
+      href: '/events/2',
     },
     {
       id: '3',
@@ -230,8 +288,8 @@ export default function RecentActivity({ className }: RecentActivityProps) {
       description: 'Appointment synced to your primary calendar',
       timestamp: '8 minutes ago',
       metadata: {
-        status: 'Success'
-      }
+        status: 'Success',
+      },
     },
     {
       id: '4',
@@ -242,9 +300,9 @@ export default function RecentActivity({ className }: RecentActivityProps) {
       metadata: {
         caller: 'Mike Chen',
         duration: '12:45',
-        urgency: 'medium'
+        urgency: 'medium',
       },
-      href: '/calls/4'
+      href: '/calls/4',
     },
     {
       id: '5',
@@ -254,28 +312,29 @@ export default function RecentActivity({ className }: RecentActivityProps) {
       timestamp: '2 hours ago',
       metadata: {
         confidence: 85,
-        urgency: 'low'
+        urgency: 'low',
       },
-      href: '/events/5'
+      href: '/events/5',
     },
     {
       id: '6',
       type: 'error',
       title: 'Calendar sync failed',
-      description: 'Unable to sync appointment - please check calendar permissions',
+      description:
+        'Unable to sync appointment - please check calendar permissions',
       timestamp: '3 hours ago',
       metadata: {
-        status: 'Retry required'
-      }
-    }
+        status: 'Retry required',
+      },
+    },
   ];
 
   return (
-    <div className={cn("space-y-4", className)}>
+    <div className={cn('space-y-4', className)}>
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-foreground">Recent Activity</h2>
-        <Link 
-          href="/calls" 
+        <Link
+          href="/calls"
           className="text-sm font-medium text-primary hover:text-primary/80 transition-colors duration-200 flex items-center space-x-1 group"
         >
           <span>View all</span>
@@ -289,17 +348,20 @@ export default function RecentActivity({ className }: RecentActivityProps) {
             <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center mb-4">
               <PhoneIcon className="w-8 h-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">No activity yet</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-2">
+              No activity yet
+            </h3>
             <p className="text-muted-foreground max-w-sm mx-auto">
-              Your call activity and AI extractions will appear here once you start processing calls.
+              Your call activity and AI extractions will appear here once you
+              start processing calls.
             </p>
           </div>
         ) : (
           <div className="divide-y divide-border">
             {activities.map((activity, index) => (
-              <ActivityItemComponent 
-                key={activity.id} 
-                item={activity} 
+              <ActivityItemComponent
+                key={activity.id}
+                item={activity}
                 index={index}
               />
             ))}

@@ -1,11 +1,13 @@
 # Flynn.ai v2 Email Template System
 
 ## Overview
+
 Professional, industry-adaptive email templates built with React Email and Resend. The system generates call overview emails with event cards, calendar attachments, and deep-linking to the dashboard.
 
 ## Architecture
 
 ### Technology Stack
+
 - **React Email**: Component-based email templates
 - **Resend**: Email delivery service
 - **Tailwind CSS**: Styling (email-safe subset)
@@ -18,7 +20,14 @@ Professional, industry-adaptive email templates built with React Email and Resen
 
 ```tsx
 // components/email-templates/BaseEmailLayout.tsx
-import { Html, Head, Body, Container, Section, Text } from '@react-email/components';
+import {
+  Html,
+  Head,
+  Body,
+  Container,
+  Section,
+  Text,
+} from '@react-email/components';
 
 interface BaseEmailLayoutProps {
   children: React.ReactNode;
@@ -27,11 +36,11 @@ interface BaseEmailLayoutProps {
   industry: string;
 }
 
-export default function BaseEmailLayout({ 
-  children, 
-  previewText, 
+export default function BaseEmailLayout({
+  children,
+  previewText,
   companyName,
-  industry 
+  industry,
 }: BaseEmailLayoutProps) {
   return (
     <Html>
@@ -43,12 +52,10 @@ export default function BaseEmailLayout({
             <Text style={logoStyle}>Flynn.ai</Text>
             <Text style={companyStyle}>{companyName}</Text>
           </Section>
-          
+
           {/* Content */}
-          <Section style={contentStyle}>
-            {children}
-          </Section>
-          
+          <Section style={contentStyle}>{children}</Section>
+
           {/* Footer */}
           <Section style={footerStyle}>
             <Text style={footerTextStyle}>
@@ -62,7 +69,8 @@ export default function BaseEmailLayout({
 }
 
 const bodyStyle = {
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  fontFamily:
+    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   backgroundColor: '#f8fafc',
   margin: 0,
   padding: '20px 0',
@@ -155,12 +163,12 @@ export default function CallOverviewEmail({
   callDuration,
   events,
   dashboardUrl,
-  transcriptUrl
+  transcriptUrl,
 }: CallOverviewEmailProps) {
   const previewText = `${mainTopic} - ${events.length} ${events.length === 1 ? 'event' : 'events'} extracted`;
-  
+
   return (
-    <BaseEmailLayout 
+    <BaseEmailLayout
       previewText={previewText}
       companyName={companyName}
       industry={industry}
@@ -174,17 +182,17 @@ export default function CallOverviewEmail({
         callDuration={callDuration}
         industry={industry}
       />
-      
+
       <Hr style={hrStyle} />
-      
+
       {/* Events Section */}
       <Section>
         <Text style={sectionHeaderStyle}>
           {getEventsSectionTitle(events.length, industry)}
         </Text>
-        
+
         {events.map((event, index) => (
-          <EventCard 
+          <EventCard
             key={event.id}
             event={event}
             industry={industry}
@@ -192,20 +200,20 @@ export default function CallOverviewEmail({
           />
         ))}
       </Section>
-      
+
       <Hr style={hrStyle} />
-      
+
       {/* Action Buttons */}
       <Section style={actionsStyle}>
         <Button href={dashboardUrl} style={primaryButtonStyle}>
           Manage Events in Dashboard
         </Button>
-        
+
         <Button href={transcriptUrl} style={secondaryButtonStyle}>
           View Full Transcript
         </Button>
       </Section>
-      
+
       {/* Industry-specific footer */}
       <Section>
         <Text style={helpTextStyle}>
@@ -228,21 +236,30 @@ function getIndustryEventWord(industry: string): string {
     legal: 'Consultation',
     medical: 'Appointment',
     sales: 'Meeting',
-    consulting: 'Session'
+    consulting: 'Session',
   };
   return industryWords[industry as keyof typeof industryWords] || 'Event';
 }
 
 function getIndustrySpecificHelpText(industry: string): string {
   const helpTexts = {
-    plumbing: 'Click on any service request to confirm timing, add notes, or send customer confirmations.',
-    real_estate: 'Manage your showings and client meetings directly from your dashboard.',
-    legal: 'All consultations are flagged for your review. Update billing and case information as needed.',
-    medical: 'Remember to verify patient information and insurance details before confirming appointments.',
-    sales: 'Track your sales pipeline and send meeting confirmations to prospects.',
-    consulting: 'Review project scope and send professional confirmations to clients.'
+    plumbing:
+      'Click on any service request to confirm timing, add notes, or send customer confirmations.',
+    real_estate:
+      'Manage your showings and client meetings directly from your dashboard.',
+    legal:
+      'All consultations are flagged for your review. Update billing and case information as needed.',
+    medical:
+      'Remember to verify patient information and insurance details before confirming appointments.',
+    sales:
+      'Track your sales pipeline and send meeting confirmations to prospects.',
+    consulting:
+      'Review project scope and send professional confirmations to clients.',
   };
-  return helpTexts[industry as keyof typeof helpTexts] || 'Click any event to manage details and send confirmations.';
+  return (
+    helpTexts[industry as keyof typeof helpTexts] ||
+    'Click any event to manage details and send confirmations.'
+  );
 }
 
 const sectionHeaderStyle = {
@@ -318,27 +335,31 @@ interface EventCardProps {
 export default function EventCard({ event, industry, isLast }: EventCardProps) {
   const urgencyColors = {
     low: '#10b981',
-    medium: '#f59e0b', 
+    medium: '#f59e0b',
     high: '#ef4444',
-    emergency: '#dc2626'
+    emergency: '#dc2626',
   };
-  
-  const urgencyColor = urgencyColors[event.urgencyLevel as keyof typeof urgencyColors];
-  
+
+  const urgencyColor =
+    urgencyColors[event.urgencyLevel as keyof typeof urgencyColors];
+
   return (
-    <Section style={{
-      ...eventCardStyle,
-      marginBottom: isLast ? 0 : '16px',
-      borderLeft: `4px solid ${urgencyColor}`
-    }}>
+    <Section
+      style={{
+        ...eventCardStyle,
+        marginBottom: isLast ? 0 : '16px',
+        borderLeft: `4px solid ${urgencyColor}`,
+      }}
+    >
       {/* Event Header */}
       <Section style={eventHeaderStyle}>
         <Text style={eventTitleStyle}>{event.title}</Text>
         <Text style={eventTypeStyle}>
-          {formatEventType(event.eventType, industry)} • {formatUrgency(event.urgencyLevel)}
+          {formatEventType(event.eventType, industry)} •{' '}
+          {formatUrgency(event.urgencyLevel)}
         </Text>
       </Section>
-      
+
       {/* Event Details */}
       <Section style={eventDetailsStyle}>
         {event.proposedDateTime && (
@@ -346,49 +367,39 @@ export default function EventCard({ event, industry, isLast }: EventCardProps) {
             📅 {formatDateTime(event.proposedDateTime)}
           </Text>
         )}
-        
-        {event.location && (
-          <Text style={detailStyle}>
-            📍 {event.location}
-          </Text>
-        )}
-        
+
+        {event.location && <Text style={detailStyle}>📍 {event.location}</Text>}
+
         {event.customerName && (
-          <Text style={detailStyle}>
-            👤 {event.customerName}
-          </Text>
+          <Text style={detailStyle}>👤 {event.customerName}</Text>
         )}
-        
+
         {event.priceEstimate && (
-          <Text style={detailStyle}>
-            💰 Estimated: ${event.priceEstimate}
-          </Text>
+          <Text style={detailStyle}>💰 Estimated: ${event.priceEstimate}</Text>
         )}
-        
+
         {event.description && (
-          <Text style={descriptionStyle}>
-            {event.description}
-          </Text>
+          <Text style={descriptionStyle}>{event.description}</Text>
         )}
       </Section>
-      
+
       {/* Quick Actions */}
       <Section style={quickActionsStyle}>
-        <Button 
+        <Button
           href={`${process.env.NEXT_PUBLIC_APP_URL}/dashboard/events/${event.id}?action=confirm`}
           style={confirmButtonStyle}
         >
           ✅ Confirm
         </Button>
-        
-        <Button 
+
+        <Button
           href={`${process.env.NEXT_PUBLIC_APP_URL}/dashboard/events/${event.id}?action=edit`}
           style={editButtonStyle}
         >
           ✏️ Edit
         </Button>
-        
-        <Button 
+
+        <Button
           href={`${process.env.NEXT_PUBLIC_APP_URL}/dashboard/events/${event.id}?action=followup`}
           style={followupButtonStyle}
         >
@@ -409,9 +420,9 @@ function formatEventType(eventType: string, industry: string): string {
     quote: 'Quote',
     consultation: industry === 'legal' ? 'Legal Consultation' : 'Consultation',
     inspection: 'Inspection',
-    emergency: 'Emergency'
+    emergency: 'Emergency',
   };
-  
+
   return typeMap[eventType as keyof typeof typeMap] || eventType;
 }
 
@@ -420,9 +431,9 @@ function formatUrgency(urgencyLevel: string): string {
     low: 'Low Priority',
     medium: 'Normal',
     high: 'High Priority',
-    emergency: 'EMERGENCY'
+    emergency: 'EMERGENCY',
   };
-  
+
   return urgencyMap[urgencyLevel as keyof typeof urgencyMap] || urgencyLevel;
 }
 
@@ -433,7 +444,7 @@ function formatDateTime(dateTime: string): string {
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
-    minute: '2-digit'
+    minute: '2-digit',
   });
 }
 
@@ -545,12 +556,12 @@ export default function CallSummaryCard({
   callerName,
   callerNumber,
   callDuration,
-  industry
+  industry,
 }: CallSummaryCardProps) {
   return (
     <Section style={summaryCardStyle}>
       <Text style={topicStyle}>{mainTopic}</Text>
-      
+
       <Section style={metaInfoStyle}>
         <Text style={metaTextStyle}>
           📞 {callerName || 'Unknown Caller'} • {callerNumber}
@@ -559,9 +570,9 @@ export default function CallSummaryCard({
           ⏱️ {formatDuration(callDuration)} • {formatTimestamp(new Date())}
         </Text>
       </Section>
-      
+
       <Text style={summaryTextStyle}>{callSummary}</Text>
-      
+
       {getIndustryInsight(industry, callSummary) && (
         <Section style={insightStyle}>
           <Text style={insightTextStyle}>
@@ -584,51 +595,60 @@ function formatTimestamp(date: Date): string {
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
-    minute: '2-digit'
+    minute: '2-digit',
   });
 }
 
 function getIndustryInsight(industry: string, summary: string): string | null {
   const summaryLower = summary.toLowerCase();
-  
+
   switch (industry) {
     case 'plumbing':
-      if (summaryLower.includes('emergency') || summaryLower.includes('water damage')) {
+      if (
+        summaryLower.includes('emergency') ||
+        summaryLower.includes('water damage')
+      ) {
         return 'Emergency service - prioritize immediate response';
       }
       if (summaryLower.includes('estimate') || summaryLower.includes('quote')) {
         return 'Quote requested - consider scheduling site visit';
       }
       break;
-      
+
     case 'real_estate':
-      if (summaryLower.includes('pre-approved') || summaryLower.includes('cash buyer')) {
+      if (
+        summaryLower.includes('pre-approved') ||
+        summaryLower.includes('cash buyer')
+      ) {
         return 'Qualified buyer - high priority showing';
       }
       if (summaryLower.includes('first-time buyer')) {
         return 'First-time buyer - may need additional guidance';
       }
       break;
-      
+
     case 'legal':
       if (summaryLower.includes('deadline') || summaryLower.includes('court')) {
         return 'Time-sensitive legal matter - review urgently';
       }
       break;
-      
+
     case 'medical':
       if (summaryLower.includes('pain') || summaryLower.includes('urgent')) {
         return 'Urgent medical concern - consider priority scheduling';
       }
       break;
-      
+
     case 'sales':
-      if (summaryLower.includes('budget approved') || summaryLower.includes('ready to buy')) {
+      if (
+        summaryLower.includes('budget approved') ||
+        summaryLower.includes('ready to buy')
+      ) {
         return 'Hot prospect - follow up quickly';
       }
       break;
   }
-  
+
   return null;
 }
 
@@ -692,22 +712,24 @@ import { generateICSFile } from '@/lib/calendar/icsGenerator';
 
 export class EmailService {
   private resend: Resend;
-  
+
   constructor() {
     this.resend = new Resend(process.env.RESEND_API_KEY);
   }
-  
-  async sendCallOverviewEmail(emailData: CallOverviewEmailData): Promise<{ success: boolean; messageId?: string; error?: string }> {
+
+  async sendCallOverviewEmail(
+    emailData: CallOverviewEmailData
+  ): Promise<{ success: boolean; messageId?: string; error?: string }> {
     try {
       // Generate email HTML
       const emailHtml = render(CallOverviewEmail(emailData));
-      
+
       // Generate ICS attachments for events with confirmed times
       const attachments = await this.generateEventAttachments(emailData.events);
-      
+
       // Generate subject line based on industry and content
       const subject = this.generateSubjectLine(emailData);
-      
+
       // Send email via Resend
       const result = await this.resend.emails.send({
         from: `${emailData.companyName} <noreply@${process.env.EMAIL_DOMAIN}>`,
@@ -722,32 +744,31 @@ export class EmailService {
         tags: [
           { name: 'type', value: 'call-overview' },
           { name: 'industry', value: emailData.industry },
-          { name: 'event-count', value: emailData.events.length.toString() }
-        ]
+          { name: 'event-count', value: emailData.events.length.toString() },
+        ],
       });
-      
+
       return {
         success: true,
-        messageId: result.data?.id
+        messageId: result.data?.id,
       };
-      
     } catch (error) {
       console.error('Failed to send call overview email:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
-  
+
   private generateSubjectLine(emailData: CallOverviewEmailData): string {
     const { mainTopic, events, industry, callerName } = emailData;
-    
+
     // Use main topic if available and concise
     if (mainTopic && mainTopic.length <= 50) {
       return `${mainTopic} - ${callerName}`;
     }
-    
+
     // Fallback to industry-specific format
     const industryFormats = {
       plumbing: `Service Request from ${callerName}`,
@@ -755,34 +776,41 @@ export class EmailService {
       legal: `Legal Consultation Request - ${callerName}`,
       medical: `Appointment Request from ${callerName}`,
       sales: `Sales Inquiry from ${callerName}`,
-      consulting: `Consultation Request - ${callerName}`
+      consulting: `Consultation Request - ${callerName}`,
     };
-    
-    return industryFormats[industry as keyof typeof industryFormats] || 
-           `New Call from ${callerName}`;
+
+    return (
+      industryFormats[industry as keyof typeof industryFormats] ||
+      `New Call from ${callerName}`
+    );
   }
-  
-  private async generateEventAttachments(events: EventData[]): Promise<Array<{ filename: string; content: string }>> {
+
+  private async generateEventAttachments(
+    events: EventData[]
+  ): Promise<Array<{ filename: string; content: string }>> {
     const attachments = [];
-    
+
     for (const event of events) {
       if (event.proposedDateTime) {
         const icsContent = generateICSFile({
           title: event.title,
           description: event.description,
           startDate: new Date(event.proposedDateTime),
-          endDate: new Date(new Date(event.proposedDateTime).getTime() + (event.durationMinutes || 60) * 60000),
+          endDate: new Date(
+            new Date(event.proposedDateTime).getTime() +
+              (event.durationMinutes || 60) * 60000
+          ),
           location: event.location,
-          uid: event.id
+          uid: event.id,
         });
-        
+
         attachments.push({
           filename: `${event.title.replace(/[^a-zA-Z0-9]/g, '_')}.ics`,
-          content: icsContent
+          content: icsContent,
         });
       }
     }
-    
+
     return attachments;
   }
 }
@@ -826,7 +854,7 @@ interface EventData {
 export function selectEmailTemplate(industry: string, eventTypes: string[]) {
   // Base template for all industries
   let templateComponent = CallOverviewEmail;
-  
+
   // Industry-specific customizations
   switch (industry) {
     case 'plumbing':
@@ -848,7 +876,7 @@ export function selectEmailTemplate(industry: string, eventTypes: string[]) {
       // Use base template
       break;
   }
-  
+
   return templateComponent;
 }
 ```
@@ -869,7 +897,8 @@ export async function GET(request: NextRequest) {
     companyName: 'Smith Plumbing Services',
     industry: 'plumbing',
     mainTopic: 'Kitchen Sink Leak Repair',
-    callSummary: 'Customer has a leaking kitchen sink that needs immediate attention. Water is damaging the cabinet below.',
+    callSummary:
+      'Customer has a leaking kitchen sink that needs immediate attention. Water is damaging the cabinet below.',
     callerName: 'John Doe',
     callerNumber: '+1 (555) 123-4567',
     callDuration: 180,
@@ -883,17 +912,17 @@ export async function GET(request: NextRequest) {
         description: 'Fix leaking kitchen sink under cabinet',
         urgencyLevel: 'high',
         priceEstimate: 150,
-        customerName: 'John Doe'
-      }
+        customerName: 'John Doe',
+      },
     ],
     dashboardUrl: 'https://flynn.ai/dashboard/calls/123',
-    transcriptUrl: 'https://flynn.ai/dashboard/calls/123/transcript'
+    transcriptUrl: 'https://flynn.ai/dashboard/calls/123/transcript',
   };
-  
+
   const html = render(CallOverviewEmail(sampleData));
-  
+
   return new NextResponse(html, {
-    headers: { 'Content-Type': 'text/html' }
+    headers: { 'Content-Type': 'text/html' },
   });
 }
 ```
@@ -915,17 +944,20 @@ export class EmailAnalytics {
     // Track email send events
     await this.recordEvent('email.sent', emailData);
   }
-  
+
   async trackEmailOpened(messageId: string) {
     // Track email opens via Resend webhooks
     await this.recordEvent('email.opened', { messageId });
   }
-  
-  async trackLinkClicked(messageId: string, linkType: 'dashboard' | 'event' | 'transcript') {
+
+  async trackLinkClicked(
+    messageId: string,
+    linkType: 'dashboard' | 'event' | 'transcript'
+  ) {
     // Track clicks on email links
     await this.recordEvent('email.link_clicked', { messageId, linkType });
   }
-  
+
   private async recordEvent(eventType: string, data: any) {
     // Store analytics data for performance monitoring
     console.log(`Email Analytics: ${eventType}`, data);
@@ -942,26 +974,26 @@ export class EmailAnalytics {
 export const EMAIL_CONFIG = {
   // Domain Authentication
   domain: process.env.EMAIL_DOMAIN,
-  
+
   // SPF Record: "v=spf1 include:_spf.resend.com ~all"
   // DKIM: Configured via Resend dashboard
   // DMARC: "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
-  
+
   // Sender Reputation
   fromName: 'Flynn.ai Notifications',
   replyTo: 'support@flynn.ai',
-  
+
   // Content Guidelines
   maxSubjectLength: 60,
   optimalEmailLength: 1000, // characters
-  
+
   // Rate Limiting
   maxEmailsPerHour: 1000,
   maxEventsPerEmail: 10,
-  
+
   // Compliance
   includeUnsubscribe: true,
-  respectUserPreferences: true
+  respectUserPreferences: true,
 };
 ```
 
@@ -978,6 +1010,7 @@ export const EMAIL_CONFIG = {
 ### Email Client Testing
 
 Test templates across major email clients:
+
 - **Mobile**: iOS Mail, Gmail Mobile, Outlook Mobile
 - **Desktop**: Outlook 2016+, Apple Mail, Gmail Web
 - **Web**: Yahoo Mail, AOL Mail

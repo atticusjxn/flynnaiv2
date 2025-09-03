@@ -5,13 +5,13 @@ import { Card, CardBody, CardHeader } from '@nextui-org/card';
 import { Switch } from '@nextui-org/switch';
 import { Button } from '@nextui-org/button';
 import { Chip } from '@nextui-org/chip';
-import { 
-  PhoneIcon, 
-  BoltIcon, 
+import {
+  PhoneIcon,
+  BoltIcon,
   ChartBarIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
-  InformationCircleIcon
+  InformationCircleIcon,
 } from '@heroicons/react/24/outline';
 
 interface AIProcessingSettings {
@@ -48,7 +48,7 @@ export default function AIProcessingToggle() {
     try {
       const response = await fetch('/api/user/ai-processing-settings');
       const data = await response.json();
-      
+
       if (data.success) {
         setSettings(data.settings);
       } else {
@@ -66,7 +66,7 @@ export default function AIProcessingToggle() {
     try {
       const response = await fetch('/api/user/ai-processing-settings/stats');
       const data = await response.json();
-      
+
       if (data.success) {
         setStats(data.stats);
       }
@@ -85,19 +85,19 @@ export default function AIProcessingToggle() {
       const response = await fetch('/api/user/ai-processing-settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ aiProcessingEnabled: enabled })
+        body: JSON.stringify({ aiProcessingEnabled: enabled }),
       });
 
       const data = await response.json();
 
       if (data.success) {
         setSettings(data.settings);
-        
+
         // Show feedback
-        const message = enabled 
+        const message = enabled
           ? 'AI call processing enabled! All business calls will now be automatically processed.'
           : 'AI call processing disabled. Calls will pass through without AI analysis.';
-        
+
         console.log(message);
       } else {
         setError(data.error || 'Failed to update settings');
@@ -125,15 +125,13 @@ export default function AIProcessingToggle() {
       <Card className="w-full border-danger-200 bg-danger-50">
         <CardBody className="text-center py-8">
           <ExclamationTriangleIcon className="w-12 h-12 text-danger mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-danger mb-2">Setup Required</h3>
+          <h3 className="text-lg font-semibold text-danger mb-2">
+            Setup Required
+          </h3>
           <p className="text-danger-600 mb-4">
             Please complete your call forwarding setup to enable AI processing.
           </p>
-          <Button 
-            color="danger" 
-            variant="bordered"
-            href="/onboarding?step=2"
-          >
+          <Button color="danger" variant="bordered" href="/onboarding?step=2">
             Complete Setup
           </Button>
         </CardBody>
@@ -141,22 +139,29 @@ export default function AIProcessingToggle() {
     );
   }
 
-  const isSetupComplete = settings.forwardingSetupComplete && settings.flynnNumber;
-  const usagePercentage = (settings.monthlyUsage / (settings.dailyLimit * 30)) * 100;
+  const isSetupComplete =
+    settings.forwardingSetupComplete && settings.flynnNumber;
+  const usagePercentage =
+    (settings.monthlyUsage / (settings.dailyLimit * 30)) * 100;
 
   return (
     <div className="space-y-6">
       {/* Main AI Processing Control */}
-      <Card className={`w-full ${isSetupComplete ? 'border-success-200' : 'border-warning-200'}`}>
+      <Card
+        className={`w-full ${isSetupComplete ? 'border-success-200' : 'border-warning-200'}`}
+      >
         <CardHeader className="flex flex-row items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={`
+            <div
+              className={`
               w-12 h-12 rounded-lg flex items-center justify-center
-              ${settings.aiProcessingEnabled 
-                ? 'bg-success-100 text-success-700' 
-                : 'bg-gray-100 text-gray-500'
+              ${
+                settings.aiProcessingEnabled
+                  ? 'bg-success-100 text-success-700'
+                  : 'bg-gray-100 text-gray-500'
               }
-            `}>
+            `}
+            >
               <BoltIcon className="w-6 h-6" />
             </div>
             <div>
@@ -164,11 +169,12 @@ export default function AIProcessingToggle() {
                 AI Call Processing
               </h3>
               <p className="text-sm text-muted-foreground">
-                Automatically process all business calls for appointments and quotes
+                Automatically process all business calls for appointments and
+                quotes
               </p>
             </div>
           </div>
-          
+
           <Switch
             isSelected={settings.aiProcessingEnabled}
             onValueChange={toggleAIProcessing}
@@ -197,9 +203,11 @@ export default function AIProcessingToggle() {
                 variant="flat"
                 size="sm"
                 startContent={
-                  isSetupComplete ? 
-                    <CheckCircleIcon className="w-4 h-4" /> : 
+                  isSetupComplete ? (
+                    <CheckCircleIcon className="w-4 h-4" />
+                  ) : (
                     <ExclamationTriangleIcon className="w-4 h-4" />
+                  )
                 }
               >
                 {isSetupComplete ? 'Active' : 'Setup Required'}
@@ -213,10 +221,9 @@ export default function AIProcessingToggle() {
                 <div>
                   <p className="font-medium text-foreground">AI Processing</p>
                   <p className="text-sm text-muted-foreground">
-                    {settings.aiProcessingEnabled 
-                      ? 'All business calls being processed' 
-                      : 'Processing paused - calls pass through normally'
-                    }
+                    {settings.aiProcessingEnabled
+                      ? 'All business calls being processed'
+                      : 'Processing paused - calls pass through normally'}
                   </p>
                 </div>
               </div>
@@ -236,7 +243,8 @@ export default function AIProcessingToggle() {
                 <div>
                   <p className="font-medium text-foreground">Monthly Usage</p>
                   <p className="text-sm text-muted-foreground">
-                    {settings.monthlyUsage} of {settings.dailyLimit * 30} calls processed
+                    {settings.monthlyUsage} of {settings.dailyLimit * 30} calls
+                    processed
                   </p>
                 </div>
               </div>
@@ -245,7 +253,7 @@ export default function AIProcessingToggle() {
                   {usagePercentage.toFixed(0)}%
                 </p>
                 <div className="w-20 h-2 bg-gray-200 rounded-full mt-1">
-                  <div 
+                  <div
                     className="h-full bg-primary rounded-full transition-all duration-300"
                     style={{ width: `${Math.min(100, usagePercentage)}%` }}
                   />
@@ -268,9 +276,17 @@ export default function AIProcessingToggle() {
               <div>
                 <h4 className="font-medium text-primary mb-2">How It Works</h4>
                 <ul className="text-sm text-primary-700 space-y-1">
-                  <li>• All calls to your Flynn.ai number are forwarded to your phone</li>
-                  <li>• When AI processing is ON, business calls are automatically recorded and analyzed</li>
-                  <li>• You get SMS summaries and calendar events within 2 minutes</li>
+                  <li>
+                    • All calls to your Flynn.ai number are forwarded to your
+                    phone
+                  </li>
+                  <li>
+                    • When AI processing is ON, business calls are automatically
+                    recorded and analyzed
+                  </li>
+                  <li>
+                    • You get SMS summaries and calendar events within 2 minutes
+                  </li>
                   <li>• Personal calls are filtered out and not processed</li>
                   <li>• Turn off anytime to pause AI processing</li>
                 </ul>
@@ -291,15 +307,21 @@ export default function AIProcessingToggle() {
           <CardBody>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <p className="text-2xl font-bold text-primary">{stats.totalCallsLast30Days}</p>
+                <p className="text-2xl font-bold text-primary">
+                  {stats.totalCallsLast30Days}
+                </p>
                 <p className="text-sm text-muted-foreground">Total Calls</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-success">{stats.businessCalls}</p>
+                <p className="text-2xl font-bold text-success">
+                  {stats.businessCalls}
+                </p>
                 <p className="text-sm text-muted-foreground">Business Calls</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-warning">{stats.eventsExtracted}</p>
+                <p className="text-2xl font-bold text-warning">
+                  {stats.eventsExtracted}
+                </p>
                 <p className="text-sm text-muted-foreground">Events Created</p>
               </div>
               <div className="text-center">

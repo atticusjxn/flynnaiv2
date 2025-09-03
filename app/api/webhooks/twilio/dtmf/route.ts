@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       callSid,
       digits,
       from,
-      to
+      to,
     });
 
     if (!callSid) {
@@ -24,9 +24,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Process keypad input for potential AI activation
-    const activationResult = await handleKeypadActivation(callSid, digits, from, to);
-    
-    console.log(`Keypad activation result for call ${callSid}:`, activationResult);
+    const activationResult = await handleKeypadActivation(
+      callSid,
+      digits,
+      from,
+      to
+    );
+
+    console.log(
+      `Keypad activation result for call ${callSid}:`,
+      activationResult
+    );
 
     // If AI was activated, notify the CallProcessingManager
     if (activationResult.activated) {
@@ -35,17 +43,16 @@ export async function POST(request: NextRequest) {
 
     // Return silent TwiML response (no indication to caller regardless of activation)
     const twimlResponse = generateKeypadActivationTwiML();
-    
+
     return new NextResponse(twimlResponse, {
       status: 200,
       headers: {
-        'Content-Type': 'text/xml'
-      }
+        'Content-Type': 'text/xml',
+      },
     });
-
   } catch (error) {
     console.error('DTMF webhook error:', error);
-    
+
     // Return empty TwiML to continue call normally even if there's an error
     const errorTwiML = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -55,8 +62,8 @@ export async function POST(request: NextRequest) {
     return new NextResponse(errorTwiML, {
       status: 200,
       headers: {
-        'Content-Type': 'text/xml'
-      }
+        'Content-Type': 'text/xml',
+      },
     });
   }
 }

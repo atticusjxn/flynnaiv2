@@ -1,80 +1,79 @@
-'use client'
+'use client';
 
-import { useDashboardRealtime, RecentActivity } from '@/hooks/useDashboardRealtime'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
-import { 
-  Phone, 
-  Calendar, 
-  CheckCircle, 
-  AlertCircle, 
-  ExternalLink, 
+import {
+  useDashboardRealtime,
+  RecentActivity,
+} from '@/hooks/useDashboardRealtime';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import {
+  Phone,
+  Calendar,
+  CheckCircle,
+  AlertCircle,
+  ExternalLink,
   RefreshCw,
   Wifi,
   WifiOff,
-  Activity
-} from 'lucide-react'
-import { formatDistanceToNow } from 'date-fns'
+  Activity,
+} from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 
 interface LiveActivityFeedProps {
-  className?: string
-  showHeader?: boolean
-  maxItems?: number
+  className?: string;
+  showHeader?: boolean;
+  maxItems?: number;
 }
 
-export function LiveActivityFeed({ 
-  className, 
-  showHeader = true, 
-  maxItems = 5 
+export function LiveActivityFeed({
+  className,
+  showHeader = true,
+  maxItems = 5,
 }: LiveActivityFeedProps) {
-  const {
-    recentActivity,
-    isConnected,
-    error,
-    refreshStats
-  } = useDashboardRealtime()
+  const { recentActivity, isConnected, error, refreshStats } =
+    useDashboardRealtime();
 
   const getActivityIcon = (type: RecentActivity['type']) => {
     switch (type) {
       case 'call':
-        return <Phone className="h-4 w-4 text-blue-500" />
+        return <Phone className="h-4 w-4 text-blue-500" />;
       case 'event':
-        return <Calendar className="h-4 w-4 text-green-500" />
+        return <Calendar className="h-4 w-4 text-green-500" />;
       case 'calendar_sync':
-        return <CheckCircle className="h-4 w-4 text-green-500" />
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
       case 'error':
-        return <AlertCircle className="h-4 w-4 text-red-500" />
+        return <AlertCircle className="h-4 w-4 text-red-500" />;
       default:
-        return <Activity className="h-4 w-4 text-gray-500" />
+        return <Activity className="h-4 w-4 text-gray-500" />;
     }
-  }
+  };
 
   const getActivityBadgeColor = (type: RecentActivity['type']) => {
     switch (type) {
       case 'call':
-        return 'bg-blue-100 text-blue-800'
+        return 'bg-blue-100 text-blue-800';
       case 'event':
-        return 'bg-green-100 text-green-800'
+        return 'bg-green-100 text-green-800';
       case 'calendar_sync':
-        return 'bg-green-100 text-green-800'
+        return 'bg-green-100 text-green-800';
       case 'error':
-        return 'bg-red-100 text-red-800'
+        return 'bg-red-100 text-red-800';
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-gray-100 text-gray-800';
     }
-  }
+  };
 
   const handleActivityClick = (activity: RecentActivity) => {
     // Navigate to relevant page based on activity type
     if (activity.type === 'call' && activity.metadata?.callId) {
-      window.open(`/calls/${activity.metadata.callId}`, '_blank')
+      window.open(`/calls/${activity.metadata.callId}`, '_blank');
     } else if (activity.type === 'event' && activity.metadata?.eventId) {
-      window.open(`/events/${activity.metadata.eventId}`, '_blank')
+      window.open(`/events/${activity.metadata.eventId}`, '_blank');
     }
-  }
+  };
 
-  const displayedActivity = recentActivity.slice(0, maxItems)
+  const displayedActivity = recentActivity.slice(0, maxItems);
 
   return (
     <Card className={className}>
@@ -138,43 +137,47 @@ export function LiveActivityFeed({
                 <div className="flex-shrink-0 mt-0.5">
                   {getActivityIcon(activity.type)}
                 </div>
-                
+
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center space-x-2 mb-1">
                     <h4 className="text-sm font-medium text-gray-900 truncate">
                       {activity.title}
                     </h4>
-                    <Badge 
+                    <Badge
                       className={`text-xs px-2 py-0.5 ${getActivityBadgeColor(activity.type)}`}
                       variant="secondary"
                     >
                       {activity.type.replace('_', ' ')}
                     </Badge>
                   </div>
-                  
+
                   <p className="text-sm text-gray-600 break-words leading-snug">
                     {activity.description}
                   </p>
-                  
+
                   <div className="flex items-center justify-between mt-2">
                     <span className="text-xs text-gray-500">
-                      {formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true })}
+                      {formatDistanceToNow(new Date(activity.timestamp), {
+                        addSuffix: true,
+                      })}
                     </span>
-                    
+
                     <div className="flex items-center space-x-2">
                       {activity.metadata?.confidence && (
                         <Badge variant="outline" className="text-xs">
-                          {Math.round(activity.metadata.confidence * 100)}% confidence
+                          {Math.round(activity.metadata.confidence * 100)}%
+                          confidence
                         </Badge>
                       )}
-                      
+
                       {activity.metadata?.urgent && (
                         <Badge variant="destructive" className="text-xs">
                           Urgent
                         </Badge>
                       )}
-                      
-                      {(activity.metadata?.callId || activity.metadata?.eventId) && (
+
+                      {(activity.metadata?.callId ||
+                        activity.metadata?.eventId) && (
                         <ExternalLink className="h-3 w-3 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                       )}
                     </div>
@@ -196,7 +199,7 @@ export function LiveActivityFeed({
         )}
       </CardContent>
     </Card>
-  )
+  );
 }
 
-export default LiveActivityFeed
+export default LiveActivityFeed;

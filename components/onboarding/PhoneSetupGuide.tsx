@@ -6,12 +6,12 @@ import { Button } from '@nextui-org/button';
 import { Input } from '@nextui-org/input';
 import { Tabs, Tab } from '@nextui-org/tabs';
 import { Chip } from '@nextui-org/chip';
-import { 
-  PhoneIcon, 
-  CheckIcon, 
+import {
+  PhoneIcon,
+  CheckIcon,
   ExclamationTriangleIcon,
   InformationCircleIcon,
-  ClipboardDocumentIcon
+  ClipboardDocumentIcon,
 } from '@heroicons/react/24/outline';
 
 interface PhoneSetupGuideProps {
@@ -28,23 +28,30 @@ interface PhoneConfiguration {
   verified: boolean;
 }
 
-const WEBHOOK_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://flynn.ai' 
-  : 'https://your-ngrok-url.ngrok.io';
+const WEBHOOK_BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://flynn.ai'
+    : 'https://your-ngrok-url.ngrok.io';
 
 export default function PhoneSetupGuide({
   onComplete,
   onBack,
   initialConfig,
-  className = ''
+  className = '',
 }: PhoneSetupGuideProps) {
   const [setupMethod, setSetupMethod] = useState<'new' | 'existing'>(
     initialConfig?.setupMethod || 'new'
   );
-  const [phoneNumber, setPhoneNumber] = useState(initialConfig?.phoneNumber || '');
-  const [webhookUrl] = useState(`${WEBHOOK_BASE_URL}/api/webhooks/twilio/voice`);
+  const [phoneNumber, setPhoneNumber] = useState(
+    initialConfig?.phoneNumber || ''
+  );
+  const [webhookUrl] = useState(
+    `${WEBHOOK_BASE_URL}/api/webhooks/twilio/voice`
+  );
   const [isVerifying, setIsVerifying] = useState(false);
-  const [isVerified, setIsVerified] = useState(initialConfig?.verified || false);
+  const [isVerified, setIsVerified] = useState(
+    initialConfig?.verified || false
+  );
   const [error, setError] = useState('');
 
   const handlePhoneNumberChange = (value: string) => {
@@ -77,8 +84,8 @@ export default function PhoneSetupGuide({
 
     try {
       // Simulate verification process
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // In real implementation, this would make an API call to verify the phone setup
       const response = await fetch('/api/phone/verify', {
         method: 'POST',
@@ -86,8 +93,8 @@ export default function PhoneSetupGuide({
         body: JSON.stringify({
           phoneNumber: phoneNumber.replace(/\D/g, ''),
           setupMethod,
-          webhookUrl
-        })
+          webhookUrl,
+        }),
       });
 
       if (response.ok) {
@@ -113,7 +120,7 @@ export default function PhoneSetupGuide({
       phoneNumber,
       setupMethod,
       webhookUrl,
-      verified: isVerified
+      verified: isVerified,
     });
   };
 
@@ -126,9 +133,11 @@ export default function PhoneSetupGuide({
       <div className="text-center mb-12">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-100/50 rounded-full mb-6 backdrop-blur-sm">
           <PhoneIcon className="w-4 h-4 text-blue-600" />
-          <span className="text-sm font-medium text-blue-700">Phone Integration</span>
+          <span className="text-sm font-medium text-blue-700">
+            Phone Integration
+          </span>
         </div>
-        
+
         <div className="relative inline-block mb-6">
           <div className="w-20 h-20 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-blue-500/10 rounded-2xl flex items-center justify-center mx-auto relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 animate-pulse" />
@@ -138,12 +147,13 @@ export default function PhoneSetupGuide({
             <div className="w-2 h-2 bg-white rounded-full animate-ping" />
           </div>
         </div>
-        
+
         <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-800 to-slate-900 bg-clip-text text-transparent mb-4">
           Connect Your Phone System
         </h2>
         <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-          Choose the setup method that works best for your business. Both options provide the same premium AI processing capabilities.
+          Choose the setup method that works best for your business. Both
+          options provide the same premium AI processing capabilities.
         </p>
       </div>
 
@@ -152,10 +162,12 @@ export default function PhoneSetupGuide({
         onSelectionChange={(key) => setSetupMethod(key as 'new' | 'existing')}
         className="mb-8"
         classNames={{
-          tabList: "w-full bg-white/60 backdrop-blur-sm border border-slate-200/60 p-1 rounded-2xl shadow-lg shadow-slate-900/5",
-          tab: "flex-1 text-base font-semibold data-[selected=true]:bg-gradient-to-r data-[selected=true]:from-blue-500 data-[selected=true]:to-purple-600 data-[selected=true]:text-white data-[selected=true]:shadow-lg rounded-xl transition-all duration-300",
-          cursor: "bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg rounded-xl",
-          tabContent: "group-data-[selected=true]:text-white text-slate-600"
+          tabList:
+            'w-full bg-white/60 backdrop-blur-sm border border-slate-200/60 p-1 rounded-2xl shadow-lg shadow-slate-900/5',
+          tab: 'flex-1 text-base font-semibold data-[selected=true]:bg-gradient-to-r data-[selected=true]:from-blue-500 data-[selected=true]:to-purple-600 data-[selected=true]:text-white data-[selected=true]:shadow-lg rounded-xl transition-all duration-300',
+          cursor:
+            'bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg rounded-xl',
+          tabContent: 'group-data-[selected=true]:text-white text-slate-600',
         }}
       >
         <Tab key="new" title="🚀 Get New Number">
@@ -171,11 +183,13 @@ export default function PhoneSetupGuide({
                     <h3 className="text-2xl font-bold text-slate-800">
                       Get a Flynn.ai Number
                     </h3>
-                    <p className="text-sm text-slate-600">Professional business phone ready in minutes</p>
+                    <p className="text-sm text-slate-600">
+                      Professional business phone ready in minutes
+                    </p>
                   </div>
                 </div>
               </CardHeader>
-              
+
               <CardBody className="space-y-6">
                 {/* Premium recommendation banner */}
                 <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/60 rounded-xl p-6">
@@ -185,12 +199,14 @@ export default function PhoneSetupGuide({
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-3">
-                        <h4 className="font-semibold text-green-800">Recommended for Most Users</h4>
+                        <h4 className="font-semibold text-green-800">
+                          Recommended for Most Users
+                        </h4>
                         <span className="px-2 py-1 bg-green-100 border border-green-200 rounded-full text-xs font-medium text-green-700">
                           Most Popular
                         </span>
                       </div>
-                      
+
                       <div className="grid md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <div className="flex items-center gap-2 text-sm text-green-700">
@@ -228,8 +244,9 @@ export default function PhoneSetupGuide({
                     maxLength={3}
                     size="lg"
                     classNames={{
-                      input: "text-lg font-medium",
-                      inputWrapper: "bg-white/70 border-slate-200/60 hover:bg-white/90 group-data-[focus=true]:bg-white/90"
+                      input: 'text-lg font-medium',
+                      inputWrapper:
+                        'bg-white/70 border-slate-200/60 hover:bg-white/90 group-data-[focus=true]:bg-white/90',
                     }}
                     onChange={(e) => {
                       const value = e.target.value.replace(/\D/g, '');
@@ -238,7 +255,8 @@ export default function PhoneSetupGuide({
                   />
                   <p className="text-xs text-slate-500 flex items-center gap-1">
                     <InformationCircleIcon className="w-4 h-4" />
-                    We'll find the best available number in your preferred area code
+                    We'll find the best available number in your preferred area
+                    code
                   </p>
                 </div>
 
@@ -248,9 +266,13 @@ export default function PhoneSetupGuide({
                   className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-xl shadow-green-500/25 hover:shadow-2xl hover:shadow-green-500/30 transition-all duration-300 transform hover:scale-[1.02] font-semibold text-base"
                   isLoading={isVerifying}
                   onPress={handleVerifyPhone}
-                  startContent={!isVerifying && <span className="text-xl">🎉</span>}
+                  startContent={
+                    !isVerifying && <span className="text-xl">🎉</span>
+                  }
                 >
-                  {isVerifying ? 'Setting up your premium number...' : 'Get My Flynn.ai Number'}
+                  {isVerifying
+                    ? 'Setting up your premium number...'
+                    : 'Get My Flynn.ai Number'}
                 </Button>
 
                 {/* Success state */}
@@ -261,20 +283,30 @@ export default function PhoneSetupGuide({
                         <CheckIcon className="w-7 h-7 text-white" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-lg font-semibold text-green-800 mb-2">Number Configured Successfully!</h4>
+                        <h4 className="text-lg font-semibold text-green-800 mb-2">
+                          Number Configured Successfully!
+                        </h4>
                         <div className="space-y-2 mb-4">
                           <p className="text-sm text-green-700">
-                            Your new Flynn.ai number: <strong className="text-lg font-mono bg-white/60 px-2 py-1 rounded border border-green-200">{phoneNumber}</strong>
+                            Your new Flynn.ai number:{' '}
+                            <strong className="text-lg font-mono bg-white/60 px-2 py-1 rounded border border-green-200">
+                              {phoneNumber}
+                            </strong>
                           </p>
                           <p className="text-sm text-green-600">
-                            ✨ Start using *7 during calls immediately to activate AI processing
+                            ✨ Start using *7 during calls immediately to
+                            activate AI processing
                           </p>
                         </div>
-                        
+
                         <div className="bg-white/60 border border-green-200 rounded-lg p-3">
-                          <p className="text-xs text-green-600 font-medium mb-1">Next Step:</p>
+                          <p className="text-xs text-green-600 font-medium mb-1">
+                            Next Step:
+                          </p>
                           <p className="text-xs text-green-700">
-                            Update your business listings, website, and marketing materials with your new professional number.
+                            Update your business listings, website, and
+                            marketing materials with your new professional
+                            number.
                           </p>
                         </div>
                       </div>
@@ -299,11 +331,13 @@ export default function PhoneSetupGuide({
                     <h3 className="text-2xl font-bold text-slate-800">
                       Connect Existing Number
                     </h3>
-                    <p className="text-sm text-slate-600">Advanced integration for existing systems</p>
+                    <p className="text-sm text-slate-600">
+                      Advanced integration for existing systems
+                    </p>
                   </div>
                 </div>
               </CardHeader>
-              
+
               <CardBody className="space-y-6">
                 {/* Advanced setup warning */}
                 <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/60 rounded-xl p-6">
@@ -313,15 +347,18 @@ export default function PhoneSetupGuide({
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-3">
-                        <h4 className="font-semibold text-amber-800">Advanced Technical Setup</h4>
+                        <h4 className="font-semibold text-amber-800">
+                          Advanced Technical Setup
+                        </h4>
                         <span className="px-2 py-1 bg-amber-100 border border-amber-200 rounded-full text-xs font-medium text-amber-700">
                           For Tech-Savvy Users
                         </span>
                       </div>
-                      
+
                       <p className="text-sm text-amber-700 leading-relaxed mb-4">
-                        This option requires configuring your existing phone system with Twilio webhooks. 
-                        Recommended for businesses with technical experience or dedicated IT support.
+                        This option requires configuring your existing phone
+                        system with Twilio webhooks. Recommended for businesses
+                        with technical experience or dedicated IT support.
                       </p>
 
                       <div className="grid md:grid-cols-2 gap-4">
@@ -361,10 +398,13 @@ export default function PhoneSetupGuide({
                     value={phoneNumber}
                     onChange={(e) => handlePhoneNumberChange(e.target.value)}
                     size="lg"
-                    startContent={<PhoneIcon className="w-5 h-5 text-slate-400" />}
+                    startContent={
+                      <PhoneIcon className="w-5 h-5 text-slate-400" />
+                    }
                     classNames={{
-                      input: "text-lg font-medium",
-                      inputWrapper: "bg-white/70 border-slate-200/60 hover:bg-white/90 group-data-[focus=true]:bg-white/90"
+                      input: 'text-lg font-medium',
+                      inputWrapper:
+                        'bg-white/70 border-slate-200/60 hover:bg-white/90 group-data-[focus=true]:bg-white/90',
                     }}
                   />
                 </div>
@@ -375,17 +415,21 @@ export default function PhoneSetupGuide({
                     <span className="text-xl">🔧</span>
                     Required Configuration Steps
                   </h4>
-                  
+
                   {/* Webhook URL section */}
                   <div className="bg-slate-50/80 border border-slate-200/60 rounded-xl p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <label className="text-sm font-semibold text-slate-700">Twilio Webhook URL</label>
+                      <label className="text-sm font-semibold text-slate-700">
+                        Twilio Webhook URL
+                      </label>
                       <Button
                         size="sm"
                         variant="flat"
                         className="bg-blue-100 text-blue-700 hover:bg-blue-200"
                         onPress={() => copyToClipboard(webhookUrl)}
-                        startContent={<ClipboardDocumentIcon className="w-4 h-4" />}
+                        startContent={
+                          <ClipboardDocumentIcon className="w-4 h-4" />
+                        }
                       >
                         Copy URL
                       </Button>
@@ -395,23 +439,25 @@ export default function PhoneSetupGuide({
                       readOnly
                       size="sm"
                       classNames={{
-                        input: "font-mono text-sm",
-                        inputWrapper: "bg-white/80 border-slate-200"
+                        input: 'font-mono text-sm',
+                        inputWrapper: 'bg-white/80 border-slate-200',
                       }}
                     />
                   </div>
 
                   {/* Step-by-step guide */}
                   <div className="bg-white/60 border border-slate-200/60 rounded-xl p-6">
-                    <h5 className="font-medium text-slate-700 mb-4">Setup Instructions:</h5>
+                    <h5 className="font-medium text-slate-700 mb-4">
+                      Setup Instructions:
+                    </h5>
                     <div className="space-y-3">
                       {[
-                        "Log into your Twilio Console",
-                        "Navigate to Phone Numbers → Manage → Active numbers",
-                        "Click your phone number",
+                        'Log into your Twilio Console',
+                        'Navigate to Phone Numbers → Manage → Active numbers',
+                        'Click your phone number',
                         'Set "A call comes in" webhook to the URL above',
                         'Enable "Primary handler fails" failover',
-                        "Save configuration and test"
+                        'Save configuration and test',
                       ].map((step, index) => (
                         <div key={index} className="flex items-start gap-3">
                           <div className="w-6 h-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">
@@ -431,9 +477,13 @@ export default function PhoneSetupGuide({
                   isLoading={isVerifying}
                   onPress={handleVerifyPhone}
                   isDisabled={!validatePhoneNumber(phoneNumber)}
-                  startContent={!isVerifying && <span className="text-xl">🔍</span>}
+                  startContent={
+                    !isVerifying && <span className="text-xl">🔍</span>
+                  }
                 >
-                  {isVerifying ? 'Verifying configuration...' : 'Verify Phone Setup'}
+                  {isVerifying
+                    ? 'Verifying configuration...'
+                    : 'Verify Phone Setup'}
                 </Button>
 
                 {/* Success state */}
@@ -444,20 +494,30 @@ export default function PhoneSetupGuide({
                         <CheckIcon className="w-7 h-7 text-white" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-lg font-semibold text-green-800 mb-2">Phone Verified Successfully!</h4>
+                        <h4 className="text-lg font-semibold text-green-800 mb-2">
+                          Phone Verified Successfully!
+                        </h4>
                         <div className="space-y-2 mb-4">
                           <p className="text-sm text-green-700">
-                            Your business number <strong className="text-lg font-mono bg-white/60 px-2 py-1 rounded border border-green-200">{phoneNumber}</strong> is configured and ready.
+                            Your business number{' '}
+                            <strong className="text-lg font-mono bg-white/60 px-2 py-1 rounded border border-green-200">
+                              {phoneNumber}
+                            </strong>{' '}
+                            is configured and ready.
                           </p>
                           <p className="text-sm text-green-600">
-                            ✨ Start using *7 during calls to activate AI processing
+                            ✨ Start using *7 during calls to activate AI
+                            processing
                           </p>
                         </div>
-                        
+
                         <div className="bg-white/60 border border-green-200 rounded-lg p-3">
-                          <p className="text-xs text-green-600 font-medium mb-1">All Set!</p>
+                          <p className="text-xs text-green-600 font-medium mb-1">
+                            All Set!
+                          </p>
                           <p className="text-xs text-green-700">
-                            Your existing phone number is now powered by Flynn.ai. Customers will notice no changes.
+                            Your existing phone number is now powered by
+                            Flynn.ai. Customers will notice no changes.
                           </p>
                         </div>
                       </div>
@@ -480,7 +540,8 @@ export default function PhoneSetupGuide({
               <h4 className="font-semibold text-red-800 mb-1">Setup Issue</h4>
               <p className="text-sm text-red-600">{error}</p>
               <p className="text-xs text-red-500 mt-2">
-                Need help? Our support team is available 24/7 to assist with phone setup.
+                Need help? Our support team is available 24/7 to assist with
+                phone setup.
               </p>
             </div>
           </div>
@@ -499,19 +560,19 @@ export default function PhoneSetupGuide({
             Back to Industry Selection
           </Button>
         )}
-        
+
         <div className="flex items-center gap-4">
           <div className="text-xs text-slate-500">
             Phone setup • Step 2 of 5
           </div>
-          
+
           <Button
             size="lg"
             onPress={handleComplete}
             isDisabled={!isVerified}
             className={`transition-all duration-300 transform ${
-              isVerified 
-                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/30 hover:scale-[1.02]' 
+              isVerified
+                ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-xl shadow-blue-500/25 hover:shadow-2xl hover:shadow-blue-500/30 hover:scale-[1.02]'
                 : 'bg-slate-100 text-slate-400 cursor-not-allowed'
             }`}
             endContent={<span>→</span>}
@@ -524,7 +585,9 @@ export default function PhoneSetupGuide({
       {/* Help section */}
       <div className="mt-8 text-center">
         <div className="bg-gradient-to-r from-slate-50 to-blue-50/30 border border-slate-200/50 rounded-xl p-6">
-          <h4 className="text-sm font-semibold text-slate-700 mb-2">Need assistance?</h4>
+          <h4 className="text-sm font-semibold text-slate-700 mb-2">
+            Need assistance?
+          </h4>
           <p className="text-xs text-slate-600 mb-3">
             Our technical team can help you set up phone integration in minutes.
           </p>

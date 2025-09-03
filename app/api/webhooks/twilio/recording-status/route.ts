@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     console.log('Recording status webhook received:', {
       callSid,
       recordingSid,
-      recordingStatus
+      recordingStatus,
     });
 
     if (!callSid) {
@@ -21,12 +21,15 @@ export async function POST(request: NextRequest) {
 
     // Update call status based on recording status
     let callStatus = 'in_progress';
-    
+
     switch (recordingStatus) {
       case 'completed':
         callStatus = 'recorded';
         // TODO: This is where we would trigger the AI processing pipeline
-        console.log('Recording completed, triggering AI processing for call:', callSid);
+        console.log(
+          'Recording completed, triggering AI processing for call:',
+          callSid
+        );
         break;
       case 'failed':
         callStatus = 'recording_failed';
@@ -40,9 +43,11 @@ export async function POST(request: NextRequest) {
     await updateCallStatus(callSid, callStatus);
 
     return NextResponse.json({ success: true });
-
   } catch (error) {
     console.error('Recording status webhook error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

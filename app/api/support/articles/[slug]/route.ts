@@ -8,7 +8,7 @@ export async function GET(
 ) {
   try {
     const supabase = createClient();
-    
+
     const { data: article, error } = await supabase
       .from('support_articles')
       .select('*')
@@ -17,10 +17,7 @@ export async function GET(
       .single();
 
     if (error || !article) {
-      return NextResponse.json(
-        { error: 'Article not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Article not found' }, { status: 404 });
     }
 
     // Increment view count
@@ -46,9 +43,9 @@ export async function POST(
   try {
     const supabase = createClient();
     const body = await request.json();
-    
+
     const { helpful } = body;
-    
+
     if (typeof helpful !== 'boolean') {
       return NextResponse.json(
         { error: 'Invalid feedback. Must specify helpful as boolean.' },
@@ -64,10 +61,7 @@ export async function POST(
       .single();
 
     if (fetchError || !article) {
-      return NextResponse.json(
-        { error: 'Article not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Article not found' }, { status: 404 });
     }
 
     // Update feedback count

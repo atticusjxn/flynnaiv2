@@ -24,7 +24,7 @@ export class DTMFHandler {
    */
   public processDTMFInput(event: DTMFEvent): KeypadActivationResult {
     const { callSid, digits } = event;
-    
+
     console.log(`DTMF processed for call ${callSid}: ${digits}`);
 
     // Check if this is the AI activation sequence
@@ -36,19 +36,19 @@ export class DTMFHandler {
           activated: true,
           shouldStartProcessing: false,
           sequence: digits,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
       }
 
       // Activate AI processing silently
       this.activatedCalls.add(callSid);
       console.log(`AI processing activated silently for call: ${callSid}`);
-      
+
       return {
         activated: true,
         shouldStartProcessing: true,
         sequence: digits,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
 
@@ -57,7 +57,7 @@ export class DTMFHandler {
       activated: false,
       shouldStartProcessing: false,
       sequence: digits,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -87,7 +87,9 @@ export class DTMFHandler {
    * Clear all activations (for cleanup/reset)
    */
   public clearAllActivations(): void {
-    console.log(`Clearing all AI activations. Total: ${this.activatedCalls.size}`);
+    console.log(
+      `Clearing all AI activations. Total: ${this.activatedCalls.size}`
+    );
     this.activatedCalls.clear();
   }
 }

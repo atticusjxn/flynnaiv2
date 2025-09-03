@@ -171,14 +171,14 @@ Flynn.ai v2 supports multiple industries with tailored configurations:
 
 ### Supported Industries
 
-| Industry | Event Types | Key Features |
-|----------|-------------|--------------|
-| **Plumbing** | Service calls, emergencies, quotes | Emergency detection, location tracking |
-| **Real Estate** | Showings, meetings, inspections | Property address extraction, buyer qualification |
-| **Legal** | Consultations, court dates | Deadline detection, confidentiality handling |
-| **Medical** | Appointments, follow-ups | HIPAA compliance, urgency assessment |
-| **Sales** | Demos, discovery calls | Lead qualification, pipeline tracking |
-| **Consulting** | Strategy sessions, workshops | Project scope identification |
+| Industry        | Event Types                        | Key Features                                     |
+| --------------- | ---------------------------------- | ------------------------------------------------ |
+| **Plumbing**    | Service calls, emergencies, quotes | Emergency detection, location tracking           |
+| **Real Estate** | Showings, meetings, inspections    | Property address extraction, buyer qualification |
+| **Legal**       | Consultations, court dates         | Deadline detection, confidentiality handling     |
+| **Medical**     | Appointments, follow-ups           | HIPAA compliance, urgency assessment             |
+| **Sales**       | Demos, discovery calls             | Lead qualification, pipeline tracking            |
+| **Consulting**  | Strategy sessions, workshops       | Project scope identification                     |
 
 ### Adaptive Features
 
@@ -203,25 +203,26 @@ const callTranscript = `
 // AI Output:
 [
   {
-    eventType: "service_call",
-    title: "Kitchen Sink Repair",
-    proposedDateTime: "2025-01-16T09:00:00Z",
-    location: "123 Oak Street",
-    urgencyLevel: "high"
+    eventType: 'service_call',
+    title: 'Kitchen Sink Repair',
+    proposedDateTime: '2025-01-16T09:00:00Z',
+    location: '123 Oak Street',
+    urgencyLevel: 'high',
   },
   {
-    eventType: "service_call", 
-    title: "Water Heater Installation",
+    eventType: 'service_call',
+    title: 'Water Heater Installation',
     proposedDateTime: null, // Needs follow-up
-    location: "123 Oak Street",
-    followUpRequired: true
-  }
-]
+    location: '123 Oak Street',
+    followUpRequired: true,
+  },
+];
 ```
 
 ### Professional Email System
 
 Automatically sends professional emails with:
+
 - **AI-generated subject lines** based on call content
 - **Event cards** with confirmation/edit buttons
 - **Calendar attachments** (ICS files)
@@ -231,8 +232,9 @@ Automatically sends professional emails with:
 ### Flexible Event Management
 
 Events can be:
+
 - ✅ **Confirmed** - User verified and committed
-- ⏳ **Pending** - Needs user review or callback  
+- ⏳ **Pending** - Needs user review or callback
 - 📝 **Extracted** - AI found potential event
 - 🔄 **Follow-up** - Requires additional contact
 - ✅ **Completed** - Event finished
@@ -335,7 +337,7 @@ npm run email:preview   # Opens email template preview server
 # Unit tests
 npm run test
 
-# Integration tests  
+# Integration tests
 npm run test:integration
 
 # End-to-end tests
@@ -388,6 +390,7 @@ docker run -p 3000:3000 --env-file .env.production flynnv2
 ### Monitoring
 
 The application includes built-in monitoring for:
+
 - AI processing accuracy and speed
 - Email delivery rates
 - Calendar sync success rates
@@ -440,6 +443,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 ### Version 2.0.0 (In Development)
 
 **New Features:**
+
 - ✨ Universal industry support with flexible event system
 - 🤖 Advanced AI event extraction with industry awareness
 - 📧 Professional email templates with React Email
@@ -448,6 +452,7 @@ We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING
 - ⚡ Real-time dashboard updates
 
 **Breaking Changes:**
+
 - 🔄 Migrated from "appointments" to flexible "events" system
 - 📊 New database schema with industry configurations
 - 🎯 Industry-specific AI prompts and terminology
@@ -473,6 +478,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ### Professional Services
 
 Flynn.ai offers professional services for:
+
 - Custom industry configurations
 - Enterprise deployment
 - Advanced integrations

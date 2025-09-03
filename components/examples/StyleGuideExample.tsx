@@ -1,7 +1,14 @@
 'use client';
 
 import { Button } from '@/components/ui/Button';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 
@@ -9,8 +16,12 @@ export default function StyleGuideExample() {
   return (
     <div className="p-8 space-y-8 bg-background">
       <div className="text-center">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Flynn.ai Style Guide</h1>
-        <p className="text-muted-foreground">Examples of our design system components</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">
+          Flynn.ai Style Guide
+        </h1>
+        <p className="text-muted-foreground">
+          Examples of our design system components
+        </p>
       </div>
 
       {/* Button Examples */}
@@ -35,7 +46,9 @@ export default function StyleGuideExample() {
             </div>
             <div className="flex gap-4 items-center">
               <Button disabled>Disabled</Button>
-              <Button variant="outline" disabled>Disabled Outline</Button>
+              <Button variant="outline" disabled>
+                Disabled Outline
+              </Button>
             </div>
           </div>
         </CardContent>
@@ -45,17 +58,15 @@ export default function StyleGuideExample() {
       <Card>
         <CardHeader>
           <CardTitle>Form Elements</CardTitle>
-          <CardDescription>Input fields and labels using our design system</CardDescription>
+          <CardDescription>
+            Input fields and labels using our design system
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-              />
+              <Input id="email" type="email" placeholder="Enter your email" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
@@ -90,11 +101,14 @@ export default function StyleGuideExample() {
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground">
-              Automatic transcription and event extraction from your business calls.
+              Automatic transcription and event extraction from your business
+              calls.
             </p>
           </CardContent>
           <CardFooter>
-            <Button variant="outline" size="sm">Learn More</Button>
+            <Button variant="outline" size="sm">
+              Learn More
+            </Button>
           </CardFooter>
         </Card>
 
@@ -109,7 +123,9 @@ export default function StyleGuideExample() {
             </p>
           </CardContent>
           <CardFooter>
-            <Button variant="outline" size="sm">Configure</Button>
+            <Button variant="outline" size="sm">
+              Configure
+            </Button>
           </CardFooter>
         </Card>
 
@@ -124,7 +140,9 @@ export default function StyleGuideExample() {
             </p>
           </CardContent>
           <CardFooter>
-            <Button variant="outline" size="sm">Settings</Button>
+            <Button variant="outline" size="sm">
+              Settings
+            </Button>
           </CardFooter>
         </Card>
       </div>
@@ -167,10 +185,13 @@ export default function StyleGuideExample() {
           <div className="space-y-4">
             <h1 className="text-4xl font-bold text-foreground">Heading 1</h1>
             <h2 className="text-3xl font-bold text-foreground">Heading 2</h2>
-            <h3 className="text-2xl font-semibold text-foreground">Heading 3</h3>
+            <h3 className="text-2xl font-semibold text-foreground">
+              Heading 3
+            </h3>
             <h4 className="text-xl font-semibold text-foreground">Heading 4</h4>
             <p className="text-base text-foreground">
-              This is regular body text. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              This is regular body text. Lorem ipsum dolor sit amet, consectetur
+              adipiscing elit.
             </p>
             <p className="text-sm text-muted-foreground">
               This is secondary text with muted colors for less emphasis.

@@ -5,11 +5,13 @@ This directory contains all the database setup and operations for Flynn.ai v2.
 ## 🚀 Quick Setup
 
 ### 1. Create Supabase Project
+
 1. Go to [supabase.com](https://supabase.com)
 2. Create a new project
 3. Copy your project URL and API keys
 
 ### 2. Configure Environment Variables
+
 Copy `.env.example` to `.env.local` and fill in:
 
 ```bash
@@ -20,12 +22,14 @@ SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
 ```
 
 ### 3. Run Database Migrations
+
 Execute the SQL files in order in your Supabase SQL editor:
 
 1. `migrations/001_initial_schema.sql` - Creates all tables, RLS policies, functions
 2. `migrations/002_initial_data.sql` - Inserts default configurations and templates
 
 ### 4. Test Database Setup
+
 Run the test operations to verify everything works:
 
 ```typescript
@@ -53,6 +57,7 @@ lib/supabase/
 ## 🛠️ Database Operations
 
 ### User Operations
+
 ```typescript
 import { UserService } from '@/lib/supabase/users';
 
@@ -61,6 +66,7 @@ const user = await userService.getCurrentUser();
 ```
 
 ### Call Operations
+
 ```typescript
 import { CallService } from '@/lib/supabase/calls';
 
@@ -68,11 +74,12 @@ const callService = new CallService();
 const call = await callService.createCall({
   user_id: userId,
   twilio_call_sid: 'CAxxxx',
-  caller_number: '+1234567890'
+  caller_number: '+1234567890',
 });
 ```
 
 ### Event Operations
+
 ```typescript
 import { EventService } from '@/lib/supabase/events';
 
@@ -81,6 +88,7 @@ const events = await eventService.getUserEvents(userId);
 ```
 
 ### Analytics Operations
+
 ```typescript
 import { AnalyticsService } from '@/lib/supabase/analytics';
 
@@ -91,12 +99,15 @@ const stats = await analyticsService.getDashboardStats(userId);
 ## 🔒 Security Features
 
 ### Row Level Security (RLS)
+
 All tables have RLS enabled with policies that ensure:
+
 - Users can only access their own data
 - Service role can access all data for system operations
 - Audit logs track all data modifications
 
 ### Data Protection
+
 - Sensitive fields are marked for encryption
 - API keys stored separately from database
 - Audit trail for all user actions
@@ -104,6 +115,7 @@ All tables have RLS enabled with policies that ensure:
 ## 📊 Database Schema
 
 ### Core Tables
+
 - **users** - User accounts and subscription info
 - **phone_numbers** - Twilio phone numbers assigned to users
 - **calls** - Call records with transcription and processing status
@@ -115,6 +127,7 @@ All tables have RLS enabled with policies that ensure:
 - **audit_logs** - System activity tracking
 
 ### Key Features
+
 - **Flexible Event System**: Supports all business types
 - **Industry Configurations**: Pre-configured for plumbing, real estate, legal, medical, sales, consulting
 - **Email Templates**: Industry-specific with variable substitution
@@ -124,6 +137,7 @@ All tables have RLS enabled with policies that ensure:
 ## 🧪 Testing
 
 The test operations verify:
+
 - ✅ Database connection
 - ✅ User operations (CRUD)
 - ✅ Call operations (creation, updates)
@@ -173,6 +187,7 @@ The test operations verify:
 ## 📝 Migration Notes
 
 When updating the schema:
+
 1. Create new migration files with incremental numbers
 2. Update TypeScript types accordingly
 3. Test migrations on staging environment first

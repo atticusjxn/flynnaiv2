@@ -13,7 +13,7 @@ import {
   Text,
   Button,
   Link,
-  Hr
+  Hr,
 } from '@react-email/components';
 
 export interface CustomerReminderEmailProps {
@@ -33,35 +33,44 @@ export interface CustomerReminderEmailProps {
 }
 
 export default function CustomerReminderEmail({
-  customerName = "Valued Customer",
-  companyName = "Your Service Provider",
-  eventType = "appointment",
-  eventTitle = "Service Appointment",
-  confirmedDateTime = "Date and time to be confirmed",
-  location = "Location to be determined",
+  customerName = 'Valued Customer',
+  companyName = 'Your Service Provider',
+  eventType = 'appointment',
+  eventTitle = 'Service Appointment',
+  confirmedDateTime = 'Date and time to be confirmed',
+  location = 'Location to be determined',
   duration,
   businessPhone,
   businessEmail,
   confirmationUrl,
   rescheduleUrl,
   hoursUntilEvent = 24,
-  specialInstructions
+  specialInstructions,
 }: CustomerReminderEmailProps) {
-  const formattedDateTime = new Date(confirmedDateTime).toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true
-  });
+  const formattedDateTime = new Date(confirmedDateTime).toLocaleDateString(
+    'en-US',
+    {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }
+  );
 
-  const timeUntilText = hoursUntilEvent < 24 
-    ? `in ${hoursUntilEvent} ${hoursUntilEvent === 1 ? 'hour' : 'hours'}` 
-    : `in ${Math.round(hoursUntilEvent / 24)} ${Math.round(hoursUntilEvent / 24) === 1 ? 'day' : 'days'}`;
+  const timeUntilText =
+    hoursUntilEvent < 24
+      ? `in ${hoursUntilEvent} ${hoursUntilEvent === 1 ? 'hour' : 'hours'}`
+      : `in ${Math.round(hoursUntilEvent / 24)} ${Math.round(hoursUntilEvent / 24) === 1 ? 'day' : 'days'}`;
 
-  const urgencyLevel = hoursUntilEvent <= 2 ? 'urgent' : hoursUntilEvent <= 24 ? 'soon' : 'upcoming';
+  const urgencyLevel =
+    hoursUntilEvent <= 2
+      ? 'urgent'
+      : hoursUntilEvent <= 24
+        ? 'soon'
+        : 'upcoming';
 
   return (
     <Html>
@@ -73,8 +82,11 @@ export default function CustomerReminderEmail({
             <Row>
               <Column>
                 <Heading style={h1}>
-                  {urgencyLevel === 'urgent' ? '🚨 Reminder: ' : '📅 Reminder: '}
-                  {eventType.charAt(0).toUpperCase() + eventType.slice(1)} {timeUntilText}
+                  {urgencyLevel === 'urgent'
+                    ? '🚨 Reminder: '
+                    : '📅 Reminder: '}
+                  {eventType.charAt(0).toUpperCase() + eventType.slice(1)}{' '}
+                  {timeUntilText}
                 </Heading>
                 <Text style={subtitle}>
                   Don't forget your upcoming {eventType} with {companyName}
@@ -88,7 +100,7 @@ export default function CustomerReminderEmail({
             {/* Event Details Card */}
             <div style={eventCard}>
               <Heading style={eventTitle}>{eventTitle}</Heading>
-              
+
               <div style={eventDetails}>
                 <div style={detailRow}>
                   <div style={detailIcon}>📅</div>
@@ -145,7 +157,8 @@ export default function CustomerReminderEmail({
                   </li>
                   <li style={tipItem}>
                     <Text style={tipText}>
-                      Contact us if you need to reschedule at least 24 hours in advance
+                      Contact us if you need to reschedule at least 24 hours in
+                      advance
                     </Text>
                   </li>
                 </ul>
@@ -162,7 +175,7 @@ export default function CustomerReminderEmail({
                     </Button>
                   </Column>
                 )}
-                
+
                 {rescheduleUrl && (
                   <Column style={buttonColumn}>
                     <Button href={rescheduleUrl} style={secondaryButton}>
@@ -176,11 +189,12 @@ export default function CustomerReminderEmail({
             {/* Contact Information */}
             <Section style={contactSection}>
               <Heading style={contactTitle}>Need to Make Changes?</Heading>
-              
+
               <Text style={contactDescription}>
-                If you need to reschedule or have any questions, please contact us as soon as possible:
+                If you need to reschedule or have any questions, please contact
+                us as soon as possible:
               </Text>
-              
+
               <div style={contactInfo}>
                 {businessPhone && (
                   <div style={contactRow}>
@@ -190,7 +204,7 @@ export default function CustomerReminderEmail({
                     </Link>
                   </div>
                 )}
-                
+
                 {businessEmail && (
                   <div style={contactRow}>
                     <Text style={contactLabel}>✉️ Email:</Text>
@@ -210,8 +224,11 @@ export default function CustomerReminderEmail({
               This is an automated reminder from {companyName}.
             </Text>
             <Text style={footerText}>
-              Powered by <Link href="https://flynn.ai" style={linkStyle}>Flynn.ai</Link> - 
-              Never miss an appointment again
+              Powered by{' '}
+              <Link href="https://flynn.ai" style={linkStyle}>
+                Flynn.ai
+              </Link>{' '}
+              - Never miss an appointment again
             </Text>
           </Section>
         </Container>
@@ -223,7 +240,8 @@ export default function CustomerReminderEmail({
 // Styles
 const main = {
   backgroundColor: '#f8fafc',
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  fontFamily:
+    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   margin: '0',
   padding: '0',
 };

@@ -18,7 +18,7 @@ export interface EmailNotificationData {
   companyName: string;
   industry: string;
   userName?: string;
-  
+
   // Call information
   callSummary: {
     callerPhone: string;
@@ -27,7 +27,7 @@ export interface EmailNotificationData {
     timestamp: string;
     callSid: string;
   };
-  
+
   // AI extraction results
   extractedEvents: Array<{
     id: string;
@@ -44,41 +44,41 @@ export interface EmailNotificationData {
     estimatedPrice?: number;
     notes?: string;
   }>;
-  
+
   // Additional context
   transcriptionSnippet?: string;
   callId: string;
   dashboardUrl?: string;
-  
+
   // Industry-specific data
   industrySpecificData?: {
     // Plumbing
     emergencyContact?: string;
     afterHoursAvailable?: boolean;
-    
+
     // Real Estate
     agentLicense?: string;
     brokerageInfo?: string;
     mlsNumber?: string;
-    
+
     // Legal
     attorneyBarNumber?: string;
     lawFirm?: string;
     practiceAreas?: string[];
     confidentialityRequired?: boolean;
-    
+
     // Medical
     providerNPI?: string;
     medicalFacility?: string;
     specialties?: string[];
     hipaaCompliant?: boolean;
-    
+
     // Sales
     salesRepName?: string;
     salesTerritory?: string;
     crmIntegration?: boolean;
     pipelineStage?: string;
-    
+
     // Consulting
     consultantName?: string;
     specialization?: string[];
@@ -103,28 +103,30 @@ export interface EmailResult {
  */
 export class EmailNotificationService {
   private dashboardUrl: string;
-  
+
   constructor() {
     this.dashboardUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://flynn.ai';
   }
-  
+
   /**
    * Send industry-specific email notification
    */
-  async sendCallNotification(data: EmailNotificationData): Promise<EmailResult> {
+  async sendCallNotification(
+    data: EmailNotificationData
+  ): Promise<EmailResult> {
     try {
       // Get industry configuration
       const industryConfig = getIndustryConfiguration(data.industry);
-      
+
       // Generate subject line
       const subjectLine = this.generateSubjectLine(data, industryConfig);
-      
+
       // Render appropriate email template
       const emailHtml = await this.renderEmailTemplate(data);
-      
+
       // Generate calendar attachments if events exist
       const attachments = await this.generateCalendarAttachments(data);
-      
+
       // Send email via Resend
       const result = await resend.emails.send({
         from: 'Flynn.ai <notifications@flynn.ai>',
@@ -139,17 +141,19 @@ export class EmailNotificationService {
         },
         tags: [
           { name: 'industry', value: data.industry },
-          { name: 'event_count', value: data.extractedEvents.length.toString() },
+          {
+            name: 'event_count',
+            value: data.extractedEvents.length.toString(),
+          },
           { name: 'has_urgent', value: this.hasUrgentEvents(data).toString() },
         ],
       });
-      
+
       return {
         success: true,
         emailId: result.data?.id,
         attachments: attachments,
       };
-      
     } catch (error) {
       console.error('Email notification failed:', error);
       return {
@@ -158,11 +162,13 @@ export class EmailNotificationService {
       };
     }
   }
-  
+
   /**
    * Render the appropriate industry-specific email template
    */
-  private async renderEmailTemplate(data: EmailNotificationData): Promise<string> {
+  private async renderEmailTemplate(
+    data: EmailNotificationData
+  ): Promise<string> {
     const baseProps = {
       companyName: data.companyName,
       industry: data.industry,
@@ -173,75 +179,91 @@ export class EmailNotificationService {
       userEmail: data.userEmail,
       dashboardUrl: this.dashboardUrl,
     };
-    
+
     // Route to industry-specific template
     switch (data.industry) {
       case 'plumbing':
-        return render(PlumbingEmail({
-          ...baseProps,
-          emergencyContact: data.industrySpecificData?.emergencyContact,
-          afterHoursAvailable: data.industrySpecificData?.afterHoursAvailable,
-        }));
-        
+        return render(
+          PlumbingEmail({
+            ...baseProps,
+            emergencyContact: data.industrySpecificData?.emergencyContact,
+            afterHoursAvailable: data.industrySpecificData?.afterHoursAvailable,
+          })
+        );
+
       case 'real_estate':
-        return render(RealEstateEmail({
-          ...baseProps,
-          agentLicense: data.industrySpecificData?.agentLicense,
-          brokerageInfo: data.industrySpecificData?.brokerageInfo,
-          mlsNumber: data.industrySpecificData?.mlsNumber,
-        }));
-        
+        return render(
+          RealEstateEmail({
+            ...baseProps,
+            agentLicense: data.industrySpecificData?.agentLicense,
+            brokerageInfo: data.industrySpecificData?.brokerageInfo,
+            mlsNumber: data.industrySpecificData?.mlsNumber,
+          })
+        );
+
       case 'legal':
-        return render(LegalEmail({
-          ...baseProps,
-          attorneyBarNumber: data.industrySpecificData?.attorneyBarNumber,
-          lawFirm: data.industrySpecificData?.lawFirm,
-          practiceAreas: data.industrySpecificData?.practiceAreas,
-          confidentialityRequired: data.industrySpecificData?.confidentialityRequired,
-        }));
-        
+        return render(
+          LegalEmail({
+            ...baseProps,
+            attorneyBarNumber: data.industrySpecificData?.attorneyBarNumber,
+            lawFirm: data.industrySpecificData?.lawFirm,
+            practiceAreas: data.industrySpecificData?.practiceAreas,
+            confidentialityRequired:
+              data.industrySpecificData?.confidentialityRequired,
+          })
+        );
+
       case 'medical':
-        return render(MedicalEmail({
-          ...baseProps,
-          providerNPI: data.industrySpecificData?.providerNPI,
-          medicalFacility: data.industrySpecificData?.medicalFacility,
-          specialties: data.industrySpecificData?.specialties,
-          hipaaCompliant: data.industrySpecificData?.hipaaCompliant,
-        }));
-        
+        return render(
+          MedicalEmail({
+            ...baseProps,
+            providerNPI: data.industrySpecificData?.providerNPI,
+            medicalFacility: data.industrySpecificData?.medicalFacility,
+            specialties: data.industrySpecificData?.specialties,
+            hipaaCompliant: data.industrySpecificData?.hipaaCompliant,
+          })
+        );
+
       case 'sales':
-        return render(SalesEmail({
-          ...baseProps,
-          salesRepName: data.industrySpecificData?.salesRepName,
-          salesTerritory: data.industrySpecificData?.salesTerritory,
-          crmIntegration: data.industrySpecificData?.crmIntegration,
-          pipelineStage: data.industrySpecificData?.pipelineStage,
-        }));
-        
+        return render(
+          SalesEmail({
+            ...baseProps,
+            salesRepName: data.industrySpecificData?.salesRepName,
+            salesTerritory: data.industrySpecificData?.salesTerritory,
+            crmIntegration: data.industrySpecificData?.crmIntegration,
+            pipelineStage: data.industrySpecificData?.pipelineStage,
+          })
+        );
+
       case 'consulting':
-        return render(ConsultingEmail({
-          ...baseProps,
-          consultantName: data.industrySpecificData?.consultantName,
-          specialization: data.industrySpecificData?.specialization,
-          certifications: data.industrySpecificData?.certifications,
-          projectComplexity: data.industrySpecificData?.projectComplexity,
-        }));
-        
+        return render(
+          ConsultingEmail({
+            ...baseProps,
+            consultantName: data.industrySpecificData?.consultantName,
+            specialization: data.industrySpecificData?.specialization,
+            certifications: data.industrySpecificData?.certifications,
+            projectComplexity: data.industrySpecificData?.projectComplexity,
+          })
+        );
+
       default:
         // Fall back to general template
         return render(CallOverviewEmail(baseProps));
     }
   }
-  
+
   /**
    * Generate appropriate subject line based on industry and events
    */
-  private generateSubjectLine(data: EmailNotificationData, industryConfig: any): string {
+  private generateSubjectLine(
+    data: EmailNotificationData,
+    industryConfig: any
+  ): string {
     const { terminology } = industryConfig;
     const hasUrgent = this.hasUrgentEvents(data);
     const hasEmergency = this.hasEmergencyEvents(data);
     const eventCount = data.extractedEvents.length;
-    
+
     // Emergency/urgent prefix
     let prefix = '';
     if (hasEmergency) {
@@ -249,7 +271,7 @@ export class EmailNotificationService {
     } else if (hasUrgent) {
       prefix = '⚡ URGENT - ';
     }
-    
+
     // Base subject based on events
     let baseSubject = '';
     if (eventCount === 0) {
@@ -260,23 +282,27 @@ export class EmailNotificationService {
     } else {
       baseSubject = `${eventCount} new ${terminology.appointment}s from ${data.callSummary.callerPhone}`;
     }
-    
+
     // Add company context
     const companyContext = ` | ${data.companyName}`;
-    
+
     return prefix + baseSubject + companyContext;
   }
-  
+
   /**
    * Generate calendar invite attachments for extracted events
    */
-  private async generateCalendarAttachments(data: EmailNotificationData): Promise<Array<{
-    filename: string;
-    content: string;
-    contentType: string;
-  }>> {
+  private async generateCalendarAttachments(
+    data: EmailNotificationData
+  ): Promise<
+    Array<{
+      filename: string;
+      content: string;
+      contentType: string;
+    }>
+  > {
     const attachments = [];
-    
+
     for (const event of data.extractedEvents) {
       if (event.proposedDateTime) {
         try {
@@ -290,47 +316,59 @@ export class EmailNotificationService {
               name: data.companyName,
               email: data.userEmail,
             },
-            attendees: event.customerEmail ? [{
-              name: event.customerName || 'Customer',
-              email: event.customerEmail,
-            }] : [],
+            attendees: event.customerEmail
+              ? [
+                  {
+                    name: event.customerName || 'Customer',
+                    email: event.customerEmail,
+                  },
+                ]
+              : [],
           });
-          
+
           attachments.push({
             filename: `${event.title.replace(/[^a-zA-Z0-9]/g, '_')}.ics`,
             content: icsContent,
             contentType: 'text/calendar',
           });
         } catch (error) {
-          console.error(`Failed to generate calendar invite for event ${event.id}:`, error);
+          console.error(
+            `Failed to generate calendar invite for event ${event.id}:`,
+            error
+          );
         }
       }
     }
-    
+
     return attachments;
   }
-  
+
   /**
    * Check if any events have high urgency
    */
   private hasUrgentEvents(data: EmailNotificationData): boolean {
-    return data.extractedEvents.some(event => event.urgency === 'high' || event.urgency === 'emergency');
+    return data.extractedEvents.some(
+      (event) => event.urgency === 'high' || event.urgency === 'emergency'
+    );
   }
-  
+
   /**
    * Check if any events are emergency level
    */
   private hasEmergencyEvents(data: EmailNotificationData): boolean {
-    return data.extractedEvents.some(event => event.urgency === 'emergency');
+    return data.extractedEvents.some((event) => event.urgency === 'emergency');
   }
-  
+
   /**
    * Send email preview for testing
    */
-  async sendEmailPreview(data: EmailNotificationData, previewEmail: string): Promise<EmailResult> {
+  async sendEmailPreview(
+    data: EmailNotificationData,
+    previewEmail: string
+  ): Promise<EmailResult> {
     try {
       const emailHtml = await this.renderEmailTemplate(data);
-      
+
       const result = await resend.emails.send({
         from: 'Flynn.ai <notifications@flynn.ai>',
         to: [previewEmail],
@@ -341,7 +379,7 @@ export class EmailNotificationService {
           'X-Flynn-Industry': data.industry,
         },
       });
-      
+
       return {
         success: true,
         emailId: result.data?.id,
@@ -353,7 +391,7 @@ export class EmailNotificationService {
       };
     }
   }
-  
+
   /**
    * Get email analytics and performance data
    */
@@ -383,7 +421,9 @@ export function createEmailNotificationService(): EmailNotificationService {
 /**
  * Utility function for quick email sending
  */
-export async function sendQuickNotification(data: EmailNotificationData): Promise<EmailResult> {
+export async function sendQuickNotification(
+  data: EmailNotificationData
+): Promise<EmailResult> {
   const service = createEmailNotificationService();
   return service.sendCallNotification(data);
 }
@@ -391,15 +431,17 @@ export async function sendQuickNotification(data: EmailNotificationData): Promis
 /**
  * Batch send notifications (for multiple users/calls)
  */
-export async function sendBatchNotifications(notifications: EmailNotificationData[]): Promise<EmailResult[]> {
+export async function sendBatchNotifications(
+  notifications: EmailNotificationData[]
+): Promise<EmailResult[]> {
   const service = createEmailNotificationService();
   const results = await Promise.allSettled(
-    notifications.map(data => service.sendCallNotification(data))
+    notifications.map((data) => service.sendCallNotification(data))
   );
-  
-  return results.map(result => 
-    result.status === 'fulfilled' 
-      ? result.value 
+
+  return results.map((result) =>
+    result.status === 'fulfilled'
+      ? result.value
       : { success: false, error: 'Batch send failed' }
   );
 }
@@ -407,29 +449,32 @@ export async function sendBatchNotifications(notifications: EmailNotificationDat
 /**
  * Email template validation
  */
-export function validateEmailData(data: EmailNotificationData): { valid: boolean; errors: string[] } {
+export function validateEmailData(data: EmailNotificationData): {
+  valid: boolean;
+  errors: string[];
+} {
   const errors: string[] = [];
-  
+
   if (!data.userEmail || !data.userEmail.includes('@')) {
     errors.push('Valid user email is required');
   }
-  
+
   if (!data.companyName?.trim()) {
     errors.push('Company name is required');
   }
-  
+
   if (!data.industry?.trim()) {
     errors.push('Industry is required');
   }
-  
+
   if (!data.callSummary?.callerPhone?.trim()) {
     errors.push('Caller phone number is required');
   }
-  
+
   if (!data.callId?.trim()) {
     errors.push('Call ID is required');
   }
-  
+
   if (data.extractedEvents) {
     data.extractedEvents.forEach((event, index) => {
       if (!event.title?.trim()) {
@@ -440,7 +485,7 @@ export function validateEmailData(data: EmailNotificationData): { valid: boolean
       }
     });
   }
-  
+
   return {
     valid: errors.length === 0,
     errors,

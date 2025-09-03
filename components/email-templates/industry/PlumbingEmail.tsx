@@ -1,5 +1,7 @@
 import React from 'react';
-import CallOverviewEmail, { CallOverviewEmailProps } from '../CallOverviewEmail';
+import CallOverviewEmail, {
+  CallOverviewEmailProps,
+} from '../CallOverviewEmail';
 import { Section, Text, Link, Row, Column } from '@react-email/components';
 
 interface PlumbingEmailProps extends CallOverviewEmailProps {
@@ -9,29 +11,34 @@ interface PlumbingEmailProps extends CallOverviewEmailProps {
 }
 
 export default function PlumbingEmail(props: PlumbingEmailProps) {
-  const hasEmergencyEvents = props.extractedEvents.some(e => e.urgency === 'emergency');
+  const hasEmergencyEvents = props.extractedEvents.some(
+    (e) => e.urgency === 'emergency'
+  );
 
   return (
     <CallOverviewEmail {...props}>
       {/* Plumbing-specific emergency section */}
       {hasEmergencyEvents && (
         <Section style={emergencySection}>
-          <Text style={emergencyTitle}>
-            🚨 EMERGENCY SERVICE ALERT
-          </Text>
+          <Text style={emergencyTitle}>🚨 EMERGENCY SERVICE ALERT</Text>
           <Text style={emergencyText}>
-            This call contains emergency plumbing requests that require immediate attention.
-            Water damage and pipe bursts can cause significant property damage if not addressed quickly.
+            This call contains emergency plumbing requests that require
+            immediate attention. Water damage and pipe bursts can cause
+            significant property damage if not addressed quickly.
           </Text>
-          
+
           {props.emergencyContact && (
             <Text style={emergencyContact}>
-              Emergency Contact: <Link href={`tel:${props.emergencyContact}`} style={emergencyContactLink}>
+              Emergency Contact:{' '}
+              <Link
+                href={`tel:${props.emergencyContact}`}
+                style={emergencyContactLink}
+              >
                 {props.emergencyContact}
               </Link>
             </Text>
           )}
-          
+
           <Row style={emergencyActions}>
             <Column>
               <Link
@@ -60,19 +67,22 @@ export default function PlumbingEmail(props: PlumbingEmailProps) {
           <Column>
             <Text style={serviceInfoLabel}>Service Areas:</Text>
             <Text style={serviceInfoText}>
-              All service calls will be scheduled based on location and technician availability.
+              All service calls will be scheduled based on location and
+              technician availability.
             </Text>
           </Column>
           <Column>
             <Text style={serviceInfoLabel}>Response Time:</Text>
             <Text style={serviceInfoText}>
-              Emergency: &lt; 2 hours<br />
-              Urgent: Same day<br />
+              Emergency: &lt; 2 hours
+              <br />
+              Urgent: Same day
+              <br />
               Standard: 24-48 hours
             </Text>
           </Column>
         </Row>
-        
+
         {props.afterHoursAvailable && (
           <Text style={afterHoursNotice}>
             💡 After-hours emergency service available 24/7 with premium rates
@@ -84,11 +94,14 @@ export default function PlumbingEmail(props: PlumbingEmailProps) {
       <Section style={tipsSection}>
         <Text style={tipsTitle}>🛠️ Before Your Service Appointment:</Text>
         <Text style={tipsList}>
-          • Clear access to the problem area<br />
-          • Locate your main water shut-off valve<br />
-          • Document any recent changes to plumbing<br />
-          • Prepare list of all affected fixtures<br />
-          • Have payment method ready (cash, card, check)
+          • Clear access to the problem area
+          <br />
+          • Locate your main water shut-off valve
+          <br />
+          • Document any recent changes to plumbing
+          <br />
+          • Prepare list of all affected fixtures
+          <br />• Have payment method ready (cash, card, check)
         </Text>
       </Section>
     </CallOverviewEmail>

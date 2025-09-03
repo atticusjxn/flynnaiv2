@@ -104,7 +104,10 @@ export interface ExtractionContext {
   specialInstructions?: string;
 }
 
-export function buildSystemPrompt(industry: string, context?: ExtractionContext): string {
+export function buildSystemPrompt(
+  industry: string,
+  context?: ExtractionContext
+): string {
   return `${BASE_SYSTEM_PROMPT}
 
 INDUSTRY CONTEXT: ${industry.toUpperCase()}

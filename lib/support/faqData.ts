@@ -1,15 +1,19 @@
 import { Database } from '@/types/database.types';
 
-type SupportArticleInsert = Database['public']['Tables']['support_articles']['Insert'];
+type SupportArticleInsert =
+  Database['public']['Tables']['support_articles']['Insert'];
 
 // FAQ content generated from CLAUDE.md knowledge base
-export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'created_at' | 'updated_at'>[] = [
+export const faqArticles: Omit<
+  SupportArticleInsert,
+  'id' | 'author_id' | 'created_at' | 'updated_at'
+>[] = [
   // Getting Started
   {
-    title: "What is Flynn.ai and how does it work?",
-    slug: "what-is-flynn-ai",
-    category: "getting-started",
-    industry_type: "all",
+    title: 'What is Flynn.ai and how does it work?',
+    slug: 'what-is-flynn-ai',
+    category: 'getting-started',
+    industry_type: 'all',
     content: `
       <h2>Flynn.ai Overview</h2>
       <p>Flynn.ai v2 is a universal AI-powered platform that transforms business phone calls into organized calendar events. Our mission is to "turn every business call into actionable calendar events within 2 minutes."</p>
@@ -32,18 +36,19 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
       </ul>
     `,
     tags: ['overview', 'features', 'getting-started'],
-    search_keywords: "flynn ai overview what is how works call forwarding AI processing",
+    search_keywords:
+      'flynn ai overview what is how works call forwarding AI processing',
     is_published: true,
     view_count: 0,
     helpful_count: 0,
     not_helpful_count: 0,
   },
-  
+
   {
-    title: "How to set up call forwarding in 10 seconds",
-    slug: "setup-call-forwarding",
-    category: "setup",
-    industry_type: "all",
+    title: 'How to set up call forwarding in 10 seconds',
+    slug: 'setup-call-forwarding',
+    category: 'setup',
+    industry_type: 'all',
     content: `
       <h2>Quick Call Forwarding Setup</h2>
       <p>Flynn.ai uses simple call forwarding to process your business calls. Here's how to set it up:</p>
@@ -79,7 +84,8 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
       <p><strong>Important:</strong> Callers experience no difference in call quality or connection time.</p>
     `,
     tags: ['setup', 'call-forwarding', 'phone-setup'],
-    search_keywords: "call forwarding setup phone number twilio verizon att tmobile sprint",
+    search_keywords:
+      'call forwarding setup phone number twilio verizon att tmobile sprint',
     is_published: true,
     view_count: 0,
     helpful_count: 0,
@@ -88,10 +94,10 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
 
   // Industry-Specific Content
   {
-    title: "Flynn.ai for Plumbing Services: Emergency Response & Scheduling",
-    slug: "plumbing-services-guide",
-    category: "industry-specific",
-    industry_type: "plumbing",
+    title: 'Flynn.ai for Plumbing Services: Emergency Response & Scheduling',
+    slug: 'plumbing-services-guide',
+    category: 'industry-specific',
+    industry_type: 'plumbing',
     content: `
       <h2>Plumbing Industry Features</h2>
       <p>Flynn.ai is optimized for plumbing and HVAC professionals who need to handle emergency calls and schedule service appointments efficiently.</p>
@@ -131,7 +137,8 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
       </ul>
     `,
     tags: ['plumbing', 'emergency', 'service-calls', 'hvac'],
-    search_keywords: "plumbing emergency burst pipe flooding service call hvac water damage",
+    search_keywords:
+      'plumbing emergency burst pipe flooding service call hvac water damage',
     is_published: true,
     view_count: 0,
     helpful_count: 0,
@@ -139,10 +146,10 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
   },
 
   {
-    title: "Flynn.ai for Real Estate: Property Showings & Client Management",
-    slug: "real-estate-guide",
-    category: "industry-specific",
-    industry_type: "real_estate",
+    title: 'Flynn.ai for Real Estate: Property Showings & Client Management',
+    slug: 'real-estate-guide',
+    category: 'industry-specific',
+    industry_type: 'real_estate',
     content: `
       <h2>Real Estate Features</h2>
       <p>Flynn.ai helps real estate professionals manage property showings, client meetings, and property tours efficiently.</p>
@@ -183,7 +190,8 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
       <p>Property addresses are automatically added to calendar events with proper formatting for GPS navigation.</p>
     `,
     tags: ['real-estate', 'showings', 'property', 'clients'],
-    search_keywords: "real estate property showing tour client meeting buyer seller",
+    search_keywords:
+      'real estate property showing tour client meeting buyer seller',
     is_published: true,
     view_count: 0,
     helpful_count: 0,
@@ -192,10 +200,10 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
 
   // Troubleshooting
   {
-    title: "Why am I not receiving email summaries after calls?",
-    slug: "no-email-summaries",
-    category: "troubleshooting",
-    industry_type: "all",
+    title: 'Why am I not receiving email summaries after calls?',
+    slug: 'no-email-summaries',
+    category: 'troubleshooting',
+    industry_type: 'all',
     content: `
       <h2>Email Summary Troubleshooting</h2>
       <p>If you're not receiving email summaries within 2 minutes after calls, here are the most common causes and solutions:</p>
@@ -251,7 +259,8 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
       </ol>
     `,
     tags: ['troubleshooting', 'email', 'ai-processing', 'calls'],
-    search_keywords: "no email summary not receiving calls AI processing troubleshooting",
+    search_keywords:
+      'no email summary not receiving calls AI processing troubleshooting',
     is_published: true,
     view_count: 0,
     helpful_count: 0,
@@ -259,10 +268,10 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
   },
 
   {
-    title: "AI extraction accuracy is low - how to improve it",
-    slug: "improve-ai-accuracy",
-    category: "troubleshooting",
-    industry_type: "all",
+    title: 'AI extraction accuracy is low - how to improve it',
+    slug: 'improve-ai-accuracy',
+    category: 'troubleshooting',
+    industry_type: 'all',
     content: `
       <h2>Improving AI Extraction Accuracy</h2>
       <p>Flynn.ai targets 90%+ accuracy for event extraction. If you're experiencing lower accuracy, here's how to improve it:</p>
@@ -336,7 +345,8 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
       </table>
     `,
     tags: ['troubleshooting', 'ai-accuracy', 'extraction', 'improvement'],
-    search_keywords: "AI accuracy low improve extraction confidence troubleshooting",
+    search_keywords:
+      'AI accuracy low improve extraction confidence troubleshooting',
     is_published: true,
     view_count: 0,
     helpful_count: 0,
@@ -345,10 +355,10 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
 
   // Billing
   {
-    title: "Flynn.ai Pricing Plans and Features",
-    slug: "pricing-plans",
-    category: "billing",
-    industry_type: "all",
+    title: 'Flynn.ai Pricing Plans and Features',
+    slug: 'pricing-plans',
+    category: 'billing',
+    industry_type: 'all',
     content: `
       <h2>Flynn.ai Subscription Tiers</h2>
       <p>Choose the plan that fits your business needs:</p>
@@ -414,7 +424,8 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
       </ul>
     `,
     tags: ['billing', 'pricing', 'plans', 'subscription'],
-    search_keywords: "pricing plans basic professional enterprise billing subscription cost",
+    search_keywords:
+      'pricing plans basic professional enterprise billing subscription cost',
     is_published: true,
     view_count: 0,
     helpful_count: 0,
@@ -423,10 +434,10 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
 
   // Features
   {
-    title: "Calendar Integration: Google Calendar, Outlook, and ICS Files",
-    slug: "calendar-integration",
-    category: "features",
-    industry_type: "all",
+    title: 'Calendar Integration: Google Calendar, Outlook, and ICS Files',
+    slug: 'calendar-integration',
+    category: 'features',
+    industry_type: 'all',
     content: `
       <h2>Calendar Integration Options</h2>
       <p>Flynn.ai offers multiple ways to sync your extracted events to your calendar:</p>
@@ -500,7 +511,8 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
       </ol>
     `,
     tags: ['calendar', 'google-calendar', 'outlook', 'ics', 'sync'],
-    search_keywords: "calendar integration google outlook ics sync events appointments",
+    search_keywords:
+      'calendar integration google outlook ics sync events appointments',
     is_published: true,
     view_count: 0,
     helpful_count: 0,
@@ -508,10 +520,10 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
   },
 
   {
-    title: "Security and Privacy: How Flynn.ai protects your data",
-    slug: "security-privacy",
-    category: "features",
-    industry_type: "all",
+    title: 'Security and Privacy: How Flynn.ai protects your data',
+    slug: 'security-privacy',
+    category: 'features',
+    industry_type: 'all',
     content: `
       <h2>Flynn.ai Security Framework</h2>
       <p>Your privacy and security are our top priorities. Here's how we protect your data:</p>
@@ -617,7 +629,8 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
       </ul>
     `,
     tags: ['security', 'privacy', 'encryption', 'compliance', 'hipaa'],
-    search_keywords: "security privacy encryption HIPAA GDPR compliance data protection",
+    search_keywords:
+      'security privacy encryption HIPAA GDPR compliance data protection',
     is_published: true,
     view_count: 0,
     helpful_count: 0,
@@ -627,7 +640,7 @@ export const faqArticles: Omit<SupportArticleInsert, 'id' | 'author_id' | 'creat
 
 // Utility function to batch insert FAQ articles
 export async function seedFAQArticles(supabase: any, authorId: string) {
-  const articlesWithAuthor = faqArticles.map(article => ({
+  const articlesWithAuthor = faqArticles.map((article) => ({
     ...article,
     author_id: authorId,
   }));

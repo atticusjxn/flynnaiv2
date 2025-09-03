@@ -39,7 +39,10 @@ const industries = [
   { key: 'general_services', label: 'General Services' },
 ];
 
-export default function SupportSearch({ initialArticles = [], userIndustry }: SupportSearchProps) {
+export default function SupportSearch({
+  initialArticles = [],
+  userIndustry,
+}: SupportSearchProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedIndustry, setSelectedIndustry] = useState(userIndustry || '');
@@ -47,26 +50,29 @@ export default function SupportSearch({ initialArticles = [], userIndustry }: Su
   const [isLoading, setIsLoading] = useState(false);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
-  const searchArticles = useCallback(async (query: string, category: string, industry: string) => {
-    setIsLoading(true);
-    try {
-      const params = new URLSearchParams();
-      if (query) params.append('query', query);
-      if (category) params.append('category', category);
-      if (industry) params.append('industry_type', industry);
-      
-      const response = await fetch(`/api/support/articles?${params}`);
-      const data = await response.json();
-      
-      if (response.ok) {
-        setArticles(data.articles);
+  const searchArticles = useCallback(
+    async (query: string, category: string, industry: string) => {
+      setIsLoading(true);
+      try {
+        const params = new URLSearchParams();
+        if (query) params.append('query', query);
+        if (category) params.append('category', category);
+        if (industry) params.append('industry_type', industry);
+
+        const response = await fetch(`/api/support/articles?${params}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          setArticles(data.articles);
+        }
+      } catch (error) {
+        console.error('Error searching articles:', error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error('Error searching articles:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   const debouncedSearch = useCallback(
     debounce((query: string, category: string, industry: string) => {
@@ -77,16 +83,20 @@ export default function SupportSearch({ initialArticles = [], userIndustry }: Su
 
   useEffect(() => {
     debouncedSearch(searchQuery, selectedCategory, selectedIndustry);
-    
+
     // Update active filters
     const filters = [];
     if (searchQuery) filters.push(`Search: "${searchQuery}"`);
     if (selectedCategory) {
-      const categoryLabel = categories.find(c => c.key === selectedCategory)?.label;
+      const categoryLabel = categories.find(
+        (c) => c.key === selectedCategory
+      )?.label;
       if (categoryLabel) filters.push(`Category: ${categoryLabel}`);
     }
     if (selectedIndustry && selectedIndustry !== 'all') {
-      const industryLabel = industries.find(i => i.key === selectedIndustry)?.label;
+      const industryLabel = industries.find(
+        (i) => i.key === selectedIndustry
+      )?.label;
       if (industryLabel) filters.push(`Industry: ${industryLabel}`);
     }
     setActiveFilters(filters);
@@ -120,7 +130,9 @@ export default function SupportSearch({ initialArticles = [], userIndustry }: Su
                 placeholder="Search help articles..."
                 value={searchQuery}
                 onValueChange={setSearchQuery}
-                startContent={<MagnifyingGlassIcon className="h-4 w-4 text-default-400" />}
+                startContent={
+                  <MagnifyingGlassIcon className="h-4 w-4 text-default-400" />
+                }
                 isClearable
                 onClear={() => setSearchQuery('')}
               />
@@ -129,7 +141,9 @@ export default function SupportSearch({ initialArticles = [], userIndustry }: Su
               <Select
                 placeholder="Category"
                 selectedKeys={selectedCategory ? [selectedCategory] : []}
-                onSelectionChange={(keys) => setSelectedCategory(Array.from(keys)[0] as string || '')}
+                onSelectionChange={(keys) =>
+                  setSelectedCategory((Array.from(keys)[0] as string) || '')
+                }
               >
                 {categories.map((category) => (
                   <SelectItem key={category.key} value={category.key}>
@@ -142,7 +156,9 @@ export default function SupportSearch({ initialArticles = [], userIndustry }: Su
               <Select
                 placeholder="Industry"
                 selectedKeys={selectedIndustry ? [selectedIndustry] : []}
-                onSelectionChange={(keys) => setSelectedIndustry(Array.from(keys)[0] as string || '')}
+                onSelectionChange={(keys) =>
+                  setSelectedIndustry((Array.from(keys)[0] as string) || '')
+                }
               >
                 {industries.map((industry) => (
                   <SelectItem key={industry.key} value={industry.key}>
@@ -191,7 +207,8 @@ export default function SupportSearch({ initialArticles = [], userIndustry }: Su
           <>
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">
-                {articles.length} article{articles.length !== 1 ? 's' : ''} found
+                {articles.length} article{articles.length !== 1 ? 's' : ''}{' '}
+                found
               </h2>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -7,12 +7,16 @@ export interface TrialUser {
   email: string;
   trial_start_date?: string;
   trial_end_date?: string;
-  subscription_status: 'trial' | 'active' | 'past_due' | 'cancelled' | 'incomplete';
+  subscription_status:
+    | 'trial'
+    | 'active'
+    | 'past_due'
+    | 'cancelled'
+    | 'incomplete';
   stripe_customer_id?: string;
 }
 
 export class SubscriptionService {
-  
   /**
    * Start a free trial for a new user (no payment method required)
    */
@@ -69,8 +73,8 @@ export class SubscriptionService {
    * Create checkout session for trial-to-paid conversion
    */
   async createCheckoutSession(
-    userId: string, 
-    successUrl: string, 
+    userId: string,
+    successUrl: string,
     cancelUrl: string,
     tier: 'basic' | 'professional' | 'enterprise' = 'basic'
   ) {
@@ -175,7 +179,9 @@ export class SubscriptionService {
       const supabase = createClient();
       const { data: user, error } = await supabase
         .from('users')
-        .select('trial_start_date, trial_end_date, subscription_status, subscription_tier')
+        .select(
+          'trial_start_date, trial_end_date, subscription_status, subscription_tier'
+        )
         .eq('id', userId)
         .single();
 
@@ -184,15 +190,18 @@ export class SubscriptionService {
       }
 
       const now = new Date();
-      const trialEnd = user.trial_end_date ? new Date(user.trial_end_date) : null;
-      
+      const trialEnd = user.trial_end_date
+        ? new Date(user.trial_end_date)
+        : null;
+
       let daysRemaining = 0;
       let isTrialActive = false;
 
       if (trialEnd) {
         const timeDiff = trialEnd.getTime() - now.getTime();
         daysRemaining = Math.max(0, Math.ceil(timeDiff / (1000 * 3600 * 24)));
-        isTrialActive = daysRemaining > 0 && user.subscription_status === 'trial';
+        isTrialActive =
+          daysRemaining > 0 && user.subscription_status === 'trial';
       }
 
       return {
@@ -212,7 +221,7 @@ export class SubscriptionService {
    * Update subscription status from webhook events
    */
   async updateSubscriptionStatus(
-    stripeCustomerId: string, 
+    stripeCustomerId: string,
     status: 'active' | 'past_due' | 'cancelled' | 'incomplete',
     subscriptionId?: string
   ) {
@@ -239,10 +248,14 @@ export class SubscriptionService {
         .eq('stripe_customer_id', stripeCustomerId);
 
       if (error) {
-        throw new Error(`Failed to update subscription status: ${error.message}`);
+        throw new Error(
+          `Failed to update subscription status: ${error.message}`
+        );
       }
 
-      console.log(`Updated subscription status to ${status} for customer ${stripeCustomerId}`);
+      console.log(
+        `Updated subscription status to ${status} for customer ${stripeCustomerId}`
+      );
     } catch (error) {
       console.error('Failed to update subscription status:', error);
       throw error;
@@ -285,8 +298,10 @@ export class SubscriptionService {
       if (paymentMethods.data.length === 0 && user.trial_end_date) {
         const trialEnd = new Date(user.trial_end_date);
         const now = new Date();
-        const daysUntilExpiry = Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 3600 * 24));
-        
+        const daysUntilExpiry = Math.ceil(
+          (trialEnd.getTime() - now.getTime()) / (1000 * 3600 * 24)
+        );
+
         return daysUntilExpiry <= 7;
       }
 
@@ -305,7 +320,9 @@ export class SubscriptionService {
       const supabase = createClient();
       const { data: user, error } = await supabase
         .from('users')
-        .select('subscription_tier, subscription_status, stripe_customer_id, stripe_subscription_id')
+        .select(
+          'subscription_tier, subscription_status, stripe_customer_id, stripe_subscription_id'
+        )
         .eq('id', userId)
         .single();
 
@@ -313,7 +330,8 @@ export class SubscriptionService {
         throw new Error('User not found');
       }
 
-      const tier = user.subscription_tier as keyof typeof SUBSCRIPTION_TIERS || 'basic';
+      const tier =
+        (user.subscription_tier as keyof typeof SUBSCRIPTION_TIERS) || 'basic';
       const tierInfo = SUBSCRIPTION_TIERS[tier];
 
       return {
@@ -332,10 +350,12 @@ export class SubscriptionService {
   /**
    * Check if user can make another call (usage limits)
    */
-  async canMakeCall(userId: string): Promise<{ allowed: boolean; remaining: number; limit: number }> {
+  async canMakeCall(
+    userId: string
+  ): Promise<{ allowed: boolean; remaining: number; limit: number }> {
     try {
       const subscriptionInfo = await this.getUserSubscriptionInfo(userId);
-      
+
       // Enterprise has unlimited calls
       if (subscriptionInfo.limits.call_limit === -1) {
         return { allowed: true, remaining: -1, limit: -1 };
@@ -395,7 +415,9 @@ export class SubscriptionService {
 
       const calls = callsData || [];
       const callsThisMonth = calls.length;
-      const successfulCalls = calls.filter(call => call.ai_processing_status === 'completed').length;
+      const successfulCalls = calls.filter(
+        (call) => call.ai_processing_status === 'completed'
+      ).length;
 
       // Get events extracted
       const { data: eventsData, error: eventsError } = await supabase
@@ -417,12 +439,19 @@ export class SubscriptionService {
           calls: {
             used: callsThisMonth,
             limit: subscriptionInfo.limits.call_limit,
-            remaining: subscriptionInfo.limits.call_limit === -1 ? -1 : Math.max(0, subscriptionInfo.limits.call_limit - callsThisMonth),
+            remaining:
+              subscriptionInfo.limits.call_limit === -1
+                ? -1
+                : Math.max(
+                    0,
+                    subscriptionInfo.limits.call_limit - callsThisMonth
+                  ),
           },
           events: {
             extracted: eventsThisMonth,
-            successRate: callsThisMonth > 0 ? (successfulCalls / callsThisMonth) * 100 : 0,
-          }
+            successRate:
+              callsThisMonth > 0 ? (successfulCalls / callsThisMonth) * 100 : 0,
+          },
         },
         features: subscriptionInfo.limits,
       };
@@ -435,10 +464,13 @@ export class SubscriptionService {
   /**
    * Upgrade/downgrade subscription tier
    */
-  async changeSubscriptionTier(userId: string, newTier: 'basic' | 'professional' | 'enterprise') {
+  async changeSubscriptionTier(
+    userId: string,
+    newTier: 'basic' | 'professional' | 'enterprise'
+  ) {
     try {
       const subscriptionInfo = await this.getUserSubscriptionInfo(userId);
-      
+
       if (!subscriptionInfo.stripeSubscriptionId) {
         throw new Error('User has no active subscription');
       }
@@ -449,7 +481,9 @@ export class SubscriptionService {
       }
 
       // Get current subscription
-      const subscription = await stripe.subscriptions.retrieve(subscriptionInfo.stripeSubscriptionId);
+      const subscription = await stripe.subscriptions.retrieve(
+        subscriptionInfo.stripeSubscriptionId
+      );
       const currentItemId = subscription.items.data[0].id;
 
       // Update subscription with new price

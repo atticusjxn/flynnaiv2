@@ -26,7 +26,7 @@ import {
   useDisclosure,
   Divider,
   Progress,
-  Avatar
+  Avatar,
 } from '@nextui-org/react';
 import {
   Send,
@@ -44,7 +44,7 @@ import {
   User,
   CheckCircle2,
   AlertTriangle,
-  Sparkles
+  Sparkles,
 } from 'lucide-react';
 import { useSendCommunication } from '@/hooks/useCommunications';
 
@@ -87,15 +87,28 @@ Our technician will arrive within the scheduled window. If you have any question
 
 Best regards,
 {{companyName}}`,
-    variables: ['customerName', 'serviceType', 'appointmentDate', 'serviceAddress', 'duration', 'companyName'],
-    industry: 'plumbing'
+    variables: [
+      'customerName',
+      'serviceType',
+      'appointmentDate',
+      'serviceAddress',
+      'duration',
+      'companyName',
+    ],
+    industry: 'plumbing',
   },
   {
     id: '2',
     name: 'SMS Reminder',
     type: 'sms',
-    content: 'Hi {{customerName}}! Reminder: Your {{serviceType}} appointment is scheduled for {{appointmentTime}} at {{serviceAddress}}. Reply CONFIRM to acknowledge.',
-    variables: ['customerName', 'serviceType', 'appointmentTime', 'serviceAddress']
+    content:
+      'Hi {{customerName}}! Reminder: Your {{serviceType}} appointment is scheduled for {{appointmentTime}} at {{serviceAddress}}. Reply CONFIRM to acknowledge.',
+    variables: [
+      'customerName',
+      'serviceType',
+      'appointmentTime',
+      'serviceAddress',
+    ],
   },
   {
     id: '3',
@@ -115,9 +128,16 @@ Please bring a valid ID and arrive 5 minutes early. If you have any questions, f
 
 Best regards,
 {{companyName}} Real Estate`,
-    variables: ['clientName', 'propertyAddress', 'showingDate', 'duration', 'agentName', 'companyName'],
-    industry: 'real_estate'
-  }
+    variables: [
+      'clientName',
+      'propertyAddress',
+      'showingDate',
+      'duration',
+      'agentName',
+      'companyName',
+    ],
+    industry: 'real_estate',
+  },
 ];
 
 const containerVariants = {
@@ -127,10 +147,10 @@ const containerVariants = {
     y: 0,
     transition: {
       duration: 0.6,
-      ease: [0.23, 1, 0.32, 1],
-      staggerChildren: 0.1
-    }
-  }
+      ease: [0.23, 1, 0.32, 1] as any,
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const itemVariants = {
@@ -138,73 +158,99 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] }
-  }
+    transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] as any },
+  },
 };
 
 export default function CommunicationComposer() {
   // State management
-  const [communicationType, setCommunicationType] = useState<'email' | 'sms' | 'call'>('email');
+  const [communicationType, setCommunicationType] = useState<
+    'email' | 'sms' | 'call'
+  >('email');
   const [recipient, setRecipient] = useState('');
   const [subject, setSubject] = useState('');
   const [content, setContent] = useState('');
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
-  const [templateVariables, setTemplateVariables] = useState<Record<string, string>>({});
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(
+    null
+  );
+  const [templateVariables, setTemplateVariables] = useState<
+    Record<string, string>
+  >({});
   const [scheduleForLater, setScheduleForLater] = useState(false);
   const [scheduledDate, setScheduledDate] = useState('');
   const [previewMode, setPreviewMode] = useState(false);
-  
+
   // Modals
-  const { isOpen: isTemplateModalOpen, onOpen: onTemplateModalOpen, onClose: onTemplateModalClose } = useDisclosure();
-  const { isOpen: isPreviewModalOpen, onOpen: onPreviewModalOpen, onClose: onPreviewModalClose } = useDisclosure();
-  
+  const {
+    isOpen: isTemplateModalOpen,
+    onOpen: onTemplateModalOpen,
+    onClose: onTemplateModalClose,
+  } = useDisclosure();
+  const {
+    isOpen: isPreviewModalOpen,
+    onOpen: onPreviewModalOpen,
+    onClose: onPreviewModalClose,
+  } = useDisclosure();
+
   // Hooks
   const { sendCommunication, loading, error } = useSendCommunication();
 
   // Filter templates based on communication type
-  const availableTemplates = mockTemplates.filter(template => template.type === communicationType);
+  const availableTemplates = mockTemplates.filter(
+    (template) => template.type === communicationType
+  );
 
   // Handle template selection
-  const handleTemplateSelect = useCallback((template: Template) => {
-    setSelectedTemplate(template);
-    if (template.subject) {
-      setSubject(template.subject);
-    }
-    setContent(template.content);
-    
-    // Initialize template variables
-    const variables: Record<string, string> = {};
-    template.variables.forEach(variable => {
-      variables[variable] = '';
-    });
-    setTemplateVariables(variables);
-    
-    onTemplateModalClose();
-  }, [onTemplateModalClose]);
+  const handleTemplateSelect = useCallback(
+    (template: Template) => {
+      setSelectedTemplate(template);
+      if (template.subject) {
+        setSubject(template.subject);
+      }
+      setContent(template.content);
+
+      // Initialize template variables
+      const variables: Record<string, string> = {};
+      template.variables.forEach((variable) => {
+        variables[variable] = '';
+      });
+      setTemplateVariables(variables);
+
+      onTemplateModalClose();
+    },
+    [onTemplateModalClose]
+  );
 
   // Process template variables
   const processedContent = useMemo(() => {
     if (!selectedTemplate) return content;
-    
+
     let processed = content;
     Object.entries(templateVariables).forEach(([key, value]) => {
-      processed = processed.replace(new RegExp(`{{${key}}}`, 'g'), value || `{{${key}}}`);
+      processed = processed.replace(
+        new RegExp(`{{${key}}}`, 'g'),
+        value || `{{${key}}}`
+      );
     });
     return processed;
   }, [content, selectedTemplate, templateVariables]);
 
   const processedSubject = useMemo(() => {
     if (!selectedTemplate || !subject) return subject;
-    
+
     let processed = subject;
     Object.entries(templateVariables).forEach(([key, value]) => {
-      processed = processed.replace(new RegExp(`{{${key}}}`, 'g'), value || `{{${key}}}`);
+      processed = processed.replace(
+        new RegExp(`{{${key}}}`, 'g'),
+        value || `{{${key}}}`
+      );
     });
     return processed;
   }, [subject, selectedTemplate, templateVariables]);
 
   // Validation
-  const isValid = recipient && content && (communicationType === 'sms' || subject);
+  const isValid =
+    recipient && content && (communicationType === 'sms' || subject);
 
   // Handle form submission
   const handleSubmit = useCallback(async () => {
@@ -215,11 +261,11 @@ export default function CommunicationComposer() {
         communicationType,
         recipient,
         content: processedContent,
-        ...(communicationType === 'email' && { subject: processedSubject })
+        ...(communicationType === 'email' && { subject: processedSubject }),
       };
 
       await sendCommunication(communicationData);
-      
+
       // Reset form on success
       setRecipient('');
       setSubject('');
@@ -231,7 +277,14 @@ export default function CommunicationComposer() {
     } catch (error) {
       console.error('Failed to send communication:', error);
     }
-  }, [isValid, communicationType, recipient, processedContent, processedSubject, sendCommunication]);
+  }, [
+    isValid,
+    communicationType,
+    recipient,
+    processedContent,
+    processedSubject,
+    sendCommunication,
+  ]);
 
   const handlePreview = useCallback(() => {
     setPreviewMode(true);
@@ -287,7 +340,7 @@ export default function CommunicationComposer() {
               </div>
             </div>
           </CardHeader>
-          
+
           <CardBody className="space-y-6">
             {/* Communication Type Selection */}
             <div>
@@ -296,12 +349,14 @@ export default function CommunicationComposer() {
               </label>
               <Tabs
                 selectedKey={communicationType}
-                onSelectionChange={(key) => setCommunicationType(key as 'email' | 'sms' | 'call')}
+                onSelectionChange={(key) =>
+                  setCommunicationType(key as 'email' | 'sms' | 'call')
+                }
                 variant="bordered"
                 color="primary"
                 classNames={{
-                  tabList: "bg-white/50 dark:bg-slate-800/50",
-                  tab: "data-[selected=true]:bg-primary data-[selected=true]:text-white"
+                  tabList: 'bg-white/50 dark:bg-slate-800/50',
+                  tab: 'data-[selected=true]:bg-primary data-[selected=true]:text-white',
                 }}
               >
                 <Tab
@@ -338,11 +393,11 @@ export default function CommunicationComposer() {
             <Input
               label="Recipient"
               placeholder={
-                communicationType === 'email' 
-                  ? "customer@example.com" 
-                  : communicationType === 'sms' 
-                  ? "+1 (555) 123-4567"
-                  : "+1 (555) 123-4567"
+                communicationType === 'email'
+                  ? 'customer@example.com'
+                  : communicationType === 'sms'
+                    ? '+1 (555) 123-4567'
+                    : '+1 (555) 123-4567'
               }
               value={recipient}
               onValueChange={setRecipient}
@@ -379,16 +434,21 @@ export default function CommunicationComposer() {
                     {selectedTemplate.name}
                   </Chip>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
                   {selectedTemplate.variables.map((variable) => (
                     <Input
                       key={variable}
-                      label={variable.charAt(0).toUpperCase() + variable.slice(1)}
+                      label={
+                        variable.charAt(0).toUpperCase() + variable.slice(1)
+                      }
                       placeholder={`Enter ${variable}...`}
                       value={templateVariables[variable] || ''}
-                      onValueChange={(value) => 
-                        setTemplateVariables(prev => ({ ...prev, [variable]: value }))
+                      onValueChange={(value) =>
+                        setTemplateVariables((prev) => ({
+                          ...prev,
+                          [variable]: value,
+                        }))
                       }
                       variant="bordered"
                       size="sm"
@@ -406,9 +466,11 @@ export default function CommunicationComposer() {
                 </label>
                 <div className="flex items-center gap-2">
                   {communicationType === 'sms' && (
-                    <Chip 
-                      size="sm" 
-                      color={processedContent.length > 160 ? "danger" : "success"}
+                    <Chip
+                      size="sm"
+                      color={
+                        processedContent.length > 160 ? 'danger' : 'success'
+                      }
                       variant="flat"
                     >
                       {processedContent.length}/160 chars
@@ -426,12 +488,12 @@ export default function CommunicationComposer() {
                   </Button>
                 </div>
               </div>
-              
+
               <Textarea
                 placeholder={
                   communicationType === 'sms'
-                    ? "Enter your SMS message..."
-                    : "Enter your email content..."
+                    ? 'Enter your SMS message...'
+                    : 'Enter your email content...'
                 }
                 value={content}
                 onValueChange={setContent}
@@ -440,11 +502,12 @@ export default function CommunicationComposer() {
                 maxRows={communicationType === 'sms' ? 6 : 15}
                 isRequired
               />
-              
+
               {communicationType === 'sms' && processedContent.length > 160 && (
                 <p className="text-sm text-danger-500 flex items-center gap-1">
                   <AlertTriangle className="h-4 w-4" />
-                  SMS messages over 160 characters may be split into multiple messages
+                  SMS messages over 160 characters may be split into multiple
+                  messages
                 </p>
               )}
             </div>
@@ -465,7 +528,7 @@ export default function CommunicationComposer() {
                   size="sm"
                 />
               </div>
-              
+
               {scheduleForLater && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
@@ -497,16 +560,12 @@ export default function CommunicationComposer() {
                   </div>
                 )}
               </div>
-              
+
               <div className="flex items-center gap-3">
-                <Button
-                  variant="flat"
-                  color="default"
-                  startContent={<Save />}
-                >
+                <Button variant="flat" color="default" startContent={<Save />}>
                   Save Draft
                 </Button>
-                
+
                 <Button
                   color="primary"
                   startContent={<Send />}
@@ -551,7 +610,7 @@ function TemplateSelectionModal({
   onClose,
   templates,
   onSelect,
-  communicationType
+  communicationType,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -566,8 +625,9 @@ function TemplateSelectionModal({
       size="3xl"
       scrollBehavior="inside"
       classNames={{
-        base: "bg-white dark:bg-slate-800",
-        backdrop: "bg-gradient-to-t from-zinc-900/60 to-zinc-900/20 backdrop-blur-sm"
+        base: 'bg-white dark:bg-slate-800',
+        backdrop:
+          'bg-gradient-to-t from-zinc-900/60 to-zinc-900/20 backdrop-blur-sm',
       }}
     >
       <ModalContent>
@@ -582,7 +642,7 @@ function TemplateSelectionModal({
             </div>
           </div>
         </ModalHeader>
-        
+
         <ModalBody className="py-6">
           {templates.length === 0 ? (
             <div className="text-center py-12">
@@ -612,28 +672,41 @@ function TemplateSelectionModal({
                       <div className="flex items-start justify-between">
                         <div className="space-y-2">
                           <div className="flex items-center gap-3">
-                            <h3 className="font-semibold text-lg">{template.name}</h3>
+                            <h3 className="font-semibold text-lg">
+                              {template.name}
+                            </h3>
                             {template.industry && (
-                              <Chip size="sm" color="primary" variant="flat" className="capitalize">
+                              <Chip
+                                size="sm"
+                                color="primary"
+                                variant="flat"
+                                className="capitalize"
+                              >
                                 {template.industry.replace('_', ' ')}
                               </Chip>
                             )}
                           </div>
-                          
+
                           {template.subject && (
                             <p className="text-sm text-slate-600 dark:text-slate-400">
-                              <span className="font-medium">Subject:</span> {template.subject}
+                              <span className="font-medium">Subject:</span>{' '}
+                              {template.subject}
                             </p>
                           )}
-                          
+
                           <div className="text-sm text-slate-600 dark:text-slate-400">
                             <p className="line-clamp-3">{template.content}</p>
                           </div>
-                          
+
                           {template.variables.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-2">
                               {template.variables.map((variable) => (
-                                <Chip key={variable} size="sm" variant="bordered" className="text-xs">
+                                <Chip
+                                  key={variable}
+                                  size="sm"
+                                  variant="bordered"
+                                  className="text-xs"
+                                >
                                   {variable}
                                 </Chip>
                               ))}
@@ -648,7 +721,7 @@ function TemplateSelectionModal({
             </div>
           )}
         </ModalBody>
-        
+
         <ModalFooter>
           <Button variant="light" onPress={onClose}>
             Cancel
@@ -666,7 +739,7 @@ function PreviewModal({
   communicationType,
   recipient,
   subject,
-  content
+  content,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -682,8 +755,9 @@ function PreviewModal({
       size="2xl"
       scrollBehavior="inside"
       classNames={{
-        base: "bg-white dark:bg-slate-800",
-        backdrop: "bg-gradient-to-t from-zinc-900/60 to-zinc-900/20 backdrop-blur-sm"
+        base: 'bg-white dark:bg-slate-800',
+        backdrop:
+          'bg-gradient-to-t from-zinc-900/60 to-zinc-900/20 backdrop-blur-sm',
       }}
     >
       <ModalContent>
@@ -691,14 +765,16 @@ function PreviewModal({
           <div className="flex items-center gap-3">
             <Eye className="h-6 w-6 text-primary-500" />
             <div>
-              <h2 className="text-lg font-semibold">Preview {communicationType.toUpperCase()}</h2>
+              <h2 className="text-lg font-semibold">
+                Preview {communicationType.toUpperCase()}
+              </h2>
               <p className="text-sm text-slate-500 dark:text-slate-400 font-normal">
                 Review your message before sending
               </p>
             </div>
           </div>
         </ModalHeader>
-        
+
         <ModalBody className="py-6">
           <div className="space-y-4">
             {/* Message Preview */}
@@ -706,7 +782,10 @@ function PreviewModal({
               {communicationType === 'email' ? (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 pb-3 border-b border-slate-200 dark:border-slate-600">
-                    <Avatar size="sm" className="bg-primary-100 dark:bg-primary-900">
+                    <Avatar
+                      size="sm"
+                      className="bg-primary-100 dark:bg-primary-900"
+                    >
                       <Mail className="h-4 w-4 text-primary-600 dark:text-primary-400" />
                     </Avatar>
                     <div>
@@ -728,7 +807,11 @@ function PreviewModal({
                     <p className="text-sm whitespace-pre-wrap">{content}</p>
                   </div>
                   <div className="flex justify-end">
-                    <Chip size="sm" color={content.length > 160 ? "danger" : "success"} variant="flat">
+                    <Chip
+                      size="sm"
+                      color={content.length > 160 ? 'danger' : 'success'}
+                      variant="flat"
+                    >
                       {content.length} characters
                     </Chip>
                   </div>
@@ -737,7 +820,7 @@ function PreviewModal({
             </div>
           </div>
         </ModalBody>
-        
+
         <ModalFooter>
           <Button variant="light" onPress={onClose}>
             Close Preview

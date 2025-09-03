@@ -1,11 +1,20 @@
 // Silent Call Processing Manager for Flynn.ai v2 - Complete call lifecycle management
 
-import { keypadActivationManager, cleanupCallActivation } from '@/lib/ai/KeypadActivation';
-import { realTimeAudioProcessor, stopRealTimeProcessing } from '@/lib/ai/RealTimeProcessor';
+import {
+  keypadActivationManager,
+  cleanupCallActivation,
+} from '@/lib/ai/KeypadActivation';
+import {
+  realTimeAudioProcessor,
+  stopRealTimeProcessing,
+} from '@/lib/ai/RealTimeProcessor';
 import { updateCallProcessingStatus } from '@/lib/supabase/calls';
 import { createAdminClient } from '@/utils/supabase/server';
 import { sendInstantAppointmentEmail } from '@/lib/email/InstantEmailService';
-import { validateCallCompliance, recordCallCompliance } from '@/lib/compliance/PrivacyCompliance';
+import {
+  validateCallCompliance,
+  recordCallCompliance,
+} from '@/lib/compliance/PrivacyCompliance';
 import { scheduleCallDataDeletion } from '@/lib/compliance/DataRetention';
 
 export interface CallProcessingState {
@@ -29,9 +38,9 @@ export interface ProcessingMetrics {
   audioQuality: number;
 }
 
-export type CallProcessingStatus = 
+export type CallProcessingStatus =
   | 'idle'
-  | 'waiting_for_activation' 
+  | 'waiting_for_activation'
   | 'keypad_activated'
   | 'media_stream_connected'
   | 'real_time_processing'
@@ -47,7 +56,7 @@ export class CallProcessingManager {
   private static instance: CallProcessingManager;
   private callStates: Map<string, CallProcessingState> = new Map();
   private processingTimeouts: Map<string, NodeJS.Timeout> = new Map();
-  
+
   // Silent processing configuration
   private readonly MAX_PROCESSING_TIME = 10 * 60 * 1000; // 10 minutes max
   private readonly CLEANUP_DELAY = 2 * 60 * 1000; // 2 minutes after call ends
@@ -64,7 +73,9 @@ export class CallProcessingManager {
    * Initialize call processing for a new call
    */
   public async initializeCall(callSid: string): Promise<void> {
-    console.log(`Initializing silent processing management for call: ${callSid}`);
+    console.log(
+      `Initializing silent processing management for call: ${callSid}`
+    );
 
     const initialState: CallProcessingState = {
       callSid,
@@ -81,8 +92,8 @@ export class CallProcessingManager {
         extractionAttempts: 0,
         averageConfidence: 0,
         processingLatency: 0,
-        audioQuality: 0
-      }
+        audioQuality: 0,
+      },
     };
 
     this.callStates.set(callSid, initialState);
@@ -91,7 +102,7 @@ export class CallProcessingManager {
     const timeout = setTimeout(() => {
       this.handleProcessingTimeout(callSid);
     }, this.MAX_PROCESSING_TIME);
-    
+
     this.processingTimeouts.set(callSid, timeout);
 
     await this.updateCallStatus(callSid, 'waiting_for_activation');
@@ -103,7 +114,9 @@ export class CallProcessingManager {
   public async handleKeypadActivation(callSid: string): Promise<void> {
     const state = this.callStates.get(callSid);
     if (!state) {
-      console.error(`No call state found for ${callSid} during keypad activation`);
+      console.error(
+        `No call state found for ${callSid} during keypad activation`
+      );
       return;
     }
 
@@ -112,12 +125,18 @@ export class CallProcessingManager {
     // First validate compliance before proceeding
     const userId = await this.getUserIdForCall(callSid);
     const callerPhone = await this.getCallerPhoneForCall(callSid);
-    
+
     if (userId) {
-      const complianceCheck = await validateCallCompliance(callSid, userId, callerPhone || undefined);
-      
+      const complianceCheck = await validateCallCompliance(
+        callSid,
+        userId,
+        callerPhone || undefined
+      );
+
       if (!complianceCheck.compliant) {
-        console.warn(`Compliance check failed for call ${callSid}: ${complianceCheck.reason}`);
+        console.warn(
+          `Compliance check failed for call ${callSid}: ${complianceCheck.reason}`
+        );
         state.status = 'failed';
         state.lastError = complianceCheck.reason || 'Compliance check failed';
         await this.updateCallStatus(callSid, 'failed');
@@ -154,10 +173,15 @@ export class CallProcessingManager {
 
       // The RealTimeProcessor will handle the actual audio processing
       // This manager just tracks the state silently
-
     } catch (error) {
-      console.error(`Error starting processing pipeline for call ${callSid}:`, error);
-      await this.handleProcessingError(callSid, error instanceof Error ? error.message : 'Unknown error');
+      console.error(
+        `Error starting processing pipeline for call ${callSid}:`,
+        error
+      );
+      await this.handleProcessingError(
+        callSid,
+        error instanceof Error ? error.message : 'Unknown error'
+      );
     }
   }
 
@@ -165,7 +189,7 @@ export class CallProcessingManager {
    * Update processing metrics during live processing
    */
   public async updateProcessingMetrics(
-    callSid: string, 
+    callSid: string,
     metrics: Partial<ProcessingMetrics>
   ): Promise<void> {
     const state = this.callStates.get(callSid);
@@ -181,11 +205,16 @@ export class CallProcessingManager {
   /**
    * Handle extraction completion
    */
-  public async handleExtractionComplete(callSid: string, eventsCount: number): Promise<void> {
+  public async handleExtractionComplete(
+    callSid: string,
+    eventsCount: number
+  ): Promise<void> {
     const state = this.callStates.get(callSid);
     if (!state) return;
 
-    console.log(`Silent extraction completed for call ${callSid}: ${eventsCount} events`);
+    console.log(
+      `Silent extraction completed for call ${callSid}: ${eventsCount} events`
+    );
 
     state.eventsExtracted = eventsCount;
     state.status = 'processing_complete';
@@ -212,7 +241,7 @@ export class CallProcessingManager {
 
       // Get call details and user information
       const callDetails = await this.getCallDetailsForEmail(callSid);
-      
+
       if (!callDetails) {
         console.error(`No call details found for email generation: ${callSid}`);
         await this.handleProcessingError(callSid, 'Call details not found');
@@ -233,7 +262,7 @@ export class CallProcessingManager {
         extractedEvents: extractedEvents,
         callDuration: callDetails.duration,
         callerPhone: callDetails.caller_number,
-        transcriptionText: callDetails.transcription
+        transcriptionText: callDetails.transcription,
       };
 
       // Send instant email
@@ -241,10 +270,15 @@ export class CallProcessingManager {
 
       // Mark email as sent immediately (the service handles delivery asynchronously)
       await this.handleEmailSent(callSid);
-
     } catch (error) {
-      console.error(`Error triggering email generation for call ${callSid}:`, error);
-      await this.handleProcessingError(callSid, error instanceof Error ? error.message : 'Unknown error');
+      console.error(
+        `Error triggering email generation for call ${callSid}:`,
+        error
+      );
+      await this.handleProcessingError(
+        callSid,
+        error instanceof Error ? error.message : 'Unknown error'
+      );
     }
   }
 
@@ -280,7 +314,7 @@ export class CallProcessingManager {
     // Schedule data retention and deletion per compliance policies
     const userId = await this.getUserIdForCall(callSid);
     const userIndustry = await this.getUserIndustry(callSid);
-    
+
     if (userId) {
       await scheduleCallDataDeletion(callSid, userId, userIndustry);
     }
@@ -301,7 +335,7 @@ export class CallProcessingManager {
     if (state && state.aiActivated) {
       // Stop real-time processing
       await stopRealTimeProcessing(callSid);
-      
+
       // If we haven't completed processing, try to finalize
       if (state.status !== 'completed' && state.status !== 'failed') {
         await this.finalizeProcessing(callSid);
@@ -331,29 +365,36 @@ export class CallProcessingManager {
       } else {
         await this.completeCallProcessing(callSid);
       }
-
     } catch (error) {
       console.error(`Error finalizing processing for call ${callSid}:`, error);
-      await this.handleProcessingError(callSid, error instanceof Error ? error.message : 'Unknown error');
+      await this.handleProcessingError(
+        callSid,
+        error instanceof Error ? error.message : 'Unknown error'
+      );
     }
   }
 
   /**
    * Handle processing errors silently
    */
-  private async handleProcessingError(callSid: string, errorMessage: string): Promise<void> {
+  private async handleProcessingError(
+    callSid: string,
+    errorMessage: string
+  ): Promise<void> {
     const state = this.callStates.get(callSid);
     if (!state) return;
 
     state.errorCount++;
     state.lastError = errorMessage;
-    
-    console.error(`Silent processing error for call ${callSid} (${state.errorCount}/${this.ERROR_THRESHOLD}): ${errorMessage}`);
+
+    console.error(
+      `Silent processing error for call ${callSid} (${state.errorCount}/${this.ERROR_THRESHOLD}): ${errorMessage}`
+    );
 
     if (state.errorCount >= this.ERROR_THRESHOLD) {
       state.status = 'failed';
       await this.updateCallStatus(callSid, 'failed');
-      
+
       // Schedule cleanup
       setTimeout(() => {
         this.cleanupCall(callSid);
@@ -371,10 +412,10 @@ export class CallProcessingManager {
     console.log(`Processing timeout for call: ${callSid}`);
 
     await this.updateCallStatus(callSid, 'timeout');
-    
+
     // Stop all processing
     await stopRealTimeProcessing(callSid);
-    
+
     // Cleanup
     this.cleanupCall(callSid);
   }
@@ -399,7 +440,7 @@ export class CallProcessingManager {
     this.callStates.delete(callSid);
 
     // Final status update
-    this.updateCallStatus(callSid, 'completed').catch(error => {
+    this.updateCallStatus(callSid, 'completed').catch((error) => {
       console.error(`Error in final cleanup for call ${callSid}:`, error);
     });
   }
@@ -407,7 +448,10 @@ export class CallProcessingManager {
   /**
    * Update call status in database (silently)
    */
-  private async updateCallStatus(callSid: string, status: CallProcessingStatus): Promise<void> {
+  private async updateCallStatus(
+    callSid: string,
+    status: CallProcessingStatus
+  ): Promise<void> {
     try {
       await updateCallProcessingStatus(callSid, status);
     } catch (error) {
@@ -427,7 +471,7 @@ export class CallProcessingManager {
    */
   public getActiveCalls(): CallProcessingState[] {
     return Array.from(this.callStates.values()).filter(
-      state => state.status !== 'completed' && state.status !== 'failed'
+      (state) => state.status !== 'completed' && state.status !== 'failed'
     );
   }
 
@@ -441,12 +485,14 @@ export class CallProcessingManager {
     failedCalls: number;
   } {
     const states = Array.from(this.callStates.values());
-    
+
     return {
       totalCalls: states.length,
-      activeCalls: states.filter(s => !['completed', 'failed'].includes(s.status)).length,
-      completedCalls: states.filter(s => s.status === 'completed').length,
-      failedCalls: states.filter(s => s.status === 'failed').length
+      activeCalls: states.filter(
+        (s) => !['completed', 'failed'].includes(s.status)
+      ).length,
+      completedCalls: states.filter((s) => s.status === 'completed').length,
+      failedCalls: states.filter((s) => s.status === 'failed').length,
     };
   }
 
@@ -456,17 +502,19 @@ export class CallProcessingManager {
   private async getCallDetailsForEmail(callSid: string): Promise<any> {
     try {
       const supabase = createAdminClient();
-      
+
       const { data: call } = await supabase
         .from('calls')
-        .select(`
+        .select(
+          `
           *,
           users (
             email,
             company_name,
             industry
           )
-        `)
+        `
+        )
         .eq('twilio_call_sid', callSid)
         .single();
 
@@ -475,7 +523,7 @@ export class CallProcessingManager {
           ...call,
           user_email: call.users.email,
           company_name: call.users.company_name,
-          industry: call.users.industry
+          industry: call.users.industry,
         };
       }
 
@@ -492,7 +540,7 @@ export class CallProcessingManager {
   private async getExtractedEventsForCall(callSid: string): Promise<any[]> {
     try {
       const supabase = createAdminClient();
-      
+
       const { data: events } = await supabase
         .from('events')
         .select('*')
@@ -501,7 +549,10 @@ export class CallProcessingManager {
 
       return events || [];
     } catch (error) {
-      console.error(`Error fetching extracted events for call ${callSid}:`, error);
+      console.error(
+        `Error fetching extracted events for call ${callSid}:`,
+        error
+      );
       return [];
     }
   }
@@ -512,7 +563,7 @@ export class CallProcessingManager {
   private async getUserIdForCall(callSid: string): Promise<string | null> {
     try {
       const supabase = createAdminClient();
-      
+
       const { data: call } = await supabase
         .from('calls')
         .select('user_id')
@@ -532,7 +583,7 @@ export class CallProcessingManager {
   private async getCallerPhoneForCall(callSid: string): Promise<string | null> {
     try {
       const supabase = createAdminClient();
-      
+
       const { data: call } = await supabase
         .from('calls')
         .select('caller_number')
@@ -552,14 +603,16 @@ export class CallProcessingManager {
   private async getUserIndustry(callSid: string): Promise<string> {
     try {
       const supabase = createAdminClient();
-      
+
       const { data: call } = await supabase
         .from('calls')
-        .select(`
+        .select(
+          `
           users (
             industry
           )
-        `)
+        `
+        )
         .eq('twilio_call_sid', callSid)
         .single();
 

@@ -4,7 +4,14 @@ import { z } from 'zod';
 import type { Database } from '@/types/database.types';
 
 const TrackEventSchema = z.object({
-  event_type: z.enum(['page_view', 'feature_usage', 'api_call', 'conversion', 'churn_risk', 'support_interaction']),
+  event_type: z.enum([
+    'page_view',
+    'feature_usage',
+    'api_call',
+    'conversion',
+    'churn_risk',
+    'support_interaction',
+  ]),
   event_name: z.string().min(1).max(255),
   properties: z.record(z.any()).optional(),
   session_id: z.string().optional(),
@@ -13,36 +20,39 @@ const TrackEventSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const supabase = createClient();
-    
+
     // Get current user (optional for anonymous events)
-    const { data: { user } } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
     const body = await request.json();
     const validatedData = TrackEventSchema.parse(body);
 
     // Extract request metadata
-    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+    const ip =
+      request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
     const userAgent = request.headers.get('user-agent') || null;
     const referrer = request.headers.get('referer') || null;
-    
+
     // Parse UTM parameters from properties if available
     const utm = validatedData.properties?.utm || {};
 
-    const { error } = await supabase
-      .from('analytics_events')
-      .insert({
-        user_id: user?.id || null,
-        event_type: validatedData.event_type,
-        event_name: validatedData.event_name,
-        properties: validatedData.properties,
-        session_id: validatedData.session_id,
-        ip_address: ip,
-        user_agent: userAgent,
-        referrer,
-        utm_source: utm.source,
-        utm_medium: utm.medium,
-        utm_campaign: utm.campaign,
-      });
+    const { error } = await supabase.from('analytics_events').insert({
+      user_id: user?.id || null,
+      event_type: validatedData.event_type,
+      event_name: validatedData.event_name,
+      properties: validatedData.properties,
+      session_id: validatedData.session_id,
+      ip_address: ip,
+      user_agent: userAgent,
+      referrer,
+      utm_source: utm.source,
+      utm_medium: utm.medium,
+      utm_campaign: utm.campaign,
+    });
 
     if (error) {
       console.error('Error tracking event:', error);
@@ -60,7 +70,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     console.error('Analytics event error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
@@ -72,10 +82,13 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const supabase = createClient();
-    
+
     // Get current user (admin only for now)
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -84,7 +97,10 @@ export async function GET(request: NextRequest) {
     const eventType = url.searchParams.get('event_type');
     const startDate = url.searchParams.get('start_date');
     const endDate = url.searchParams.get('end_date');
-    const limit = Math.min(parseInt(url.searchParams.get('limit') || '100'), 1000);
+    const limit = Math.min(
+      parseInt(url.searchParams.get('limit') || '100'),
+      1000
+    );
 
     let query = supabase
       .from('analytics_events')

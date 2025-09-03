@@ -7,7 +7,10 @@ import { z } from 'zod';
 const subscriptionService = new SubscriptionService();
 
 const checkoutSchema = z.object({
-  tier: z.enum(['basic', 'professional', 'enterprise']).optional().default('basic'),
+  tier: z
+    .enum(['basic', 'professional', 'enterprise'])
+    .optional()
+    .default('basic'),
   successUrl: z.string().url().optional(),
   cancelUrl: z.string().url().optional(),
 });
@@ -16,23 +19,25 @@ export async function POST(request: NextRequest) {
   try {
     // Get user from session
     const supabase = createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Parse and validate request body
     const body = await request.json().catch(() => ({}));
     const validatedData = checkoutSchema.parse(body);
-    
+
     // Create checkout session URLs
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-    const successUrl = validatedData.successUrl || `${baseUrl}/billing?success=true`;
-    const cancelUrl = validatedData.cancelUrl || `${baseUrl}/billing?cancelled=true`;
+    const successUrl =
+      validatedData.successUrl || `${baseUrl}/billing?success=true`;
+    const cancelUrl =
+      validatedData.cancelUrl || `${baseUrl}/billing?cancelled=true`;
 
     const session = await subscriptionService.createCheckoutSession(
       user.id,
@@ -47,10 +52,9 @@ export async function POST(request: NextRequest) {
       url: session.url,
       tier: validatedData.tier,
     });
-
   } catch (error) {
     console.error('Checkout creation error:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid request data', details: error.errors },

@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/utils/supabase/server';
 import { createCallRecord } from '@/lib/supabase/calls';
-import { generateEnhancedCallHandlingTwiML, generateErrorTwiML, industryGreetings, IndustryType } from '@/lib/twilio/twiml';
+import {
+  generateEnhancedCallHandlingTwiML,
+  generateErrorTwiML,
+  industryGreetings,
+  IndustryType,
+} from '@/lib/twilio/twiml';
 import { initializeCallProcessing } from '@/lib/ai/CallProcessingManager';
 
 export async function POST(request: NextRequest) {
@@ -53,33 +58,32 @@ export async function POST(request: NextRequest) {
       callSid,
       {
         message: greeting,
-        voice: 'alice'
+        voice: 'alice',
       },
       {
         maxLength: 600, // 10 minutes
         transcribe: false,
-        playBeep: true
+        playBeep: true,
       }
     );
 
     return new NextResponse(twimlResponse, {
       status: 200,
       headers: {
-        'Content-Type': 'text/xml'
-      }
+        'Content-Type': 'text/xml',
+      },
     });
-
   } catch (error) {
     console.error('Twilio voice webhook error:', error);
-    
+
     // Return a basic TwiML response even if there's an error
     const errorTwimlResponse = generateErrorTwiML();
 
     return new NextResponse(errorTwimlResponse, {
       status: 200, // Always return 200 to Twilio to avoid retries
       headers: {
-        'Content-Type': 'text/xml'
-      }
+        'Content-Type': 'text/xml',
+      },
     });
   }
 }

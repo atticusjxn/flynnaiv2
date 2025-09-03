@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  Section,
-  Text,
-  Link,
-  Row,
-  Column,
-} from '@react-email/components';
+import { Section, Text, Link, Row, Column } from '@react-email/components';
 
 export interface ExtractedEvent {
   id?: string;
@@ -46,21 +40,32 @@ export default function EventCard({
   const confidenceColor = getConfidenceColor(event.confidence_score);
 
   return (
-    <Section style={{...eventCard, ...(event.urgency === 'emergency' || event.urgency === 'high' ? urgentCard : {})}}>
+    <Section
+      style={{
+        ...eventCard,
+        ...(event.urgency === 'emergency' || event.urgency === 'high'
+          ? urgentCard
+          : {}),
+      }}
+    >
       {/* Urgency Badge */}
-      <div style={{...urgencyBadge, ...urgencyConfig.style}}>
+      <div style={{ ...urgencyBadge, ...urgencyConfig.style }}>
         {urgencyConfig.label}
       </div>
 
       {/* Event Type */}
-      <Text style={{...eventType, backgroundColor: `${primaryColor}22`, color: primaryColor}}>
+      <Text
+        style={{
+          ...eventType,
+          backgroundColor: `${primaryColor}22`,
+          color: primaryColor,
+        }}
+      >
         {terminology[event.type] || event.type.replace('_', ' ').toUpperCase()}
       </Text>
 
       {/* Event Title */}
-      <Text style={eventTitle}>
-        {event.title}
-      </Text>
+      <Text style={eventTitle}>{event.title}</Text>
 
       {/* Event Details Grid */}
       <Row style={detailsGrid}>
@@ -71,37 +76,41 @@ export default function EventCard({
               <Text style={detailValue}>{event.customer_name}</Text>
             </div>
           )}
-          
+
           {event.customer_phone && (
             <div style={detailItem}>
               <Text style={detailLabel}>PHONE</Text>
               <Text style={detailValue}>{event.customer_phone}</Text>
             </div>
           )}
-          
+
           {(event.location || event.service_address) && (
             <div style={detailItem}>
               <Text style={detailLabel}>LOCATION</Text>
-              <Text style={detailValue}>{event.location || event.service_address}</Text>
+              <Text style={detailValue}>
+                {event.location || event.service_address}
+              </Text>
             </div>
           )}
         </Column>
-        
+
         <Column style={detailColumn}>
           {event.proposed_datetime && (
             <div style={detailItem}>
               <Text style={detailLabel}>PROPOSED TIME</Text>
-              <Text style={detailValue}>{formatDateTime(event.proposed_datetime)}</Text>
+              <Text style={detailValue}>
+                {formatDateTime(event.proposed_datetime)}
+              </Text>
             </div>
           )}
-          
+
           {event.service_type && (
             <div style={detailItem}>
               <Text style={detailLabel}>SERVICE</Text>
               <Text style={detailValue}>{event.service_type}</Text>
             </div>
           )}
-          
+
           {event.price_estimate && (
             <div style={detailItem}>
               <Text style={detailLabel}>EST. PRICE</Text>
@@ -113,18 +122,23 @@ export default function EventCard({
 
       {/* Event Description */}
       <Section style={eventDescription}>
-        <Text style={descriptionText}>
-          {event.description}
-        </Text>
+        <Text style={descriptionText}>{event.description}</Text>
       </Section>
 
       {/* Confidence Bar */}
       <Section style={confidenceSection}>
         <div style={confidenceBar}>
-          <div style={{...confidenceFill, width: `${confidencePercent}%`, backgroundColor: confidenceColor}} />
+          <div
+            style={{
+              ...confidenceFill,
+              width: `${confidencePercent}%`,
+              backgroundColor: confidenceColor,
+            }}
+          />
         </div>
         <Text style={confidenceText}>
-          Confidence: {confidencePercent}% • {getConfidenceLabel(event.confidence_score)}
+          Confidence: {confidencePercent}% •{' '}
+          {getConfidenceLabel(event.confidence_score)}
         </Text>
       </Section>
 
@@ -134,7 +148,7 @@ export default function EventCard({
           <Column>
             <Link
               href={`${process.env.NEXT_PUBLIC_APP_URL}/events/${event.id || 'new'}?action=confirm&call=${callId}`}
-              style={{...actionButton, ...confirmButton}}
+              style={{ ...actionButton, ...confirmButton }}
             >
               ✓ Confirm Appointment
             </Link>
@@ -142,7 +156,7 @@ export default function EventCard({
           <Column>
             <Link
               href={`${process.env.NEXT_PUBLIC_APP_URL}/events/${event.id || 'new'}?action=edit&call=${callId}`}
-              style={{...actionButton, ...editButton}}
+              style={{ ...actionButton, ...editButton }}
             >
               ✏️ Edit Details
             </Link>

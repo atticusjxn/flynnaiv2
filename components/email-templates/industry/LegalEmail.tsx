@@ -1,5 +1,7 @@
 import React from 'react';
-import CallOverviewEmail, { CallOverviewEmailProps } from '../CallOverviewEmail';
+import CallOverviewEmail, {
+  CallOverviewEmailProps,
+} from '../CallOverviewEmail';
 import { Section, Text, Link, Row, Column } from '@react-email/components';
 
 interface LegalEmailProps extends CallOverviewEmailProps {
@@ -11,8 +13,11 @@ interface LegalEmailProps extends CallOverviewEmailProps {
 }
 
 export default function LegalEmail(props: LegalEmailProps) {
-  const hasUrgentEvents = props.extractedEvents.some(e => e.urgency === 'emergency' || e.urgency === 'high');
-  const requiresPrivilege = props.confidentialityRequired || 
+  const hasUrgentEvents = props.extractedEvents.some(
+    (e) => e.urgency === 'emergency' || e.urgency === 'high'
+  );
+  const requiresPrivilege =
+    props.confidentialityRequired ||
     props.transcriptionSnippet?.toLowerCase().includes('confidential') ||
     props.transcriptionSnippet?.toLowerCase().includes('privileged');
 
@@ -25,11 +30,12 @@ export default function LegalEmail(props: LegalEmailProps) {
             ⚖️ ATTORNEY-CLIENT PRIVILEGE NOTICE
           </Text>
           <Text style={privilegeText}>
-            This communication contains confidential attorney-client privileged information. 
-            Access is restricted to authorized personnel only. Review confidentiality 
-            requirements before sharing or discussing case details.
+            This communication contains confidential attorney-client privileged
+            information. Access is restricted to authorized personnel only.
+            Review confidentiality requirements before sharing or discussing
+            case details.
           </Text>
-          
+
           <Row style={privilegeActions}>
             <Column>
               <Link
@@ -54,14 +60,13 @@ export default function LegalEmail(props: LegalEmailProps) {
       {/* Urgent Legal Matter Alert */}
       {hasUrgentEvents && (
         <Section style={urgentLegalSection}>
-          <Text style={urgentLegalTitle}>
-            🚨 URGENT LEGAL MATTER
-          </Text>
+          <Text style={urgentLegalTitle}>🚨 URGENT LEGAL MATTER</Text>
           <Text style={urgentLegalText}>
-            This consultation contains time-sensitive legal issues requiring immediate attention. 
-            Statute of limitations, court deadlines, or emergency circumstances may be involved.
+            This consultation contains time-sensitive legal issues requiring
+            immediate attention. Statute of limitations, court deadlines, or
+            emergency circumstances may be involved.
           </Text>
-          
+
           <Row style={urgentActions}>
             <Column>
               <Link
@@ -90,22 +95,28 @@ export default function LegalEmail(props: LegalEmailProps) {
           <Column>
             <Text style={classificationLabel}>Practice Area:</Text>
             <Text style={classificationText}>
-              {determinePracticeArea(props.extractedEvents, props.transcriptionSnippet)}
+              {determinePracticeArea(
+                props.extractedEvents,
+                props.transcriptionSnippet
+              )}
             </Text>
           </Column>
           <Column>
             <Text style={classificationLabel}>Matter Type:</Text>
             <Text style={classificationText}>
-              {determineMatterType(props.extractedEvents, props.transcriptionSnippet)}
+              {determineMatterType(
+                props.extractedEvents,
+                props.transcriptionSnippet
+              )}
             </Text>
           </Column>
         </Row>
-        
+
         <Text style={classificationLabel}>Complexity Assessment:</Text>
         <Text style={classificationText}>
           {assessComplexity(props.extractedEvents, props.transcriptionSnippet)}
         </Text>
-        
+
         <Text style={classificationLabel}>Potential Conflicts:</Text>
         <Text style={classificationText}>
           {assessPotentialConflicts(props.transcriptionSnippet)}
@@ -125,12 +136,13 @@ export default function LegalEmail(props: LegalEmailProps) {
           <Column>
             <Text style={consultationLabel}>Meeting Format:</Text>
             <Text style={consultationText}>
-              In-person preferred for sensitive matters<br />
+              In-person preferred for sensitive matters
+              <br />
               Video consultation available
             </Text>
           </Column>
         </Row>
-        
+
         <Text style={consultationTip}>
           💡 Legal Tip: {getLegalTip(props.extractedEvents)}
         </Text>
@@ -143,7 +155,7 @@ export default function LegalEmail(props: LegalEmailProps) {
           <Column>
             <Link
               href={`${props.dashboardUrl}/intake-form?call=${props.callId}`}
-              style={{...intakeButton, ...intakeFormButton}}
+              style={{ ...intakeButton, ...intakeFormButton }}
             >
               📋 Intake Form
             </Link>
@@ -151,17 +163,17 @@ export default function LegalEmail(props: LegalEmailProps) {
           <Column>
             <Link
               href={`${props.dashboardUrl}/retainer-agreement?call=${props.callId}`}
-              style={{...intakeButton, ...retainerButton}}
+              style={{ ...intakeButton, ...retainerButton }}
             >
               📄 Retainer Agreement
             </Link>
           </Column>
         </Row>
-        <Row style={{marginTop: '8px'}}>
+        <Row style={{ marginTop: '8px' }}>
           <Column>
             <Link
               href={`${props.dashboardUrl}/case-evaluation?call=${props.callId}`}
-              style={{...intakeButton, ...evaluationButton}}
+              style={{ ...intakeButton, ...evaluationButton }}
             >
               ⚖️ Case Evaluation
             </Link>
@@ -169,7 +181,7 @@ export default function LegalEmail(props: LegalEmailProps) {
           <Column>
             <Link
               href={`${props.dashboardUrl}/fee-calculator?call=${props.callId}`}
-              style={{...intakeButton, ...feeButton}}
+              style={{ ...intakeButton, ...feeButton }}
             >
               💰 Fee Calculator
             </Link>
@@ -181,26 +193,39 @@ export default function LegalEmail(props: LegalEmailProps) {
       <Section style={complianceSection}>
         <Text style={complianceTitle}>⚖️ Professional Standards & Ethics</Text>
         <Text style={complianceText}>
-          • All communications subject to attorney-client privilege<br />
-          • Conflict of interest screening required before representation<br />
-          • Client confidentiality strictly maintained per professional rules<br />
-          • Fee arrangements must comply with state bar regulations<br />
-          • All consultations logged for professional responsibility compliance
-          {props.attorneyBarNumber && `<br />• Attorney Bar Number: ${props.attorneyBarNumber}`}
+          • All communications subject to attorney-client privilege
+          <br />
+          • Conflict of interest screening required before representation
+          <br />
+          • Client confidentiality strictly maintained per professional rules
+          <br />
+          • Fee arrangements must comply with state bar regulations
+          <br />• All consultations logged for professional responsibility
+          compliance
+          {props.attorneyBarNumber &&
+            `<br />• Attorney Bar Number: ${props.attorneyBarNumber}`}
           {props.lawFirm && `<br />• Law Firm: ${props.lawFirm}`}
         </Text>
       </Section>
 
       {/* Legal Practice Management Tips */}
       <Section style={practiceManagementSection}>
-        <Text style={practiceManagementTitle}>🎓 Legal Practice Management Tips:</Text>
+        <Text style={practiceManagementTitle}>
+          🎓 Legal Practice Management Tips:
+        </Text>
         <Text style={practiceManagementList}>
-          • <strong>Intake Process:</strong> Complete conflict check before consultation<br />
-          • <strong>Documentation:</strong> Maintain detailed records from initial contact<br />
-          • <strong>Fee Agreements:</strong> Discuss fees and payment terms upfront<br />
-          • <strong>Deadlines:</strong> Calendar all potential statute limitations immediately<br />
-          • <strong>Communication:</strong> Set clear expectations for response times<br />
-          • <strong>Referrals:</strong> Know when to refer matters outside your expertise
+          • <strong>Intake Process:</strong> Complete conflict check before
+          consultation
+          <br />• <strong>Documentation:</strong> Maintain detailed records from
+          initial contact
+          <br />• <strong>Fee Agreements:</strong> Discuss fees and payment
+          terms upfront
+          <br />• <strong>Deadlines:</strong> Calendar all potential statute
+          limitations immediately
+          <br />• <strong>Communication:</strong> Set clear expectations for
+          response times
+          <br />• <strong>Referrals:</strong> Know when to refer matters outside
+          your expertise
         </Text>
       </Section>
     </CallOverviewEmail>
@@ -210,101 +235,181 @@ export default function LegalEmail(props: LegalEmailProps) {
 // Helper functions for legal practice
 function determinePracticeArea(events: any[], transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
-  
+
   // Family Law
-  if (content.includes('divorce') || content.includes('custody') || content.includes('child support') || 
-      content.includes('alimony') || content.includes('prenup')) return 'Family Law';
-  
+  if (
+    content.includes('divorce') ||
+    content.includes('custody') ||
+    content.includes('child support') ||
+    content.includes('alimony') ||
+    content.includes('prenup')
+  )
+    return 'Family Law';
+
   // Criminal Law
-  if (content.includes('arrest') || content.includes('criminal') || content.includes('charged') || 
-      content.includes('police') || content.includes('court date')) return 'Criminal Defense';
-  
+  if (
+    content.includes('arrest') ||
+    content.includes('criminal') ||
+    content.includes('charged') ||
+    content.includes('police') ||
+    content.includes('court date')
+  )
+    return 'Criminal Defense';
+
   // Personal Injury
-  if (content.includes('accident') || content.includes('injury') || content.includes('insurance') || 
-      content.includes('medical bills') || content.includes('car accident')) return 'Personal Injury';
-  
+  if (
+    content.includes('accident') ||
+    content.includes('injury') ||
+    content.includes('insurance') ||
+    content.includes('medical bills') ||
+    content.includes('car accident')
+  )
+    return 'Personal Injury';
+
   // Estate Planning
-  if (content.includes('will') || content.includes('estate') || content.includes('trust') || 
-      content.includes('probate') || content.includes('inheritance')) return 'Estate Planning';
-  
+  if (
+    content.includes('will') ||
+    content.includes('estate') ||
+    content.includes('trust') ||
+    content.includes('probate') ||
+    content.includes('inheritance')
+  )
+    return 'Estate Planning';
+
   // Business Law
-  if (content.includes('business') || content.includes('contract') || content.includes('llc') || 
-      content.includes('corporation') || content.includes('partnership')) return 'Business Law';
-  
+  if (
+    content.includes('business') ||
+    content.includes('contract') ||
+    content.includes('llc') ||
+    content.includes('corporation') ||
+    content.includes('partnership')
+  )
+    return 'Business Law';
+
   // Employment Law
-  if (content.includes('employment') || content.includes('fired') || content.includes('workplace') || 
-      content.includes('discrimination') || content.includes('wrongful termination')) return 'Employment Law';
-  
+  if (
+    content.includes('employment') ||
+    content.includes('fired') ||
+    content.includes('workplace') ||
+    content.includes('discrimination') ||
+    content.includes('wrongful termination')
+  )
+    return 'Employment Law';
+
   // Real Estate Law
-  if (content.includes('property') || content.includes('real estate') || content.includes('closing') || 
-      content.includes('deed') || content.includes('landlord')) return 'Real Estate Law';
-  
+  if (
+    content.includes('property') ||
+    content.includes('real estate') ||
+    content.includes('closing') ||
+    content.includes('deed') ||
+    content.includes('landlord')
+  )
+    return 'Real Estate Law';
+
   return 'General Legal Consultation';
 }
 
 function determineMatterType(events: any[], transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
-  
-  if (content.includes('initial consultation') || content.includes('first time') || 
-      content.includes('need a lawyer')) return 'Initial Consultation';
-  
-  if (content.includes('ongoing') || content.includes('current case') || 
-      content.includes('already working')) return 'Ongoing Case';
-  
-  if (content.includes('emergency') || content.includes('urgent') || 
-      content.includes('deadline') || content.includes('court tomorrow')) return 'Emergency Legal Matter';
-  
-  if (content.includes('review') || content.includes('look at') || 
-      content.includes('opinion')) return 'Legal Review';
-  
-  if (content.includes('mediation') || content.includes('settlement') || 
-      content.includes('negotiate')) return 'Dispute Resolution';
-  
+
+  if (
+    content.includes('initial consultation') ||
+    content.includes('first time') ||
+    content.includes('need a lawyer')
+  )
+    return 'Initial Consultation';
+
+  if (
+    content.includes('ongoing') ||
+    content.includes('current case') ||
+    content.includes('already working')
+  )
+    return 'Ongoing Case';
+
+  if (
+    content.includes('emergency') ||
+    content.includes('urgent') ||
+    content.includes('deadline') ||
+    content.includes('court tomorrow')
+  )
+    return 'Emergency Legal Matter';
+
+  if (
+    content.includes('review') ||
+    content.includes('look at') ||
+    content.includes('opinion')
+  )
+    return 'Legal Review';
+
+  if (
+    content.includes('mediation') ||
+    content.includes('settlement') ||
+    content.includes('negotiate')
+  )
+    return 'Dispute Resolution';
+
   return 'General Legal Inquiry';
 }
 
 function assessComplexity(events: any[], transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
   let complexityScore = 0;
-  
+
   // High complexity indicators
-  if (content.includes('multiple parties') || content.includes('class action')) complexityScore += 3;
-  if (content.includes('federal') || content.includes('appeal')) complexityScore += 3;
-  if (content.includes('criminal') && content.includes('felony')) complexityScore += 3;
-  if (content.includes('corporate') || content.includes('merger')) complexityScore += 2;
-  if (content.includes('international') || content.includes('jurisdiction')) complexityScore += 2;
-  
+  if (content.includes('multiple parties') || content.includes('class action'))
+    complexityScore += 3;
+  if (content.includes('federal') || content.includes('appeal'))
+    complexityScore += 3;
+  if (content.includes('criminal') && content.includes('felony'))
+    complexityScore += 3;
+  if (content.includes('corporate') || content.includes('merger'))
+    complexityScore += 2;
+  if (content.includes('international') || content.includes('jurisdiction'))
+    complexityScore += 2;
+
   // Medium complexity indicators
-  if (content.includes('litigation') || content.includes('lawsuit')) complexityScore += 2;
-  if (content.includes('contract dispute') || content.includes('breach')) complexityScore += 1;
-  if (content.includes('custody') || content.includes('divorce')) complexityScore += 1;
-  
-  if (complexityScore >= 5) return 'High Complexity - Specialized expertise required';
-  if (complexityScore >= 3) return 'Medium Complexity - Detailed case management needed';
+  if (content.includes('litigation') || content.includes('lawsuit'))
+    complexityScore += 2;
+  if (content.includes('contract dispute') || content.includes('breach'))
+    complexityScore += 1;
+  if (content.includes('custody') || content.includes('divorce'))
+    complexityScore += 1;
+
+  if (complexityScore >= 5)
+    return 'High Complexity - Specialized expertise required';
+  if (complexityScore >= 3)
+    return 'Medium Complexity - Detailed case management needed';
   if (complexityScore >= 1) return 'Standard Complexity - Routine legal matter';
-  
+
   return 'Low Complexity - Straightforward consultation';
 }
 
 function assessPotentialConflicts(transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
-  
-  if (content.includes('former client') || content.includes('used to represent')) {
+
+  if (
+    content.includes('former client') ||
+    content.includes('used to represent')
+  ) {
     return 'POTENTIAL CONFLICT: Former client mentioned';
   }
-  
+
   if (content.includes('opposing party') || content.includes('other side')) {
     return 'REVIEW REQUIRED: Multiple parties involved';
   }
-  
+
   if (content.includes('company') && content.includes('employee')) {
     return 'SCREENING NEEDED: Employment matter with corporate entity';
   }
-  
-  if (content.includes('government') || content.includes('city') || content.includes('county')) {
+
+  if (
+    content.includes('government') ||
+    content.includes('city') ||
+    content.includes('county')
+  ) {
     return 'GOVERNMENT INVOLVEMENT: Additional conflict screening required';
   }
-  
+
   return 'No obvious conflicts identified - Standard screening recommended';
 }
 
@@ -316,7 +421,7 @@ function getLegalTip(events: any[]): string {
     'Screen for conflicts of interest with all parties mentioned',
     'Maintain confidentiality even in preliminary consultations',
   ];
-  
+
   return tips[Math.floor(Math.random() * tips.length)];
 }
 

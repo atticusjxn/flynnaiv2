@@ -17,14 +17,18 @@ export function generateCallHandlingTwiML(
   recordingConfig?: RecordingConfig
 ): string {
   const voice = greeting?.voice || 'alice';
-  const message = greeting?.message || 'Thank you for calling. Your call is being recorded for appointment scheduling purposes.';
-  
+  const message =
+    greeting?.message ||
+    'Thank you for calling. Your call is being recorded for appointment scheduling purposes.';
+
   const maxLength = recordingConfig?.maxLength || 600; // 10 minutes default
   const transcribe = recordingConfig?.transcribe || false;
   const playBeep = recordingConfig?.playBeep !== false; // default true
-  
-  const baseUrl = process.env.TWILIO_WEBHOOK_URL || 'https://flynnv2-h1g6zn20a-atticus-181af93c.vercel.app';
-  
+
+  const baseUrl =
+    process.env.TWILIO_WEBHOOK_URL ||
+    'https://flynnv2-h1g6zn20a-atticus-181af93c.vercel.app';
+
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Say voice="${voice}">${message}</Say>
@@ -46,8 +50,10 @@ export function generateErrorTwiML(
   voice?: 'alice' | 'man' | 'woman'
 ): string {
   const voiceValue = voice || 'alice';
-  const message = errorMessage || "We're sorry, there was an error processing your call. Please try again later.";
-  
+  const message =
+    errorMessage ||
+    "We're sorry, there was an error processing your call. Please try again later.";
+
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Say voice="${voiceValue}">${message}</Say>
@@ -64,13 +70,20 @@ export function generateBusyTwiML(): string {
 
 // Industry-specific greeting messages
 export const industryGreetings = {
-  plumbing: "Thank you for calling. Please describe your plumbing issue and when you need service. Your call is being recorded.",
-  real_estate: "Thank you for calling. Please let us know about the property you're interested in or the service you need. Your call is being recorded.",
-  legal: "Thank you for calling our law office. Please describe your legal matter and contact information. Your call is being recorded.",
-  medical: "Thank you for calling. Please provide your information and describe your appointment needs. Your call is being recorded.",
-  sales: "Thank you for calling. Please let us know how we can help you today. Your call is being recorded.",
-  consulting: "Thank you for calling. Please describe your consulting needs and preferred meeting times. Your call is being recorded.",
-  general: "Thank you for calling. Please describe your needs and contact information. Your call is being recorded."
+  plumbing:
+    'Thank you for calling. Please describe your plumbing issue and when you need service. Your call is being recorded.',
+  real_estate:
+    "Thank you for calling. Please let us know about the property you're interested in or the service you need. Your call is being recorded.",
+  legal:
+    'Thank you for calling our law office. Please describe your legal matter and contact information. Your call is being recorded.',
+  medical:
+    'Thank you for calling. Please provide your information and describe your appointment needs. Your call is being recorded.',
+  sales:
+    'Thank you for calling. Please let us know how we can help you today. Your call is being recorded.',
+  consulting:
+    'Thank you for calling. Please describe your consulting needs and preferred meeting times. Your call is being recorded.',
+  general:
+    'Thank you for calling. Please describe your needs and contact information. Your call is being recorded.',
 } as const;
 
 export type IndustryType = keyof typeof industryGreetings;
@@ -83,14 +96,18 @@ export function generateCallHandlingWithDTMFTwiML(
   recordingConfig?: RecordingConfig
 ): string {
   const voice = greeting?.voice || 'alice';
-  const message = greeting?.message || 'Thank you for calling. Your call is being recorded for appointment scheduling purposes.';
-  
+  const message =
+    greeting?.message ||
+    'Thank you for calling. Your call is being recorded for appointment scheduling purposes.';
+
   const maxLength = recordingConfig?.maxLength || 600; // 10 minutes default
   const transcribe = recordingConfig?.transcribe || false;
   const playBeep = recordingConfig?.playBeep !== false; // default true
-  
-  const baseUrl = process.env.TWILIO_WEBHOOK_URL || 'https://flynnv2-h1g6zn20a-atticus-181af93c.vercel.app';
-  
+
+  const baseUrl =
+    process.env.TWILIO_WEBHOOK_URL ||
+    'https://flynnv2-h1g6zn20a-atticus-181af93c.vercel.app';
+
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Say voice="${voice}">${message}</Say>
@@ -133,8 +150,10 @@ export function generateKeypadActivationTwiML(): string {
  * Generate TwiML with Media Streams for real-time audio processing
  */
 export function generateMediaStreamTwiML(callSid: string): string {
-  const baseUrl = process.env.TWILIO_WEBHOOK_URL || 'https://flynnv2-h1g6zn20a-atticus-181af93c.vercel.app';
-  
+  const baseUrl =
+    process.env.TWILIO_WEBHOOK_URL ||
+    'https://flynnv2-h1g6zn20a-atticus-181af93c.vercel.app';
+
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Start>
@@ -155,15 +174,19 @@ export function generateEnhancedCallHandlingTwiML(
   recordingConfig?: RecordingConfig
 ): string {
   const voice = greeting?.voice || 'alice';
-  const message = greeting?.message || 'Thank you for calling. Your call is being recorded for appointment scheduling purposes.';
-  
+  const message =
+    greeting?.message ||
+    'Thank you for calling. Your call is being recorded for appointment scheduling purposes.';
+
   const maxLength = recordingConfig?.maxLength || 600;
   const transcribe = recordingConfig?.transcribe || false;
   const playBeep = recordingConfig?.playBeep !== false;
-  
-  const baseUrl = process.env.TWILIO_WEBHOOK_URL || 'https://flynnv2-h1g6zn20a-atticus-181af93c.vercel.app';
+
+  const baseUrl =
+    process.env.TWILIO_WEBHOOK_URL ||
+    'https://flynnv2-h1g6zn20a-atticus-181af93c.vercel.app';
   const wsUrl = baseUrl.replace('https://', '').replace('http://', '');
-  
+
   return `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Say voice="${voice}">${message}</Say>

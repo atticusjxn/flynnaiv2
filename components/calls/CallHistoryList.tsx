@@ -1,7 +1,13 @@
 'use client';
 
 import React, { useState, useMemo, memo } from 'react';
-import { Pagination, Spinner, Modal, ModalContent, ModalBody } from '@nextui-org/react';
+import {
+  Pagination,
+  Spinner,
+  Modal,
+  ModalContent,
+  ModalBody,
+} from '@nextui-org/react';
 import CallCard from './CallCard';
 import CallSearchFilters, { CallFilters } from './CallSearchFilters';
 import TranscriptViewer from './TranscriptViewer';
@@ -19,15 +25,17 @@ interface CallHistoryListProps {
 
 const CALLS_PER_PAGE = 10;
 
-const CallHistoryList = memo(function CallHistoryList({ 
-  calls, 
-  isLoading = false, 
-  error = null, 
-  onRefresh 
+const CallHistoryList = memo(function CallHistoryList({
+  calls,
+  isLoading = false,
+  error = null,
+  onRefresh,
 }: CallHistoryListProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCall, setSelectedCall] = useState<CallRecord | null>(null);
-  const [modalType, setModalType] = useState<'transcript' | 'audio' | 'events' | null>(null);
+  const [modalType, setModalType] = useState<
+    'transcript' | 'audio' | 'events' | null
+  >(null);
   const [filters, setFilters] = useState<CallFilters>({
     search: '',
     status: [],
@@ -49,7 +57,7 @@ const CallHistoryList = memo(function CallHistoryList({
       // Text search with null safety
       if (filters.search?.trim()) {
         const searchLower = filters.search.toLowerCase();
-        filtered = filtered.filter(call => {
+        filtered = filtered.filter((call) => {
           try {
             return (
               call.caller_name?.toLowerCase().includes(searchLower) ||
@@ -65,26 +73,29 @@ const CallHistoryList = memo(function CallHistoryList({
         });
       }
 
-    // Status filter
-    if (filters.status.length > 0) {
-      filtered = filtered.filter(call => 
-        filters.status.includes(call.call_status)
-      );
-    }
+      // Status filter
+      if (filters.status.length > 0) {
+        filtered = filtered.filter((call) =>
+          filters.status.includes(call.call_status)
+        );
+      }
 
-    // Urgency filter
-    if (filters.urgency.length > 0) {
-      filtered = filtered.filter(call => 
-        call.urgency_level && filters.urgency.includes(call.urgency_level)
-      );
-    }
+      // Urgency filter
+      if (filters.urgency.length > 0) {
+        filtered = filtered.filter(
+          (call) =>
+            call.urgency_level && filters.urgency.includes(call.urgency_level)
+        );
+      }
 
-    // AI Status filter
-    if (filters.aiStatus.length > 0) {
-      filtered = filtered.filter(call => 
-        call.ai_processing_status && filters.aiStatus.includes(call.ai_processing_status)
-      );
-    }
+      // AI Status filter
+      if (filters.aiStatus.length > 0) {
+        filtered = filtered.filter(
+          (call) =>
+            call.ai_processing_status &&
+            filters.aiStatus.includes(call.ai_processing_status)
+        );
+      }
 
       // Sort by most recent first with error handling
       return filtered.sort((a, b) => {
@@ -116,7 +127,7 @@ const CallHistoryList = memo(function CallHistoryList({
   }, [filters]);
 
   const handleViewTranscript = (callId: string) => {
-    const call = calls.find(c => c.id === callId);
+    const call = calls.find((c) => c.id === callId);
     if (call) {
       setSelectedCall(call);
       setModalType('transcript');
@@ -124,7 +135,7 @@ const CallHistoryList = memo(function CallHistoryList({
   };
 
   const handlePlayAudio = (callId: string) => {
-    const call = calls.find(c => c.id === callId);
+    const call = calls.find((c) => c.id === callId);
     if (call) {
       setSelectedCall(call);
       setModalType('audio');
@@ -145,11 +156,23 @@ const CallHistoryList = memo(function CallHistoryList({
     return (
       <div className="flex flex-col items-center justify-center py-12">
         <div className="w-16 h-16 mx-auto bg-danger/10 rounded-full flex items-center justify-center mb-4">
-          <svg className="w-8 h-8 text-danger" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+          <svg
+            className="w-8 h-8 text-danger"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+            />
           </svg>
         </div>
-        <h3 className="text-lg font-semibold text-foreground mb-2">Error Loading Calls</h3>
+        <h3 className="text-lg font-semibold text-foreground mb-2">
+          Error Loading Calls
+        </h3>
         <p className="text-muted-foreground text-center mb-4">{error}</p>
         {onRefresh && (
           <button
@@ -184,15 +207,28 @@ const CallHistoryList = memo(function CallHistoryList({
       {!isLoading && filteredCalls.length === 0 && calls.length === 0 && (
         <div className="text-center py-16">
           <div className="w-20 h-20 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-6">
-            <svg className="w-10 h-10 text-primary" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+            <svg
+              className="w-10 h-10 text-primary"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"
+              />
             </svg>
           </div>
-          
-          <h2 className="text-2xl font-bold text-foreground mb-4">No Calls Yet</h2>
+
+          <h2 className="text-2xl font-bold text-foreground mb-4">
+            No Calls Yet
+          </h2>
           <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
-            Your call history will appear here once you start receiving and processing calls with Flynn.ai. 
-            All calls with AI extraction will be displayed chronologically.
+            Your call history will appear here once you start receiving and
+            processing calls with Flynn.ai. All calls with AI extraction will be
+            displayed chronologically.
           </p>
         </div>
       )}
@@ -201,13 +237,26 @@ const CallHistoryList = memo(function CallHistoryList({
       {!isLoading && filteredCalls.length === 0 && calls.length > 0 && (
         <div className="text-center py-12">
           <div className="w-16 h-16 mx-auto bg-muted/50 rounded-full flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-muted-foreground" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            <svg
+              className="w-8 h-8 text-muted-foreground"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+              />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-foreground mb-2">No Results Found</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-2">
+            No Results Found
+          </h3>
           <p className="text-muted-foreground">
-            Try adjusting your filters or search terms to find the calls you're looking for.
+            Try adjusting your filters or search terms to find the calls you're
+            looking for.
           </p>
         </div>
       )}
@@ -237,9 +286,11 @@ const CallHistoryList = memo(function CallHistoryList({
                 size="lg"
                 showControls
                 classNames={{
-                  wrapper: "gap-0 overflow-visible h-fit rounded border border-divider",
-                  item: "w-unit-12 h-unit-12 text-small rounded-none bg-transparent",
-                  cursor: "bg-gradient-to-b shadow-lg from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 text-white font-medium",
+                  wrapper:
+                    'gap-0 overflow-visible h-fit rounded border border-divider',
+                  item: 'w-unit-12 h-unit-12 text-small rounded-none bg-transparent',
+                  cursor:
+                    'bg-gradient-to-b shadow-lg from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 text-white font-medium',
                 }}
               />
             </div>
@@ -254,17 +305,14 @@ const CallHistoryList = memo(function CallHistoryList({
         size="5xl"
         scrollBehavior="inside"
         classNames={{
-          base: "bg-background border-border",
-          backdrop: "bg-black/50 backdrop-blur-sm",
+          base: 'bg-background border-border',
+          backdrop: 'bg-black/50 backdrop-blur-sm',
         }}
       >
         <ModalContent>
           <ModalBody className="p-0">
             {selectedCall && (
-              <TranscriptViewer
-                call={selectedCall}
-                onClose={closeModal}
-              />
+              <TranscriptViewer call={selectedCall} onClose={closeModal} />
             )}
           </ModalBody>
         </ModalContent>
@@ -275,15 +323,13 @@ const CallHistoryList = memo(function CallHistoryList({
         onClose={closeModal}
         size="3xl"
         classNames={{
-          base: "bg-background border-border",
-          backdrop: "bg-black/50 backdrop-blur-sm",
+          base: 'bg-background border-border',
+          backdrop: 'bg-black/50 backdrop-blur-sm',
         }}
       >
         <ModalContent>
           <ModalBody className="p-6">
-            {selectedCall && (
-              <AudioPlayer call={selectedCall} />
-            )}
+            {selectedCall && <AudioPlayer call={selectedCall} />}
           </ModalBody>
         </ModalContent>
       </Modal>

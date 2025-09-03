@@ -13,7 +13,11 @@ interface AuthContextType {
   profile: UserProfile | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signUp: (email: string, password: string, userData?: any) => Promise<{ error: any }>;
+  signUp: (
+    email: string,
+    password: string,
+    userData?: any
+  ) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   updateProfile: (updates: any) => Promise<{ error: any }>;
 }

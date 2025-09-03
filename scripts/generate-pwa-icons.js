@@ -5,7 +5,9 @@ const fs = require('fs');
 const path = require('path');
 
 // Create a simple SVG icon for Flynn.ai
-const createIcon = (size) => `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+const createIcon = (
+  size
+) => `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
@@ -28,15 +30,15 @@ if (!fs.existsSync(iconsDir)) {
 }
 
 // Generate each icon size
-iconSizes.forEach(size => {
+iconSizes.forEach((size) => {
   const svgContent = createIcon(size);
   const fileName = `icon-${size}x${size}.png`;
-  
+
   // For now, save as SVG (in production you'd convert to PNG)
   // This is a placeholder approach for immediate fix
   const svgFileName = `icon-${size}x${size}.svg`;
   fs.writeFileSync(path.join(iconsDir, svgFileName), svgContent);
-  
+
   console.log(`Generated ${svgFileName}`);
 });
 

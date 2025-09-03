@@ -21,13 +21,9 @@ const SECURITY_HEADERS = {
     'strict-transport-security',
     'x-frame-options',
     'x-content-type-options',
-    'content-security-policy'
+    'content-security-policy',
   ],
-  recommended: [
-    'x-xss-protection',
-    'referrer-policy',
-    'permissions-policy'
-  ]
+  recommended: ['x-xss-protection', 'referrer-policy', 'permissions-policy'],
 };
 
 const SENSITIVE_PATTERNS = [
@@ -39,40 +35,40 @@ const SENSITIVE_PATTERNS = [
   /access[_-]?key/i,
   /auth[_-]?token/i,
   /db[_-]?pass/i,
-  /database[_-]?url/i
+  /database[_-]?url/i,
 ];
 
 const VULNERABILITY_PATTERNS = [
   {
     pattern: /eval\s*\(/g,
     risk: 'HIGH',
-    description: 'Use of eval() function'
+    description: 'Use of eval() function',
   },
   {
     pattern: /innerHTML\s*=/g,
     risk: 'MEDIUM',
-    description: 'Use of innerHTML (potential XSS)'
+    description: 'Use of innerHTML (potential XSS)',
   },
   {
     pattern: /document\.write\s*\(/g,
     risk: 'MEDIUM',
-    description: 'Use of document.write (potential XSS)'
+    description: 'Use of document.write (potential XSS)',
   },
   {
     pattern: /dangerouslySetInnerHTML/g,
     risk: 'MEDIUM',
-    description: 'Use of dangerouslySetInnerHTML'
+    description: 'Use of dangerouslySetInnerHTML',
   },
   {
     pattern: /sql\s*=\s*["`'].*\$\{/gi,
     risk: 'CRITICAL',
-    description: 'Potential SQL injection vulnerability'
-  }
+    description: 'Potential SQL injection vulnerability',
+  },
 ];
 
 async function runSecurityAudit() {
   console.log('🛡️  Flynn.ai v2 - Security Audit');
-  console.log('=' .repeat(50));
+  console.log('='.repeat(50));
   console.log(`🎯 Target: ${SECURITY_CONFIG.baseUrl}`);
   console.log('');
 
@@ -86,15 +82,15 @@ async function runSecurityAudit() {
       high: [],
       medium: [],
       low: [],
-      info: []
+      info: [],
     },
     tests: {
       headers: {},
       dependencies: {},
       code: {},
       configuration: {},
-      ssl: {}
-    }
+      ssl: {},
+    },
   };
 
   try {
@@ -124,7 +120,6 @@ async function runSecurityAudit() {
 
     // Generate final report
     generateSecurityReport(results);
-
   } catch (error) {
     console.error('❌ Security audit failed:', error);
     results.overall = 'failed';
@@ -138,12 +133,12 @@ async function auditSecurityHeaders(results) {
   try {
     const response = await makeHttpsRequest('/', 'HEAD');
     const headers = response.headers;
-    
+
     results.tests.headers = {
       status: 'completed',
       headers: headers,
       required: {},
-      recommended: {}
+      recommended: {},
     };
 
     let headerScore = 100;
@@ -153,9 +148,11 @@ async function auditSecurityHeaders(results) {
     for (const header of SECURITY_HEADERS.required) {
       const value = headers[header] || headers[header.toUpperCase()];
       if (value) {
-        console.log(`  ✅ ${header}: ${value.substring(0, 60)}${value.length > 60 ? '...' : ''}`);
+        console.log(
+          `  ✅ ${header}: ${value.substring(0, 60)}${value.length > 60 ? '...' : ''}`
+        );
         results.tests.headers.required[header] = value;
-        
+
         // Validate specific headers
         await validateSecurityHeader(header, value, results);
       } else {
@@ -164,7 +161,7 @@ async function auditSecurityHeaders(results) {
           type: 'missing_security_header',
           header: header,
           description: `Missing required security header: ${header}`,
-          recommendation: `Add ${header} header to improve security`
+          recommendation: `Add ${header} header to improve security`,
         });
         missingRequired++;
         headerScore -= 15;
@@ -175,7 +172,9 @@ async function auditSecurityHeaders(results) {
     for (const header of SECURITY_HEADERS.recommended) {
       const value = headers[header] || headers[header.toUpperCase()];
       if (value) {
-        console.log(`  ✅ ${header}: ${value.substring(0, 60)}${value.length > 60 ? '...' : ''}`);
+        console.log(
+          `  ✅ ${header}: ${value.substring(0, 60)}${value.length > 60 ? '...' : ''}`
+        );
         results.tests.headers.recommended[header] = value;
       } else {
         console.log(`  ⚠️  ${header}: Missing (recommended)`);
@@ -183,21 +182,22 @@ async function auditSecurityHeaders(results) {
           type: 'missing_recommended_header',
           header: header,
           description: `Missing recommended security header: ${header}`,
-          recommendation: `Consider adding ${header} header for enhanced security`
+          recommendation: `Consider adding ${header} header for enhanced security`,
         });
         headerScore -= 5;
       }
     }
 
     results.tests.headers.score = Math.max(0, headerScore);
-    console.log(`  🎯 Security Headers Score: ${results.tests.headers.score}/100\n`);
-
+    console.log(
+      `  🎯 Security Headers Score: ${results.tests.headers.score}/100\n`
+    );
   } catch (error) {
     console.log(`  ❌ Failed to analyze security headers: ${error.message}\n`);
     results.findings.critical.push({
       type: 'headers_analysis_failed',
       description: 'Could not analyze security headers',
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -209,13 +209,13 @@ async function validateSecurityHeader(header, value, results) {
         results.findings.medium.push({
           type: 'weak_hsts',
           description: 'HSTS header missing max-age directive',
-          recommendation: 'Add max-age directive to HSTS header'
+          recommendation: 'Add max-age directive to HSTS header',
         });
       } else if (!value.includes('includeSubDomains')) {
         results.findings.low.push({
           type: 'hsts_no_subdomains',
           description: 'HSTS header missing includeSubDomains directive',
-          recommendation: 'Add includeSubDomains to HSTS header'
+          recommendation: 'Add includeSubDomains to HSTS header',
         });
       }
       break;
@@ -225,14 +225,15 @@ async function validateSecurityHeader(header, value, results) {
         results.findings.medium.push({
           type: 'csp_unsafe_eval',
           description: 'CSP allows unsafe-eval',
-          recommendation: 'Remove unsafe-eval from CSP if possible'
+          recommendation: 'Remove unsafe-eval from CSP if possible',
         });
       }
       if (value.includes("'unsafe-inline'")) {
         results.findings.low.push({
           type: 'csp_unsafe_inline',
           description: 'CSP allows unsafe-inline',
-          recommendation: 'Consider using nonce or hash instead of unsafe-inline'
+          recommendation:
+            'Consider using nonce or hash instead of unsafe-inline',
         });
       }
       break;
@@ -242,7 +243,7 @@ async function validateSecurityHeader(header, value, results) {
         results.findings.medium.push({
           type: 'weak_frame_options',
           description: 'X-Frame-Options not set to DENY or SAMEORIGIN',
-          recommendation: 'Set X-Frame-Options to DENY or SAMEORIGIN'
+          recommendation: 'Set X-Frame-Options to DENY or SAMEORIGIN',
         });
       }
       break;
@@ -257,7 +258,7 @@ async function auditSSLConfiguration(results) {
       results.findings.critical.push({
         type: 'no_https',
         description: 'Site not using HTTPS',
-        recommendation: 'Enable HTTPS for all connections'
+        recommendation: 'Enable HTTPS for all connections',
       });
       return;
     }
@@ -270,7 +271,7 @@ async function auditSSLConfiguration(results) {
       results.findings.high.push({
         type: 'ssl_analysis_failed',
         description: 'Could not analyze SSL configuration',
-        error: sslInfo.error
+        error: sslInfo.error,
       });
     } else {
       console.log(`  ✅ SSL Certificate Valid`);
@@ -281,29 +282,30 @@ async function auditSSLConfiguration(results) {
       // Check certificate expiry
       const expiryDate = new Date(sslInfo.validTo);
       const now = new Date();
-      const daysUntilExpiry = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
+      const daysUntilExpiry = Math.ceil(
+        (expiryDate - now) / (1000 * 60 * 60 * 24)
+      );
 
       if (daysUntilExpiry < 30) {
         results.findings.high.push({
           type: 'ssl_expiring_soon',
           description: `SSL certificate expires in ${daysUntilExpiry} days`,
-          recommendation: 'Renew SSL certificate'
+          recommendation: 'Renew SSL certificate',
         });
       } else if (daysUntilExpiry < 90) {
         results.findings.medium.push({
           type: 'ssl_expiring_soon',
           description: `SSL certificate expires in ${daysUntilExpiry} days`,
-          recommendation: 'Plan SSL certificate renewal'
+          recommendation: 'Plan SSL certificate renewal',
         });
       }
     }
-
   } catch (error) {
     console.log(`  ❌ SSL audit failed: ${error.message}\n`);
     results.findings.high.push({
       type: 'ssl_audit_failed',
       description: 'SSL audit failed',
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -312,17 +314,17 @@ async function auditDependencies(results) {
   try {
     const packageJsonPath = path.join(process.cwd(), 'package.json');
     const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf8'));
-    
+
     const allDeps = {
       ...packageJson.dependencies,
-      ...packageJson.devDependencies
+      ...packageJson.devDependencies,
     };
 
     results.tests.dependencies = {
       status: 'completed',
       total: Object.keys(allDeps).length,
       vulnerable: [],
-      outdated: []
+      outdated: [],
     };
 
     // Known vulnerable patterns (basic check)
@@ -331,18 +333,20 @@ async function auditDependencies(results) {
     ];
 
     let vulnerableCount = 0;
-    
-    console.log(`  📊 Analyzing ${Object.keys(allDeps).length} dependencies...\n`);
-    
+
+    console.log(
+      `  📊 Analyzing ${Object.keys(allDeps).length} dependencies...\n`
+    );
+
     for (const [name, version] of Object.entries(allDeps)) {
       const depString = `${name}@${version}`;
-      
+
       // Basic security checks
       if (name.includes('debug') && !packageJson.devDependencies[name]) {
         results.findings.low.push({
           type: 'debug_dependency',
           description: `Debug package ${name} in production dependencies`,
-          recommendation: 'Move debug packages to devDependencies'
+          recommendation: 'Move debug packages to devDependencies',
         });
       }
 
@@ -353,7 +357,7 @@ async function auditDependencies(results) {
           package: name,
           version: version,
           description: `Vulnerable dependency: ${depString}`,
-          recommendation: `Update ${name} to latest secure version`
+          recommendation: `Update ${name} to latest secure version`,
         });
         vulnerableCount++;
       }
@@ -363,25 +367,29 @@ async function auditDependencies(results) {
     console.log(`  ⚠️  Potential vulnerabilities: ${vulnerableCount}\n`);
 
     results.tests.dependencies.vulnerable = vulnerableCount;
-
   } catch (error) {
     console.log(`  ❌ Dependency audit failed: ${error.message}\n`);
     results.findings.medium.push({
       type: 'dependency_audit_failed',
       description: 'Could not analyze dependencies',
-      error: error.message
+      error: error.message,
     });
   }
 }
 
 async function auditSourceCode(results) {
   try {
-    const sourceFiles = await getSourceFiles(['app', 'components', 'lib', 'utils']);
-    
+    const sourceFiles = await getSourceFiles([
+      'app',
+      'components',
+      'lib',
+      'utils',
+    ]);
+
     results.tests.code = {
       status: 'completed',
       filesScanned: sourceFiles.length,
-      vulnerabilities: []
+      vulnerabilities: [],
     };
 
     let totalVulns = 0;
@@ -402,7 +410,7 @@ async function auditSourceCode(results) {
               file: relativeFile,
               pattern: pattern.source,
               description: `Potential sensitive data pattern found in ${relativeFile}`,
-              recommendation: 'Review for hardcoded secrets or sensitive data'
+              recommendation: 'Review for hardcoded secrets or sensitive data',
             });
             totalVulns++;
           }
@@ -418,7 +426,7 @@ async function auditSourceCode(results) {
               risk: vuln.risk,
               description: `${vuln.description} in ${relativeFile}`,
               recommendation: 'Review and remediate security vulnerability',
-              pattern: vuln.pattern.source
+              pattern: vuln.pattern.source,
             };
 
             if (vuln.risk === 'CRITICAL') {
@@ -432,7 +440,6 @@ async function auditSourceCode(results) {
             totalVulns++;
           }
         }
-
       } catch (fileError) {
         // Skip files that can't be read
         continue;
@@ -443,13 +450,12 @@ async function auditSourceCode(results) {
     console.log(`  ⚠️  Potential issues found: ${totalVulns}\n`);
 
     results.tests.code.vulnerabilities = totalVulns;
-
   } catch (error) {
     console.log(`  ❌ Source code audit failed: ${error.message}\n`);
     results.findings.medium.push({
       type: 'code_audit_failed',
       description: 'Could not scan source code',
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -460,19 +466,25 @@ async function auditConfiguration(results) {
       status: 'completed',
       nextConfig: {},
       vercelConfig: {},
-      middlewareConfig: {}
+      middlewareConfig: {},
     };
 
     // Check Next.js configuration
     try {
       const nextConfigPath = path.join(process.cwd(), 'next.config.js');
       const nextConfig = await fs.readFile(nextConfigPath, 'utf8');
-      
+
       // Check for security configurations
       const securityChecks = [
-        { pattern: /poweredByHeader\s*:\s*false/, name: 'X-Powered-By header disabled' },
-        { pattern: /reactStrictMode\s*:\s*true/, name: 'React Strict Mode enabled' },
-        { pattern: /swcMinify\s*:\s*true/, name: 'SWC minification enabled' }
+        {
+          pattern: /poweredByHeader\s*:\s*false/,
+          name: 'X-Powered-By header disabled',
+        },
+        {
+          pattern: /reactStrictMode\s*:\s*true/,
+          name: 'React Strict Mode enabled',
+        },
+        { pattern: /swcMinify\s*:\s*true/, name: 'SWC minification enabled' },
       ];
 
       for (const check of securityChecks) {
@@ -483,27 +495,25 @@ async function auditConfiguration(results) {
           results.findings.low.push({
             type: 'missing_security_config',
             description: `${check.name} not configured`,
-            recommendation: `Configure ${check.name} in next.config.js`
+            recommendation: `Configure ${check.name} in next.config.js`,
           });
         }
       }
-
     } catch (configError) {
       results.findings.low.push({
         type: 'config_analysis_failed',
         description: 'Could not analyze Next.js configuration',
-        error: configError.message
+        error: configError.message,
       });
     }
 
     console.log('');
-
   } catch (error) {
     console.log(`  ❌ Configuration audit failed: ${error.message}\n`);
     results.findings.medium.push({
       type: 'configuration_audit_failed',
       description: 'Could not audit configuration',
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -514,12 +524,12 @@ async function auditAPIEndpoints(results) {
       { path: '/api/performance/health', method: 'GET', expectAuth: false },
       { path: '/api/webhooks/twilio/voice', method: 'POST', expectAuth: false },
       { path: '/api/user/profile', method: 'GET', expectAuth: true },
-      { path: '/api/admin/users', method: 'GET', expectAuth: true }
+      { path: '/api/admin/users', method: 'GET', expectAuth: true },
     ];
 
     results.tests.api = {
       status: 'completed',
-      endpoints: []
+      endpoints: [],
     };
 
     console.log(`  🌐 Testing ${endpoints.length} API endpoints...\n`);
@@ -527,13 +537,13 @@ async function auditAPIEndpoints(results) {
     for (const endpoint of endpoints) {
       try {
         const response = await makeHttpsRequest(endpoint.path, endpoint.method);
-        
+
         const result = {
           path: endpoint.path,
           method: endpoint.method,
           status: response.statusCode,
           expectAuth: endpoint.expectAuth,
-          secure: true
+          secure: true,
         };
 
         // Check authentication requirements
@@ -542,44 +552,50 @@ async function auditAPIEndpoints(results) {
             type: 'missing_authentication',
             endpoint: `${endpoint.method} ${endpoint.path}`,
             description: `Endpoint ${endpoint.path} should require authentication but returned 200`,
-            recommendation: 'Implement proper authentication checks'
+            recommendation: 'Implement proper authentication checks',
           });
           result.secure = false;
         }
 
         // Check for information disclosure
-        if (response.statusCode === 500 && response.body && response.body.includes('Error:')) {
+        if (
+          response.statusCode === 500 &&
+          response.body &&
+          response.body.includes('Error:')
+        ) {
           results.findings.medium.push({
             type: 'information_disclosure',
             endpoint: `${endpoint.method} ${endpoint.path}`,
             description: `Endpoint ${endpoint.path} may be leaking error information`,
-            recommendation: 'Sanitize error messages in production'
+            recommendation: 'Sanitize error messages in production',
           });
           result.secure = false;
         }
 
         results.tests.api.endpoints.push(result);
-        console.log(`  ${result.secure ? '✅' : '❌'} ${endpoint.method} ${endpoint.path}: ${response.statusCode}`);
-
+        console.log(
+          `  ${result.secure ? '✅' : '❌'} ${endpoint.method} ${endpoint.path}: ${response.statusCode}`
+        );
       } catch (apiError) {
-        console.log(`  ⚠️  ${endpoint.method} ${endpoint.path}: ${apiError.message}`);
+        console.log(
+          `  ⚠️  ${endpoint.method} ${endpoint.path}: ${apiError.message}`
+        );
         results.tests.api.endpoints.push({
           path: endpoint.path,
           method: endpoint.method,
           error: apiError.message,
-          secure: false
+          secure: false,
         });
       }
     }
 
     console.log('');
-
   } catch (error) {
     console.log(`  ❌ API audit failed: ${error.message}\n`);
     results.findings.medium.push({
       type: 'api_audit_failed',
       description: 'Could not audit API endpoints',
-      error: error.message
+      error: error.message,
     });
   }
 }
@@ -592,22 +608,22 @@ async function makeHttpsRequest(path, method = 'GET') {
       method,
       timeout: SECURITY_CONFIG.timeout,
       headers: {
-        'User-Agent': 'Flynn-SecurityAudit/1.0'
-      }
+        'User-Agent': 'Flynn-SecurityAudit/1.0',
+      },
     };
 
     const req = https.request(url, options, (res) => {
       let body = '';
-      
+
       res.on('data', (chunk) => {
         body += chunk;
       });
-      
+
       res.on('end', () => {
         resolve({
           statusCode: res.statusCode,
           headers: res.headers,
-          body: body
+          body: body,
         });
       });
     });
@@ -628,7 +644,7 @@ async function getSSLInfo(hostname) {
       hostname,
       port: 443,
       method: 'GET',
-      timeout: 10000
+      timeout: 10000,
     };
 
     const req = https.request(options, (res) => {
@@ -639,7 +655,7 @@ async function getSSLInfo(hostname) {
         subject: cert.subject.CN,
         validFrom: cert.valid_from,
         validTo: cert.valid_to,
-        protocol: res.connection.getProtocol()
+        protocol: res.connection.getProtocol(),
       });
     });
 
@@ -653,15 +669,18 @@ async function getSSLInfo(hostname) {
 
 async function getSourceFiles(directories) {
   const files = [];
-  
+
   async function walkDir(dir) {
     try {
       const entries = await fs.readdir(dir, { withFileTypes: true });
-      
+
       for (const entry of entries) {
         const fullPath = path.join(dir, entry.name);
-        
-        if (entry.isDirectory() && !['node_modules', '.git', '.next', 'coverage'].includes(entry.name)) {
+
+        if (
+          entry.isDirectory() &&
+          !['node_modules', '.git', '.next', 'coverage'].includes(entry.name)
+        ) {
           await walkDir(fullPath);
         } else if (entry.isFile() && /\.(js|jsx|ts|tsx)$/.test(entry.name)) {
           files.push(fullPath);
@@ -671,33 +690,36 @@ async function getSourceFiles(directories) {
       // Skip directories that can't be read
     }
   }
-  
+
   for (const dir of directories) {
     await walkDir(path.join(process.cwd(), dir));
   }
-  
+
   return files;
 }
 
 function calculateSecurityScore(results) {
   let score = 100;
-  
+
   // Deduct points based on findings
   score -= results.findings.critical.length * 25;
   score -= results.findings.high.length * 15;
   score -= results.findings.medium.length * 8;
   score -= results.findings.low.length * 3;
-  
+
   return Math.max(0, score);
 }
 
 function generateSecurityReport(results) {
   console.log('🛡️  Security Audit Report');
-  console.log('=' .repeat(50));
-  
-  const totalFindings = Object.values(results.findings).reduce((sum, arr) => sum + arr.length, 0);
+  console.log('='.repeat(50));
+
+  const totalFindings = Object.values(results.findings).reduce(
+    (sum, arr) => sum + arr.length,
+    0
+  );
   results.score = calculateSecurityScore(results);
-  
+
   if (totalFindings === 0) {
     results.overall = 'secure';
     console.log('\n🎉 No security issues found!');
@@ -714,19 +736,23 @@ function generateSecurityReport(results) {
     results.overall = 'low-risk';
     console.log('\n✅ LOW RISK: Minor security improvements suggested');
   }
-  
+
   console.log(`\n📊 Security Score: ${results.score}/100`);
   console.log(`🔍 Total Findings: ${totalFindings}`);
   console.log(`🚨 Critical: ${results.findings.critical.length}`);
   console.log(`⚠️  High: ${results.findings.high.length}`);
   console.log(`⚠️  Medium: ${results.findings.medium.length}`);
   console.log(`ℹ️  Low: ${results.findings.low.length}`);
-  
+
   // Show detailed findings if verbose or if critical/high issues exist
-  if (SECURITY_CONFIG.verbose || results.findings.critical.length > 0 || results.findings.high.length > 0) {
+  if (
+    SECURITY_CONFIG.verbose ||
+    results.findings.critical.length > 0 ||
+    results.findings.high.length > 0
+  ) {
     console.log('\n🔍 Detailed Findings:');
-    
-    ['critical', 'high', 'medium', 'low'].forEach(severity => {
+
+    ['critical', 'high', 'medium', 'low'].forEach((severity) => {
       if (results.findings[severity].length > 0) {
         console.log(`\n${severity.toUpperCase()} Issues:`);
         results.findings[severity].forEach((finding, i) => {
@@ -738,12 +764,14 @@ function generateSecurityReport(results) {
       }
     });
   }
-  
+
   // Save detailed report
   const reportPath = `security-audit-${Date.now()}.json`;
-  fs.writeFile(reportPath, JSON.stringify(results, null, 2)).catch(console.error);
+  fs.writeFile(reportPath, JSON.stringify(results, null, 2)).catch(
+    console.error
+  );
   console.log(`\n📄 Detailed report saved to: ${reportPath}`);
-  
+
   // Exit with appropriate code
   if (results.findings.critical.length > 0) {
     console.log('\n🚨 FAILED: Critical security issues must be resolved');

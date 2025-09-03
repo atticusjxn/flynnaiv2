@@ -11,24 +11,24 @@ export default function TestSupabase() {
   const testSupabaseConnection = async () => {
     setLoading(true);
     setResult('');
-    
+
     try {
       console.log('Testing Supabase connection...');
       const supabase = getSupabaseClient();
-      
+
       if (!supabase) {
         setResult('❌ Failed to create Supabase client');
         return;
       }
 
       console.log('Supabase client created, testing auth...');
-      
+
       // Test 1: Simple signup without any options
       const testEmail = `test-${Date.now()}@example.com`;
       const testPassword = 'testpass123';
-      
+
       console.log('Attempting signup with:', testEmail);
-      
+
       const { data, error } = await supabase.auth.signUp({
         email: testEmail,
         password: testPassword,
@@ -39,18 +39,21 @@ export default function TestSupabase() {
         setResult(`❌ Signup failed: ${error.message}`);
       } else {
         console.log('Signup successful:', data);
-        setResult(`✅ Signup successful! User ID: ${data.user?.id || 'unknown'}`);
-        
+        setResult(
+          `✅ Signup successful! User ID: ${data.user?.id || 'unknown'}`
+        );
+
         // Clean up - try to delete the test user
         if (data.user) {
           console.log('Attempting to sign out test user...');
           await supabase.auth.signOut();
         }
       }
-      
     } catch (error) {
       console.error('Test error:', error);
-      setResult(`❌ Test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setResult(
+        `❌ Test failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     } finally {
       setLoading(false);
     }
@@ -59,11 +62,11 @@ export default function TestSupabase() {
   const testDatabaseConnection = async () => {
     setLoading(true);
     setResult('');
-    
+
     try {
       console.log('Testing database connection...');
       const supabase = getSupabaseClient();
-      
+
       if (!supabase) {
         setResult('❌ Failed to create Supabase client');
         return;
@@ -79,12 +82,15 @@ export default function TestSupabase() {
         setResult(`❌ Database test failed: ${error.message}`);
       } else {
         console.log('Database test successful, user count:', count);
-        setResult(`✅ Database connection successful! Users table has ${count || 0} records`);
+        setResult(
+          `✅ Database connection successful! Users table has ${count || 0} records`
+        );
       }
-      
     } catch (error) {
       console.error('Database test error:', error);
-      setResult(`❌ Database test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setResult(
+        `❌ Database test failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     } finally {
       setLoading(false);
     }
@@ -94,7 +100,7 @@ export default function TestSupabase() {
     <div className="min-h-screen bg-gray-100 py-12">
       <div className="max-w-lg mx-auto bg-white rounded-lg shadow-md p-6">
         <h1 className="text-xl font-bold mb-6">Supabase Connection Test</h1>
-        
+
         <div className="space-y-4">
           <button
             onClick={testSupabaseConnection}
@@ -125,8 +131,8 @@ export default function TestSupabase() {
         <div className="mt-6 p-4 bg-yellow-50 rounded border border-yellow-200">
           <h3 className="font-semibold mb-2 text-yellow-800">Note:</h3>
           <p className="text-sm text-yellow-700">
-            This page tests basic Supabase functionality to isolate authentication issues. 
-            Check the browser console for detailed logs.
+            This page tests basic Supabase functionality to isolate
+            authentication issues. Check the browser console for detailed logs.
           </p>
         </div>
       </div>

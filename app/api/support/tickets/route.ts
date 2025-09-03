@@ -6,7 +6,14 @@ import type { Database } from '@/types/database.types';
 const CreateTicketSchema = z.object({
   subject: z.string().min(1).max(255),
   description: z.string().min(10).max(5000),
-  category: z.enum(['technical', 'billing', 'feature-request', 'bug-report', 'account', 'general']),
+  category: z.enum([
+    'technical',
+    'billing',
+    'feature-request',
+    'bug-report',
+    'account',
+    'general',
+  ]),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
   metadata: z.record(z.any()).optional(),
 });
@@ -14,10 +21,13 @@ const CreateTicketSchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     const supabase = createClient();
-    
+
     // Get current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -34,7 +44,16 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
-    if (status && ['open', 'in_progress', 'waiting_for_user', 'resolved', 'closed'].includes(status)) {
+    if (
+      status &&
+      [
+        'open',
+        'in_progress',
+        'waiting_for_user',
+        'resolved',
+        'closed',
+      ].includes(status)
+    ) {
       query = query.eq('status', status);
     }
 
@@ -61,10 +80,13 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const supabase = createClient();
-    
+
     // Get current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -91,14 +113,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Create initial message
-    await supabase
-      .from('support_messages')
-      .insert({
-        ticket_id: ticket.id,
-        user_id: user.id,
-        is_staff: false,
-        message: validatedData.description,
-      });
+    await supabase.from('support_messages').insert({
+      ticket_id: ticket.id,
+      user_id: user.id,
+      is_staff: false,
+      message: validatedData.description,
+    });
 
     return NextResponse.json({ ticket }, { status: 201 });
   } catch (error) {
@@ -108,7 +128,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     console.error('Support ticket creation error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

@@ -7,7 +7,9 @@ export default function AuthTest() {
   const { user, profile, loading } = useAuthContext();
 
   if (loading) {
-    return <div className="text-sm text-gray-600">🔄 Checking authentication...</div>;
+    return (
+      <div className="text-sm text-gray-600">🔄 Checking authentication...</div>
+    );
   }
 
   if (!user) {

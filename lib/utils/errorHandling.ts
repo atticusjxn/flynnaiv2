@@ -57,7 +57,11 @@ export class APIError extends Error {
 export class Logger {
   constructor(private context: string) {}
 
-  private log(level: 'info' | 'warn' | 'error' | 'debug', message: string, data?: Record<string, any>) {
+  private log(
+    level: 'info' | 'warn' | 'error' | 'debug',
+    message: string,
+    data?: Record<string, any>
+  ) {
     const logEntry = {
       timestamp: new Date().toISOString(),
       level,
@@ -90,10 +94,17 @@ export class Logger {
   }
 
   error(message: string, error?: Error | Record<string, any>) {
-    const errorData = error instanceof Error 
-      ? { error: { name: error.name, message: error.message, stack: error.stack } }
-      : { error };
-    
+    const errorData =
+      error instanceof Error
+        ? {
+            error: {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+            },
+          }
+        : { error };
+
     this.log('error', message, errorData);
   }
 
@@ -139,7 +150,7 @@ export async function withRetry<T>(
       }
 
       const delay = Math.min(baseDelay * Math.pow(2, attempt - 1), maxDelay);
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
 
@@ -200,53 +211,61 @@ export class CircuitBreaker {
 
 // Validation error handling
 export function handleValidationError(error: ZodError): APIError {
-  const details = error.errors.map(err => ({
+  const details = error.errors.map((err) => ({
     path: err.path.join('.'),
     message: err.message,
     code: err.code,
   }));
 
-  return new APIError(
-    'Validation failed',
-    400,
-    'VALIDATION_ERROR',
-    { errors: details }
-  );
+  return new APIError('Validation failed', 400, 'VALIDATION_ERROR', {
+    errors: details,
+  });
 }
 
 // Database error handling
 export function handleDatabaseError(error: any): APIError {
   // Supabase error codes
   const errorMapping = {
-    '23505': { message: 'Duplicate record', status: 409, code: 'DUPLICATE_ERROR' },
-    '23503': { message: 'Referenced record not found', status: 400, code: 'FOREIGN_KEY_ERROR' },
-    '42703': { message: 'Database schema error', status: 500, code: 'SCHEMA_ERROR' },
-    'PGRST204': { message: 'Record not found', status: 404, code: 'NOT_FOUND' },
-    'PGRST301': { message: 'Database constraint violation', status: 400, code: 'CONSTRAINT_ERROR' },
+    '23505': {
+      message: 'Duplicate record',
+      status: 409,
+      code: 'DUPLICATE_ERROR',
+    },
+    '23503': {
+      message: 'Referenced record not found',
+      status: 400,
+      code: 'FOREIGN_KEY_ERROR',
+    },
+    '42703': {
+      message: 'Database schema error',
+      status: 500,
+      code: 'SCHEMA_ERROR',
+    },
+    PGRST204: { message: 'Record not found', status: 404, code: 'NOT_FOUND' },
+    PGRST301: {
+      message: 'Database constraint violation',
+      status: 400,
+      code: 'CONSTRAINT_ERROR',
+    },
   };
 
   const mapped = errorMapping[error.code as keyof typeof errorMapping];
-  
+
   if (mapped) {
-    return new APIError(mapped.message, mapped.status, mapped.code, { 
+    return new APIError(mapped.message, mapped.status, mapped.code, {
       originalError: error.message,
       hint: error.hint,
-      details: error.details 
+      details: error.details,
     });
   }
 
   // Generic database error
-  return new APIError(
-    'Database operation failed',
-    500,
-    'DATABASE_ERROR',
-    { 
-      code: error.code,
-      message: error.message,
-      hint: error.hint,
-      details: error.details
-    }
-  );
+  return new APIError('Database operation failed', 500, 'DATABASE_ERROR', {
+    code: error.code,
+    message: error.message,
+    hint: error.hint,
+    details: error.details,
+  });
 }
 
 // API error response helper
@@ -260,17 +279,12 @@ export function createErrorResponse(error: unknown): NextResponse {
   }
 
   if (error instanceof CallProcessingError) {
-    return new APIError(
-      error.message,
-      500,
-      error.code,
-      {
-        callSid: error.callSid,
-        severity: error.severity,
-        retryable: error.retryable,
-        context: error.context,
-      }
-    ).toResponse();
+    return new APIError(error.message, 500, error.code, {
+      callSid: error.callSid,
+      severity: error.severity,
+      retryable: error.retryable,
+      context: error.context,
+    }).toResponse();
   }
 
   // Handle database errors (Supabase/PostgreSQL)
@@ -305,7 +319,9 @@ export function createRateLimitResponse(resetTime: Date): NextResponse {
       status: 429,
       headers: {
         'X-RateLimit-Reset': resetTime.toISOString(),
-        'Retry-After': Math.ceil((resetTime.getTime() - Date.now()) / 1000).toString(),
+        'Retry-After': Math.ceil(
+          (resetTime.getTime() - Date.now()) / 1000
+        ).toString(),
       },
     }
   );
@@ -317,7 +333,7 @@ export async function withMemoryCleanup<T>(
   logger?: Logger
 ): Promise<T> {
   const initialMemory = process.memoryUsage();
-  
+
   try {
     const result = await operation();
     return result;
@@ -345,7 +361,8 @@ export async function withMemoryCleanup<T>(
     }
 
     // Warn if memory usage is growing significantly
-    if (memoryDiff.heapUsed > 100 * 1024 * 1024) { // 100MB threshold
+    if (memoryDiff.heapUsed > 100 * 1024 * 1024) {
+      // 100MB threshold
       if (logger) {
         logger.warn('High memory usage detected', { memoryDiff });
       }
@@ -354,12 +371,19 @@ export async function withMemoryCleanup<T>(
 }
 
 // Health check helper
-export function createHealthCheckResponse(status: 'healthy' | 'degraded' | 'unhealthy', details?: Record<string, any>): NextResponse {
-  const statusCode = status === 'healthy' ? 200 : status === 'degraded' ? 206 : 503;
-  
-  return NextResponse.json({
-    status,
-    timestamp: new Date().toISOString(),
-    details: details || {},
-  }, { status: statusCode });
+export function createHealthCheckResponse(
+  status: 'healthy' | 'degraded' | 'unhealthy',
+  details?: Record<string, any>
+): NextResponse {
+  const statusCode =
+    status === 'healthy' ? 200 : status === 'degraded' ? 206 : 503;
+
+  return NextResponse.json(
+    {
+      status,
+      timestamp: new Date().toISOString(),
+      details: details || {},
+    },
+    { status: statusCode }
+  );
 }

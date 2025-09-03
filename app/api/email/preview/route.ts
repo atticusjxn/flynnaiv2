@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { render } from '@react-email/render';
-import CallOverviewEmail, { CallOverviewEmailProps } from '@/components/email-templates/CallOverviewEmail';
+import CallOverviewEmail, {
+  CallOverviewEmailProps,
+} from '@/components/email-templates/CallOverviewEmail';
 import { ExtractedEvent } from '@/components/email-templates/EventCard';
 
 export async function GET(request: NextRequest) {
@@ -29,7 +31,10 @@ export async function GET(request: NextRequest) {
   }
 }
 
-function getSampleEmailData(industry: string, hasUrgent: boolean): CallOverviewEmailProps {
+function getSampleEmailData(
+  industry: string,
+  hasUrgent: boolean
+): CallOverviewEmailProps {
   const baseData = {
     companyName: getCompanyName(industry),
     industry: industry,
@@ -61,7 +66,9 @@ function getCompanyName(industry: string): string {
     sales: 'TechSolutions Inc.',
     consulting: 'Strategic Business Partners',
   };
-  return companies[industry as keyof typeof companies] || 'Professional Services LLC';
+  return (
+    companies[industry as keyof typeof companies] || 'Professional Services LLC'
+  );
 }
 
 function getCallerName(industry: string): string {
@@ -78,25 +85,37 @@ function getCallerName(industry: string): string {
 
 function getTranscriptionSnippet(industry: string): string {
   const snippets = {
-    plumbing: "Hi, I'm calling because I have a major leak in my kitchen sink. Water is everywhere and it's starting to damage my cabinets. I need someone to come out as soon as possible, preferably this afternoon if you have availability.",
-    real_estate: "Hello, I saw your listing for the 3-bedroom house on Maple Street and I'm very interested. I'm pre-approved for up to $500,000 and would love to schedule a showing for this weekend if possible.",
-    legal: "I'm calling about needing legal representation for a contract dispute with a business partner. The situation has escalated and I believe we may need to pursue legal action. Can we schedule a consultation this week?",
-    medical: "Hi, I need to schedule an appointment for my annual physical. I'm also having some concerning symptoms that I'd like to discuss with the doctor. Are there any openings next week?",
-    sales: "I received your proposal for the enterprise software solution and I'm interested in moving forward. Our budget has been approved and we'd like to schedule a final demonstration for the decision committee.",
-    consulting: "We're looking for strategic consulting help with our digital transformation initiative. The project has a $2M budget and we need to start implementation by next quarter."
+    plumbing:
+      "Hi, I'm calling because I have a major leak in my kitchen sink. Water is everywhere and it's starting to damage my cabinets. I need someone to come out as soon as possible, preferably this afternoon if you have availability.",
+    real_estate:
+      "Hello, I saw your listing for the 3-bedroom house on Maple Street and I'm very interested. I'm pre-approved for up to $500,000 and would love to schedule a showing for this weekend if possible.",
+    legal:
+      "I'm calling about needing legal representation for a contract dispute with a business partner. The situation has escalated and I believe we may need to pursue legal action. Can we schedule a consultation this week?",
+    medical:
+      "Hi, I need to schedule an appointment for my annual physical. I'm also having some concerning symptoms that I'd like to discuss with the doctor. Are there any openings next week?",
+    sales:
+      "I received your proposal for the enterprise software solution and I'm interested in moving forward. Our budget has been approved and we'd like to schedule a final demonstration for the decision committee.",
+    consulting:
+      "We're looking for strategic consulting help with our digital transformation initiative. The project has a $2M budget and we need to start implementation by next quarter.",
   };
-  return snippets[industry as keyof typeof snippets] || "I'm calling to discuss scheduling an appointment for your services. Please call me back at your earliest convenience.";
+  return (
+    snippets[industry as keyof typeof snippets] ||
+    "I'm calling to discuss scheduling an appointment for your services. Please call me back at your earliest convenience."
+  );
 }
 
-function getSampleEvents(industry: string, hasUrgent: boolean): ExtractedEvent[] {
+function getSampleEvents(
+  industry: string,
+  hasUrgent: boolean
+): ExtractedEvent[] {
   const baseEvents = getIndustryEvents(industry);
-  
+
   if (hasUrgent) {
     // Make first event urgent
     baseEvents[0].urgency = 'emergency';
     baseEvents[0].title = baseEvents[0].title + ' - URGENT';
   }
-  
+
   return baseEvents;
 }
 
@@ -106,9 +125,12 @@ function getIndustryEvents(industry: string): ExtractedEvent[] {
       {
         id: 'evt_plumbing_1',
         title: 'Kitchen Sink Leak Repair',
-        description: 'Major leak under kitchen sink causing water damage to cabinets. Customer needs immediate service to prevent further damage.',
+        description:
+          'Major leak under kitchen sink causing water damage to cabinets. Customer needs immediate service to prevent further damage.',
         type: 'service_call',
-        proposed_datetime: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(), // 4 hours from now
+        proposed_datetime: new Date(
+          Date.now() + 4 * 60 * 60 * 1000
+        ).toISOString(), // 4 hours from now
         duration_minutes: 90,
         urgency: 'high' as const,
         customer_name: 'Sarah Martinez',
@@ -124,7 +146,8 @@ function getIndustryEvents(industry: string): ExtractedEvent[] {
       {
         id: 'evt_plumbing_2',
         title: 'Follow-up Maintenance Check',
-        description: 'Schedule follow-up appointment to check water pressure and ensure no additional leaks after repair.',
+        description:
+          'Schedule follow-up appointment to check water pressure and ensure no additional leaks after repair.',
         type: 'follow_up',
         urgency: 'low' as const,
         customer_name: 'Sarah Martinez',
@@ -133,15 +156,18 @@ function getIndustryEvents(industry: string): ExtractedEvent[] {
         price_estimate: '$75',
         confidence_score: 0.78,
         status: 'pending',
-      }
+      },
     ],
     real_estate: [
       {
         id: 'evt_realestate_1',
         title: 'Property Showing - 456 Maple Street',
-        description: 'Show 3-bedroom house to pre-approved buyer. Customer has budget up to $500K and is serious about purchasing.',
+        description:
+          'Show 3-bedroom house to pre-approved buyer. Customer has budget up to $500K and is serious about purchasing.',
         type: 'showing',
-        proposed_datetime: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days from now
+        proposed_datetime: new Date(
+          Date.now() + 2 * 24 * 60 * 60 * 1000
+        ).toISOString(), // 2 days from now
         duration_minutes: 45,
         urgency: 'high' as const,
         customer_name: 'Michael Chen',
@@ -152,15 +178,18 @@ function getIndustryEvents(industry: string): ExtractedEvent[] {
         price_estimate: 'Listing: $485,000',
         confidence_score: 0.95,
         status: 'pending',
-      }
+      },
     ],
     legal: [
       {
         id: 'evt_legal_1',
         title: 'Contract Dispute Consultation',
-        description: 'Initial consultation regarding business partner contract dispute. Client needs legal advice on potential litigation options.',
+        description:
+          'Initial consultation regarding business partner contract dispute. Client needs legal advice on potential litigation options.',
         type: 'consultation',
-        proposed_datetime: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days from now
+        proposed_datetime: new Date(
+          Date.now() + 3 * 24 * 60 * 60 * 1000
+        ).toISOString(), // 3 days from now
         duration_minutes: 60,
         urgency: 'medium' as const,
         customer_name: 'Jennifer Williams',
@@ -171,15 +200,18 @@ function getIndustryEvents(industry: string): ExtractedEvent[] {
         price_estimate: '$300/hour',
         confidence_score: 0.88,
         status: 'pending',
-      }
+      },
     ],
     medical: [
       {
         id: 'evt_medical_1',
         title: 'Annual Physical Examination',
-        description: 'Routine annual physical with discussion of concerning symptoms mentioned by patient.',
+        description:
+          'Routine annual physical with discussion of concerning symptoms mentioned by patient.',
         type: 'appointment',
-        proposed_datetime: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 1 week from now
+        proposed_datetime: new Date(
+          Date.now() + 7 * 24 * 60 * 60 * 1000
+        ).toISOString(), // 1 week from now
         duration_minutes: 30,
         urgency: 'medium' as const,
         customer_name: 'David Thompson',
@@ -188,15 +220,18 @@ function getIndustryEvents(industry: string): ExtractedEvent[] {
         service_type: 'Physical Examination',
         confidence_score: 0.91,
         status: 'pending',
-      }
+      },
     ],
     sales: [
       {
         id: 'evt_sales_1',
         title: 'Enterprise Demo for Decision Committee',
-        description: 'Final product demonstration for enterprise software solution. Budget approved, ready to close deal.',
+        description:
+          'Final product demonstration for enterprise software solution. Budget approved, ready to close deal.',
         type: 'demo',
-        proposed_datetime: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(), // 5 days from now
+        proposed_datetime: new Date(
+          Date.now() + 5 * 24 * 60 * 60 * 1000
+        ).toISOString(), // 5 days from now
         duration_minutes: 90,
         urgency: 'high' as const,
         customer_name: 'Lisa Anderson',
@@ -207,15 +242,18 @@ function getIndustryEvents(industry: string): ExtractedEvent[] {
         price_estimate: 'Deal Value: $150K',
         confidence_score: 0.94,
         status: 'pending',
-      }
+      },
     ],
     consulting: [
       {
         id: 'evt_consulting_1',
         title: 'Digital Transformation Strategy Session',
-        description: 'Strategic consulting for $2M digital transformation initiative. Client needs implementation plan for next quarter.',
+        description:
+          'Strategic consulting for $2M digital transformation initiative. Client needs implementation plan for next quarter.',
         type: 'consultation',
-        proposed_datetime: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString(), // 4 days from now
+        proposed_datetime: new Date(
+          Date.now() + 4 * 24 * 60 * 60 * 1000
+        ).toISOString(), // 4 days from now
         duration_minutes: 120,
         urgency: 'high' as const,
         customer_name: 'Robert Kim',
@@ -226,7 +264,7 @@ function getIndustryEvents(industry: string): ExtractedEvent[] {
         price_estimate: 'Project Value: $2M',
         confidence_score: 0.89,
         status: 'pending',
-      }
+      },
     ],
   };
 

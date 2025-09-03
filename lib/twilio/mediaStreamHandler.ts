@@ -26,13 +26,13 @@ export class MediaStreamHandler {
   public async initializeStream(callSid: string): Promise<boolean> {
     try {
       console.log(`Initializing media stream for call: ${callSid}`);
-      
+
       // Configure media stream settings
       const config: MediaStreamConfig = {
         callSid,
         sampleRate: 8000, // Twilio standard
         channels: 1, // Mono
-        encoding: 'mulaw'
+        encoding: 'mulaw',
       };
 
       this.activeStreams.set(callSid, config);
@@ -44,15 +44,17 @@ export class MediaStreamHandler {
         .from('calls')
         .update({
           ai_processing_status: 'media_stream_initialized',
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('twilio_call_sid', callSid);
 
       console.log(`Media stream initialized for call: ${callSid}`);
       return true;
-
     } catch (error) {
-      console.error(`Failed to initialize media stream for call ${callSid}:`, error);
+      console.error(
+        `Failed to initialize media stream for call ${callSid}:`,
+        error
+      );
       return false;
     }
   }
@@ -61,8 +63,8 @@ export class MediaStreamHandler {
    * Process incoming audio chunk
    */
   public async processAudioChunk(
-    callSid: string, 
-    payload: string, 
+    callSid: string,
+    payload: string,
     timestamp: number
   ): Promise<void> {
     try {
@@ -76,17 +78,17 @@ export class MediaStreamHandler {
         callSid,
         payload,
         timestamp,
-        sequenceNumber: buffer.length
+        sequenceNumber: buffer.length,
       };
 
       buffer.push(chunk);
       this.audioBuffers.set(callSid, buffer);
 
       // Process audio in chunks of ~1 second (8000 samples at 8kHz)
-      if (buffer.length >= 50) { // ~1 second of audio
+      if (buffer.length >= 50) {
+        // ~1 second of audio
         await this.processAudioBuffer(callSid, buffer.slice(-50));
       }
-
     } catch (error) {
       console.error(`Error processing audio chunk for call ${callSid}:`, error);
     }
@@ -95,22 +97,29 @@ export class MediaStreamHandler {
   /**
    * Process accumulated audio buffer for transcription
    */
-  private async processAudioBuffer(callSid: string, chunks: AudioChunk[]): Promise<void> {
+  private async processAudioBuffer(
+    callSid: string,
+    chunks: AudioChunk[]
+  ): Promise<void> {
     try {
       // Combine audio chunks into a single buffer
-      const combinedPayload = chunks.map(chunk => chunk.payload).join('');
-      
+      const combinedPayload = chunks.map((chunk) => chunk.payload).join('');
+
       // Convert to audio format for Whisper API
       const audioBuffer = Buffer.from(combinedPayload, 'base64');
-      
+
       // TODO: Send to real-time AI processor
-      console.log(`Processing ${chunks.length} audio chunks for call: ${callSid}`);
-      
+      console.log(
+        `Processing ${chunks.length} audio chunks for call: ${callSid}`
+      );
+
       // This will be implemented in RealTimeProcessor
       // await processRealTimeAudio(callSid, audioBuffer);
-
     } catch (error) {
-      console.error(`Error processing audio buffer for call ${callSid}:`, error);
+      console.error(
+        `Error processing audio buffer for call ${callSid}:`,
+        error
+      );
     }
   }
 
@@ -120,7 +129,7 @@ export class MediaStreamHandler {
   public async stopStream(callSid: string): Promise<void> {
     try {
       console.log(`Stopping media stream for call: ${callSid}`);
-      
+
       // Process any remaining audio
       const remainingBuffer = this.audioBuffers.get(callSid);
       if (remainingBuffer && remainingBuffer.length > 0) {
@@ -137,12 +146,11 @@ export class MediaStreamHandler {
         .from('calls')
         .update({
           ai_processing_status: 'media_stream_completed',
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('twilio_call_sid', callSid);
 
       console.log(`Media stream stopped for call: ${callSid}`);
-
     } catch (error) {
       console.error(`Error stopping media stream for call ${callSid}:`, error);
     }
@@ -181,5 +189,9 @@ export async function processRealTimeAudio(
   payload: string,
   timestamp: number
 ): Promise<void> {
-  return await mediaStreamHandler.processAudioChunk(callSid, payload, timestamp);
+  return await mediaStreamHandler.processAudioChunk(
+    callSid,
+    payload,
+    timestamp
+  );
 }

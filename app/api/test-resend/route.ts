@@ -4,11 +4,14 @@ import { Resend } from 'resend';
 export async function GET() {
   try {
     const apiKey = process.env.RESEND_API_KEY;
-    
+
     if (!apiKey) {
-      return NextResponse.json({
-        error: 'RESEND_API_KEY not found in environment variables'
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error: 'RESEND_API_KEY not found in environment variables',
+        },
+        { status: 500 }
+      );
     }
 
     console.log('Testing Resend API connection...');
@@ -31,15 +34,17 @@ export async function GET() {
       message: 'Resend API test completed',
       api_key_configured: !!apiKey,
       test_result: testResult,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Resend API test error:', error);
-    return NextResponse.json({
-      error: 'Resend API test failed',
-      details: error instanceof Error ? error.message : 'Unknown error',
-      api_key_configured: !!process.env.RESEND_API_KEY
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: 'Resend API test failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        api_key_configured: !!process.env.RESEND_API_KEY,
+      },
+      { status: 500 }
+    );
   }
 }

@@ -2,12 +2,12 @@
 
 import { Card, CardBody } from '@nextui-org/card';
 import { Chip } from '@nextui-org/chip';
-import { 
-  TrendingUpIcon, 
-  TrendingDownIcon,
-  MinusIcon 
-} from '@heroicons/react/24/outline';
-import { formatCurrency, formatNumber, formatPercent } from '@/lib/analytics/analytics-client';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import {
+  formatCurrency,
+  formatNumber,
+  formatPercent,
+} from '@/lib/analytics/analytics-client';
 
 export interface MetricCardProps {
   title: string;
@@ -49,18 +49,24 @@ export default function MetricCard({
   };
 
   const change = calculateChange();
-  const determinedTrend = trend || (change !== null ? (
-    change > 0 ? 'up' : change < 0 ? 'down' : 'neutral'
-  ) : 'neutral');
+  const determinedTrend =
+    trend ||
+    (change !== null
+      ? change > 0
+        ? 'up'
+        : change < 0
+          ? 'down'
+          : 'neutral'
+      : 'neutral');
 
   const getTrendIcon = () => {
     switch (determinedTrend) {
       case 'up':
-        return <TrendingUpIcon className="h-4 w-4" />;
+        return <TrendingUp className="h-4 w-4" />;
       case 'down':
-        return <TrendingDownIcon className="h-4 w-4" />;
+        return <TrendingDown className="h-4 w-4" />;
       default:
-        return <MinusIcon className="h-4 w-4" />;
+        return <Minus className="h-4 w-4" />;
     }
   };
 
@@ -106,17 +112,15 @@ export default function MetricCard({
             </Chip>
           )}
         </div>
-        
+
         <div className="mb-1">
           <span className="text-2xl font-bold text-foreground">
             {formatValue(value)}
           </span>
         </div>
-        
-        {subtitle && (
-          <p className="text-xs text-default-500">{subtitle}</p>
-        )}
-        
+
+        {subtitle && <p className="text-xs text-default-500">{subtitle}</p>}
+
         {previousValue !== undefined && (
           <div className="mt-2 text-xs text-default-500">
             vs {formatValue(previousValue)} previous period

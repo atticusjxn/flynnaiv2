@@ -3,7 +3,9 @@
 import { Resend } from 'resend';
 import { render } from '@react-email/render';
 import { createAdminClient } from '@/utils/supabase/server';
-import CallOverviewEmail, { CallOverviewEmailProps } from '@/components/email-templates/CallOverviewEmail';
+import CallOverviewEmail, {
+  CallOverviewEmailProps,
+} from '@/components/email-templates/CallOverviewEmail';
 import PlumbingEmail from '@/components/email-templates/industry/PlumbingEmail';
 import { generateICSFile, ICSEventData } from '@/lib/calendar/icsGenerator';
 
@@ -65,21 +67,28 @@ export class ReactEmailService {
   /**
    * Queue email for instant delivery
    */
-  public async queueEmailDelivery(request: ReactEmailDeliveryRequest): Promise<void> {
+  public async queueEmailDelivery(
+    request: ReactEmailDeliveryRequest
+  ): Promise<void> {
     console.log(`Queueing React email delivery for call: ${request.callSid}`);
-    
+
     this.deliveryQueue.set(request.callSid, request);
 
     // Start delivery immediately (don't wait)
-    this.processEmailDelivery(request).catch(error => {
-      console.error(`Error in React email delivery for call ${request.callSid}:`, error);
+    this.processEmailDelivery(request).catch((error) => {
+      console.error(
+        `Error in React email delivery for call ${request.callSid}:`,
+        error
+      );
     });
   }
 
   /**
    * Process email delivery with 2-minute guarantee
    */
-  private async processEmailDelivery(request: ReactEmailDeliveryRequest): Promise<EmailDeliveryResult> {
+  private async processEmailDelivery(
+    request: ReactEmailDeliveryRequest
+  ): Promise<EmailDeliveryResult> {
     const startTime = Date.now();
     let attempts = 0;
 
@@ -88,13 +97,14 @@ export class ReactEmailService {
     while (attempts < this.RETRY_ATTEMPTS) {
       try {
         attempts++;
-        
+
         // Generate email content using React Email
-        const { emailHtml, emailSubject, templateUsed } = await this.generateReactEmailContent(request);
-        
+        const { emailHtml, emailSubject, templateUsed } =
+          await this.generateReactEmailContent(request);
+
         // Generate attachments
         const attachments = await this.generateEmailAttachments(request);
-        
+
         // Send email via Resend
         const emailResult = await getResendClient().emails.send({
           from: 'Flynn.ai <noreply@flynn.ai>',
@@ -107,16 +117,23 @@ export class ReactEmailService {
             'X-Flynn-Industry': request.industry,
             'X-Flynn-Events': request.extractedEvents.length.toString(),
             'X-Flynn-Template': templateUsed,
-          }
+          },
         });
 
         const deliveryTime = Date.now() - startTime;
-        
-        console.log(`React email delivered successfully for call ${request.callSid} in ${deliveryTime}ms using ${templateUsed}`);
+
+        console.log(
+          `React email delivered successfully for call ${request.callSid} in ${deliveryTime}ms using ${templateUsed}`
+        );
 
         // Update database
-        await this.updateEmailDeliveryStatus(request.callSid, true, emailResult.data?.id, deliveryTime);
-        
+        await this.updateEmailDeliveryStatus(
+          request.callSid,
+          true,
+          emailResult.data?.id,
+          deliveryTime
+        );
+
         // Remove from queue
         this.deliveryQueue.delete(request.callSid);
 
@@ -127,17 +144,27 @@ export class ReactEmailService {
           attachments: attachments.length,
           templateUsed,
         };
-
       } catch (error) {
-        console.error(`React email delivery attempt ${attempts} failed for call ${request.callSid}:`, error);
-        
+        console.error(
+          `React email delivery attempt ${attempts} failed for call ${request.callSid}:`,
+          error
+        );
+
         // If this is our last attempt or we're close to the 2-minute limit, fail
         const elapsedTime = Date.now() - startTime;
-        if (attempts >= this.RETRY_ATTEMPTS || elapsedTime > this.MAX_DELIVERY_TIME - 30000) {
-          
-          await this.updateEmailDeliveryStatus(request.callSid, false, undefined, elapsedTime, error instanceof Error ? error.message : 'Unknown error');
+        if (
+          attempts >= this.RETRY_ATTEMPTS ||
+          elapsedTime > this.MAX_DELIVERY_TIME - 30000
+        ) {
+          await this.updateEmailDeliveryStatus(
+            request.callSid,
+            false,
+            undefined,
+            elapsedTime,
+            error instanceof Error ? error.message : 'Unknown error'
+          );
           this.deliveryQueue.delete(request.callSid);
-          
+
           return {
             success: false,
             deliveryTime: elapsedTime,
@@ -146,7 +173,7 @@ export class ReactEmailService {
             templateUsed: 'error',
           };
         }
-        
+
         // Wait before retry (exponential backoff)
         await this.delay(Math.min(1000 * Math.pow(2, attempts - 1), 10000));
       }
@@ -165,14 +192,17 @@ export class ReactEmailService {
   /**
    * Generate email content using React Email templates
    */
-  private async generateReactEmailContent(request: ReactEmailDeliveryRequest): Promise<{
+  private async generateReactEmailContent(
+    request: ReactEmailDeliveryRequest
+  ): Promise<{
     emailHtml: string;
     emailSubject: string;
     templateUsed: string;
   }> {
     try {
-      const dashboardUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://flynn.ai';
-      
+      const dashboardUrl =
+        process.env.NEXT_PUBLIC_APP_URL || 'https://flynn.ai';
+
       // Base email props
       const baseEmailProps: CallOverviewEmailProps = {
         companyName: request.companyName || 'Your Business',
@@ -191,14 +221,16 @@ export class ReactEmailService {
 
       switch (request.industry) {
         case 'plumbing':
-          emailHtml = render(PlumbingEmail({
-            ...baseEmailProps,
-            emergencyContact: request.emergencyContact,
-            afterHoursAvailable: request.afterHoursAvailable,
-          }));
+          emailHtml = render(
+            PlumbingEmail({
+              ...baseEmailProps,
+              emergencyContact: request.emergencyContact,
+              afterHoursAvailable: request.afterHoursAvailable,
+            })
+          );
           templateUsed = 'PlumbingEmail';
           break;
-          
+
         // Add more industry-specific templates here
         case 'real_estate':
         case 'legal':
@@ -212,9 +244,11 @@ export class ReactEmailService {
       const emailSubject = this.generateEmailSubject(request);
 
       return { emailHtml, emailSubject, templateUsed };
-
     } catch (error) {
-      console.error(`Error generating React email content for call ${request.callSid}:`, error);
+      console.error(
+        `Error generating React email content for call ${request.callSid}:`,
+        error
+      );
       throw error;
     }
   }
@@ -224,13 +258,15 @@ export class ReactEmailService {
    */
   private generateEmailSubject(request: ReactEmailDeliveryRequest): string {
     const eventCount = request.extractedEvents.length;
-    const hasUrgent = request.extractedEvents.some(e => e.urgency === 'emergency' || e.urgency === 'high');
-    
+    const hasUrgent = request.extractedEvents.some(
+      (e) => e.urgency === 'emergency' || e.urgency === 'high'
+    );
+
     let subject = '';
-    
+
     // Urgency prefix
     if (hasUrgent) {
-      if (request.extractedEvents.some(e => e.urgency === 'emergency')) {
+      if (request.extractedEvents.some((e) => e.urgency === 'emergency')) {
         subject = '🚨 EMERGENCY: ';
       } else {
         subject = '🔴 URGENT: ';
@@ -287,13 +323,18 @@ export class ReactEmailService {
     };
 
     const industryLabels = (labels as any)[industry];
-    return industryLabels?.[eventType] || eventType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    return (
+      industryLabels?.[eventType] ||
+      eventType.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())
+    );
   }
 
   /**
    * Generate email attachments (ICS files)
    */
-  private async generateEmailAttachments(request: ReactEmailDeliveryRequest): Promise<any[]> {
+  private async generateEmailAttachments(
+    request: ReactEmailDeliveryRequest
+  ): Promise<any[]> {
     const attachments = [];
 
     try {
@@ -323,7 +364,9 @@ export class ReactEmailService {
       }
 
       // Generate summary ICS file if multiple events
-      if (request.extractedEvents.filter(e => e.proposed_datetime).length > 1) {
+      if (
+        request.extractedEvents.filter((e) => e.proposed_datetime).length > 1
+      ) {
         const summaryIcs = await this.generateSummaryICSFile(request);
         attachments.push({
           filename: 'all-appointments.ics',
@@ -331,9 +374,11 @@ export class ReactEmailService {
           contentType: 'text/calendar; charset=utf-8',
         });
       }
-
     } catch (error) {
-      console.error(`Error generating attachments for call ${request.callSid}:`, error);
+      console.error(
+        `Error generating attachments for call ${request.callSid}:`,
+        error
+      );
       // Don't fail the email send if attachments fail
     }
 
@@ -343,9 +388,11 @@ export class ReactEmailService {
   /**
    * Generate summary ICS file for multiple events
    */
-  private async generateSummaryICSFile(request: ReactEmailDeliveryRequest): Promise<string> {
-    const events = request.extractedEvents.filter(e => e.proposed_datetime);
-    
+  private async generateSummaryICSFile(
+    request: ReactEmailDeliveryRequest
+  ): Promise<string> {
+    const events = request.extractedEvents.filter((e) => e.proposed_datetime);
+
     let icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Flynn.ai//Call Appointments//EN
@@ -358,8 +405,10 @@ X-WR-CALDESC:Appointments extracted from call ${request.callSid}
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
       const startDate = new Date(event.proposed_datetime);
-      const endDate = new Date(startDate.getTime() + (event.duration_minutes || 60) * 60 * 1000);
-      
+      const endDate = new Date(
+        startDate.getTime() + (event.duration_minutes || 60) * 60 * 1000
+      );
+
       icsContent += `BEGIN:VEVENT
 UID:${request.callSid}-event-${i}-${Date.now()}@flynn.ai
 DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
@@ -382,7 +431,7 @@ END:VEVENT
     }
 
     icsContent += `END:VCALENDAR`;
-    
+
     return icsContent;
   }
 
@@ -407,14 +456,18 @@ END:VEVENT
           email_delivery_time: deliveryTime,
           email_error: error || null,
           email_id: emailId || null,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('twilio_call_sid', callSid);
 
-      console.log(`Updated React email delivery status for call ${callSid}: ${success ? 'success' : 'failed'}`);
-
+      console.log(
+        `Updated React email delivery status for call ${callSid}: ${success ? 'success' : 'failed'}`
+      );
     } catch (error) {
-      console.error(`Error updating email delivery status for call ${callSid}:`, error);
+      console.error(
+        `Error updating email delivery status for call ${callSid}:`,
+        error
+      );
     }
   }
 
@@ -422,7 +475,7 @@ END:VEVENT
    * Utility delay function
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -434,17 +487,22 @@ END:VEVENT
   } {
     return {
       queueSize: this.deliveryQueue.size,
-      oldestRequest: this.deliveryQueue.size > 0 ? {
-        callSid: Array.from(this.deliveryQueue.keys())[0],
-        queueTime: Date.now() // Simplified - would need to track actual queue time
-      } : undefined
+      oldestRequest:
+        this.deliveryQueue.size > 0
+          ? {
+              callSid: Array.from(this.deliveryQueue.keys())[0],
+              queueTime: Date.now(), // Simplified - would need to track actual queue time
+            }
+          : undefined,
     };
   }
 
   /**
    * Force delivery of queued email (for testing/debugging)
    */
-  public async forceDelivery(callSid: string): Promise<EmailDeliveryResult | null> {
+  public async forceDelivery(
+    callSid: string
+  ): Promise<EmailDeliveryResult | null> {
     const request = this.deliveryQueue.get(callSid);
     if (!request) {
       return null;
@@ -456,7 +514,9 @@ END:VEVENT
   /**
    * Preview email template (for development/testing)
    */
-  public async previewEmail(request: ReactEmailDeliveryRequest): Promise<string> {
+  public async previewEmail(
+    request: ReactEmailDeliveryRequest
+  ): Promise<string> {
     const { emailHtml } = await this.generateReactEmailContent(request);
     return emailHtml;
   }
@@ -468,6 +528,8 @@ export const reactEmailService = ReactEmailService.getInstance();
 /**
  * Queue React email for instant delivery (main export function)
  */
-export async function sendReactAppointmentEmail(request: ReactEmailDeliveryRequest): Promise<void> {
+export async function sendReactAppointmentEmail(
+  request: ReactEmailDeliveryRequest
+): Promise<void> {
   return await reactEmailService.queueEmailDelivery(request);
 }

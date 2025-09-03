@@ -9,14 +9,14 @@ import { communicationLogger } from '@/lib/communication/CommunicationLogger';
 export async function POST(request: NextRequest) {
   try {
     const supabase = createClient();
-    
+
     // Check authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' }, 
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await request.json();
@@ -53,27 +53,25 @@ export async function POST(request: NextRequest) {
     }
 
     // Retry the communication
-    const result = await communicationLogger.retryCommunication(communicationId);
+    const result =
+      await communicationLogger.retryCommunication(communicationId);
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: result.error }, { status: 500 });
     }
 
     return NextResponse.json({
       success: true,
       data: { newCommunicationId: result.id },
-      message: 'Communication retry initiated successfully'
+      message: 'Communication retry initiated successfully',
     });
   } catch (error) {
     console.error('Communication retry error:', error);
     return NextResponse.json(
-      { 
+      {
         error: 'Failed to retry communication',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      }, 
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
     );
   }

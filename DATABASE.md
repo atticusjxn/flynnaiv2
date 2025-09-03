@@ -1,11 +1,13 @@
 # Flynn.ai v2 Database Schema
 
 ## Overview
+
 Supabase PostgreSQL database designed for universal business call-to-calendar platform supporting multiple industries with flexible event management.
 
 ## Database Tables
 
 ### 1. Users Table
+
 Stores user accounts with subscription and industry information.
 
 ```sql
@@ -35,6 +37,7 @@ CREATE POLICY "Users can access own data" ON users
 ```
 
 ### 2. Phone Numbers Table
+
 Twilio phone numbers assigned to users.
 
 ```sql
@@ -57,6 +60,7 @@ CREATE POLICY "Users can access own phone numbers" ON phone_numbers
 ```
 
 ### 3. Calls Table
+
 Stores all call records with metadata and processing status.
 
 ```sql
@@ -100,6 +104,7 @@ CREATE INDEX idx_calls_processing_status ON calls(ai_processing_status);
 ```
 
 ### 4. Events Table (Core Feature)
+
 Flexible events extracted from calls - supports all business types.
 
 ```sql
@@ -152,6 +157,7 @@ CREATE INDEX idx_events_event_type ON events(event_type);
 ```
 
 ### 5. Calendar Integrations Table
+
 Store user calendar integration settings.
 
 ```sql
@@ -180,6 +186,7 @@ CREATE POLICY "Users can access own integrations" ON calendar_integrations
 ```
 
 ### 6. Email Templates Table
+
 Industry-specific email template configurations.
 
 ```sql
@@ -208,6 +215,7 @@ CREATE POLICY "Users can access own templates" ON email_templates
 ```
 
 ### 7. Communication Logs Table
+
 Track all outbound communications (emails, SMS, calls).
 
 ```sql
@@ -242,6 +250,7 @@ CREATE INDEX idx_communication_logs_status ON communication_logs(status);
 ```
 
 ### 8. Industry Configurations Table
+
 Store industry-specific settings and customizations.
 
 ```sql
@@ -270,6 +279,7 @@ CREATE POLICY "Users can access own configurations" ON industry_configurations
 ```
 
 ### 9. Audit Logs Table
+
 Track important system events and user actions.
 
 ```sql
@@ -303,6 +313,7 @@ CREATE INDEX idx_audit_logs_action ON audit_logs(action);
 ## Database Functions
 
 ### Update Timestamp Function
+
 ```sql
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -323,6 +334,7 @@ CREATE TRIGGER update_phone_numbers_updated_at BEFORE UPDATE ON phone_numbers FO
 ```
 
 ### Event Statistics Function
+
 ```sql
 CREATE OR REPLACE FUNCTION get_user_event_stats(user_uuid UUID)
 RETURNS TABLE (
@@ -334,17 +346,17 @@ RETURNS TABLE (
 ) AS $$
 BEGIN
   RETURN QUERY
-  SELECT 
+  SELECT
     COUNT(*)::BIGINT as total_events,
     COUNT(*) FILTER (WHERE status = 'pending')::BIGINT as pending_events,
     COUNT(*) FILTER (WHERE status = 'confirmed')::BIGINT as confirmed_events,
     COUNT(*) FILTER (WHERE status = 'completed')::BIGINT as completed_events,
-    CASE 
-      WHEN COUNT(*) > 0 THEN 
+    CASE
+      WHEN COUNT(*) > 0 THEN
         ROUND(COUNT(*) FILTER (WHERE status IN ('confirmed', 'completed'))::DECIMAL / COUNT(*)::DECIMAL * 100, 2)
       ELSE 0
     END as conversion_rate
-  FROM events 
+  FROM events
   WHERE user_id = user_uuid;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -353,46 +365,48 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 ## Initial Data Setup
 
 ### Default Industry Configurations
+
 ```sql
 -- Insert default industry configurations
 INSERT INTO industry_configurations (id, user_id, industry_type, event_types, terminology, default_duration_minutes, business_hours, pricing_enabled, location_required) VALUES
-(gen_random_uuid(), NULL, 'plumbing', 
- '["service_call", "quote", "emergency", "follow_up"]', 
+(gen_random_uuid(), NULL, 'plumbing',
+ '["service_call", "quote", "emergency", "follow_up"]',
  '{"appointment": "service call", "meeting": "site visit", "demo": "quote"}',
- 90, '{"monday": {"start": "08:00", "end": "17:00"}, "saturday": {"start": "09:00", "end": "15:00"}}', 
+ 90, '{"monday": {"start": "08:00", "end": "17:00"}, "saturday": {"start": "09:00", "end": "15:00"}}',
  true, true),
-(gen_random_uuid(), NULL, 'real_estate', 
- '["meeting", "inspection", "appointment", "follow_up"]', 
+(gen_random_uuid(), NULL, 'real_estate',
+ '["meeting", "inspection", "appointment", "follow_up"]',
  '{"service_call": "property showing", "meeting": "client meeting"}',
- 60, '{"monday": {"start": "09:00", "end": "18:00"}, "sunday": {"start": "12:00", "end": "17:00"}}', 
+ 60, '{"monday": {"start": "09:00", "end": "18:00"}, "sunday": {"start": "12:00", "end": "17:00"}}',
  false, true),
-(gen_random_uuid(), NULL, 'legal', 
- '["consultation", "meeting", "appointment"]', 
+(gen_random_uuid(), NULL, 'legal',
+ '["consultation", "meeting", "appointment"]',
  '{"service_call": "consultation", "demo": "case review"}',
- 60, '{"monday": {"start": "09:00", "end": "17:00"}}', 
+ 60, '{"monday": {"start": "09:00", "end": "17:00"}}',
  true, false),
-(gen_random_uuid(), NULL, 'medical', 
- '["appointment", "consultation", "follow_up", "emergency"]', 
+(gen_random_uuid(), NULL, 'medical',
+ '["appointment", "consultation", "follow_up", "emergency"]',
  '{"meeting": "appointment", "service_call": "consultation"}',
- 30, '{"monday": {"start": "08:00", "end": "17:00"}}', 
+ 30, '{"monday": {"start": "08:00", "end": "17:00"}}',
  false, true),
-(gen_random_uuid(), NULL, 'sales', 
- '["demo", "meeting", "follow_up", "consultation"]', 
+(gen_random_uuid(), NULL, 'sales',
+ '["demo", "meeting", "follow_up", "consultation"]',
  '{"service_call": "demo", "appointment": "sales meeting"}',
- 45, '{"monday": {"start": "09:00", "end": "17:00"}}', 
+ 45, '{"monday": {"start": "09:00", "end": "17:00"}}',
  false, false);
 ```
 
 ### Default Email Templates
+
 ```sql
 -- Insert default email templates
 INSERT INTO email_templates (id, user_id, template_name, industry_type, event_type, subject_template, body_template, is_default, variables) VALUES
-(gen_random_uuid(), NULL, 'Service Call Overview', 'plumbing', 'service_call', 
+(gen_random_uuid(), NULL, 'Service Call Overview', 'plumbing', 'service_call',
  'Service Call Request - {{customer_name}} - {{event_date}}',
  'Hi, I received your call about {{main_topic}}. I have scheduled a {{event_type}} for {{event_datetime}} at {{location}}. Please confirm if this works for you.',
  true, '{"customer_name": "", "main_topic": "", "event_type": "", "event_datetime": "", "location": ""}'),
 (gen_random_uuid(), NULL, 'Property Showing', 'real_estate', 'meeting',
- 'Property Showing - {{location}} - {{event_date}}', 
+ 'Property Showing - {{location}} - {{event_date}}',
  'Thank you for your interest in {{location}}. I have scheduled a showing for {{event_datetime}}. Looking forward to meeting you!',
  true, '{"location": "", "event_datetime": ""}');
 ```
@@ -400,21 +414,23 @@ INSERT INTO email_templates (id, user_id, template_name, industry_type, event_ty
 ## Performance Considerations
 
 ### Database Optimization
+
 - **Indexes**: Created on frequently queried columns (user_id, created_at, status)
 - **Partitioning**: Consider partitioning calls table by date for high volume
 - **Archiving**: Archive completed calls older than 2 years
 - **Connection Pooling**: Use Supabase connection pooling for production
 
 ### Monitoring Queries
+
 ```sql
 -- Monitor database performance
-SELECT schemaname, tablename, attname, n_distinct, correlation 
-FROM pg_stats 
+SELECT schemaname, tablename, attname, n_distinct, correlation
+FROM pg_stats
 WHERE tablename IN ('calls', 'events', 'users');
 
 -- Check index usage
-SELECT schemaname, tablename, indexname, idx_scan, idx_tup_read, idx_tup_fetch 
-FROM pg_stat_user_indexes 
+SELECT schemaname, tablename, indexname, idx_scan, idx_tup_read, idx_tup_fetch
+FROM pg_stat_user_indexes
 ORDER BY idx_scan DESC;
 ```
 
@@ -429,6 +445,7 @@ ORDER BY idx_scan DESC;
 ## Migration Strategy
 
 ### Version 1.0 → 2.0 Migration
+
 ```sql
 -- Add new columns to existing tables
 ALTER TABLE events ADD COLUMN ai_confidence DECIMAL(3,2);
@@ -443,6 +460,7 @@ UPDATE events SET follow_up_required = false WHERE follow_up_required IS NULL;
 ## Supabase Configuration
 
 ### Environment Variables Required
+
 ```
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
@@ -450,7 +468,9 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
 
 ### Realtime Configuration
+
 Enable realtime for tables that need live updates:
+
 ```sql
 -- Enable realtime for events table
 ALTER PUBLICATION supabase_realtime ADD TABLE events;

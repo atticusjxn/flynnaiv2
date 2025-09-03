@@ -1,18 +1,22 @@
 # Flynn.ai v2 API Structure
 
 ## Overview
+
 RESTful API built with Next.js 14 App Router, providing endpoints for call processing, event management, calendar integration, and user management.
 
 ## Base URL Structure
+
 ```
 Production: https://flynn.ai/api
 Development: http://localhost:3000/api
 ```
 
 ## Authentication
+
 All protected endpoints require authentication via Supabase Auth.
 
 **Headers Required:**
+
 ```
 Authorization: Bearer <jwt_token>
 Content-Type: application/json
@@ -23,13 +27,15 @@ Content-Type: application/json
 ### 1. Twilio Webhooks (Public Endpoints)
 
 #### POST /api/webhooks/twilio/voice
+
 Handle incoming call events from Twilio.
 
 **Request Body:**
+
 ```json
 {
   "CallSid": "CA1234567890abcdef",
-  "AccountSid": "AC1234567890abcdef", 
+  "AccountSid": "AC1234567890abcdef",
   "To": "+15551234567",
   "From": "+15559876543",
   "CallStatus": "ringing",
@@ -38,12 +44,13 @@ Handle incoming call events from Twilio.
 ```
 
 **Response:**
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Say>Thank you for calling. Please leave your message after the tone.</Say>
-  <Record 
-    action="/api/webhooks/twilio/recording" 
+  <Record
+    action="/api/webhooks/twilio/recording"
     transcribe="true"
     transcribeCallback="/api/webhooks/twilio/transcription"
     maxLength="300"
@@ -53,9 +60,11 @@ Handle incoming call events from Twilio.
 ```
 
 #### POST /api/webhooks/twilio/recording
+
 Handle call recording completion.
 
 **Request Body:**
+
 ```json
 {
   "CallSid": "CA1234567890abcdef",
@@ -66,6 +75,7 @@ Handle call recording completion.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -74,9 +84,11 @@ Handle call recording completion.
 ```
 
 #### POST /api/webhooks/twilio/transcription
+
 Handle transcription completion and trigger AI processing.
 
 **Request Body:**
+
 ```json
 {
   "CallSid": "CA1234567890abcdef",
@@ -87,6 +99,7 @@ Handle transcription completion and trigger AI processing.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -98,9 +111,11 @@ Handle transcription completion and trigger AI processing.
 ### 2. Call Management
 
 #### GET /api/calls
+
 Retrieve user's call history with pagination.
 
 **Query Parameters:**
+
 - `page` (number): Page number (default: 1)
 - `limit` (number): Items per page (default: 20)
 - `status` (string): Filter by call status
@@ -108,6 +123,7 @@ Retrieve user's call history with pagination.
 - `date_to` (string): Filter to date (ISO)
 
 **Response:**
+
 ```json
 {
   "calls": [
@@ -134,9 +150,11 @@ Retrieve user's call history with pagination.
 ```
 
 #### GET /api/calls/[id]
+
 Retrieve specific call details with transcript and events.
 
 **Response:**
+
 ```json
 {
   "call": {
@@ -168,9 +186,11 @@ Retrieve specific call details with transcript and events.
 ```
 
 #### POST /api/calls/[id]/reprocess
+
 Reprocess call with AI for event extraction.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -182,9 +202,11 @@ Reprocess call with AI for event extraction.
 ### 3. Event Management
 
 #### GET /api/events
+
 Retrieve user's events with filtering and pagination.
 
 **Query Parameters:**
+
 - `page` (number): Page number
 - `limit` (number): Items per page
 - `status` (string): Filter by status (extracted|pending|confirmed|tentative|completed|cancelled)
@@ -194,6 +216,7 @@ Retrieve user's events with filtering and pagination.
 - `search` (string): Search in title/description
 
 **Response:**
+
 ```json
 {
   "events": [
@@ -210,7 +233,7 @@ Retrieve user's events with filtering and pagination.
       "location": "123 Main St",
       "customer_name": "John Doe",
       "customer_phone": "+15559876543",
-      "price_estimate": 150.00,
+      "price_estimate": 150.0,
       "urgency_level": "medium",
       "ai_confidence": 0.87,
       "created_at": "2025-01-15T10:30:00Z"
@@ -226,9 +249,11 @@ Retrieve user's events with filtering and pagination.
 ```
 
 #### GET /api/events/[id]
+
 Retrieve specific event details.
 
 **Response:**
+
 ```json
 {
   "event": {
@@ -246,7 +271,7 @@ Retrieve specific event details.
     "customer_name": "John Doe",
     "customer_phone": "+15559876543",
     "customer_email": "john@email.com",
-    "price_estimate": 150.00,
+    "price_estimate": 150.0,
     "urgency_level": "medium",
     "notes": "Customer mentioned it's been leaking for 2 days",
     "ai_confidence": 0.87,
@@ -265,9 +290,11 @@ Retrieve specific event details.
 ```
 
 #### PUT /api/events/[id]
+
 Update event details.
 
 **Request Body:**
+
 ```json
 {
   "title": "Updated Kitchen Sink Repair",
@@ -275,12 +302,13 @@ Update event details.
   "duration_minutes": 120,
   "location": "123 Main St, Anytown, ST 12345",
   "customer_email": "john.doe@email.com",
-  "price_estimate": 175.00,
+  "price_estimate": 175.0,
   "notes": "Bring extra parts - older house"
 }
 ```
 
 **Response:**
+
 ```json
 {
   "event": {
@@ -293,9 +321,11 @@ Update event details.
 ```
 
 #### PATCH /api/events/[id]/status
+
 Update event status.
 
 **Request Body:**
+
 ```json
 {
   "status": "confirmed",
@@ -304,6 +334,7 @@ Update event status.
 ```
 
 **Response:**
+
 ```json
 {
   "event": {
@@ -316,9 +347,11 @@ Update event status.
 ```
 
 #### POST /api/events/bulk-update
+
 Update multiple events at once.
 
 **Request Body:**
+
 ```json
 {
   "event_ids": ["uuid1", "uuid2", "uuid3"],
@@ -329,6 +362,7 @@ Update multiple events at once.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -344,9 +378,11 @@ Update multiple events at once.
 ```
 
 #### DELETE /api/events/[id]
+
 Delete (cancel) an event.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -357,9 +393,11 @@ Delete (cancel) an event.
 ### 4. Calendar Integration
 
 #### GET /api/calendar/integrations
+
 Get user's calendar integrations.
 
 **Response:**
+
 ```json
 {
   "integrations": [
@@ -376,9 +414,11 @@ Get user's calendar integrations.
 ```
 
 #### POST /api/calendar/integrations
+
 Add new calendar integration.
 
 **Request Body:**
+
 ```json
 {
   "integration_type": "google",
@@ -387,6 +427,7 @@ Add new calendar integration.
 ```
 
 **Response:**
+
 ```json
 {
   "integration": {
@@ -400,9 +441,11 @@ Add new calendar integration.
 ```
 
 #### POST /api/calendar/sync/[event_id]
+
 Sync specific event to calendar.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -412,9 +455,11 @@ Sync specific event to calendar.
 ```
 
 #### GET /api/calendar/ics/[event_id]
+
 Generate ICS file for event.
 
 **Response:**
+
 ```
 Content-Type: text/calendar
 Content-Disposition: attachment; filename="event.ics"
@@ -437,9 +482,11 @@ END:VCALENDAR
 ### 5. Communication
 
 #### POST /api/communications/send
+
 Send confirmation email or SMS to customer.
 
 **Request Body:**
+
 ```json
 {
   "event_id": "uuid",
@@ -451,6 +498,7 @@ Send confirmation email or SMS to customer.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -461,13 +509,16 @@ Send confirmation email or SMS to customer.
 ```
 
 #### GET /api/communications
+
 Get communication history.
 
 **Query Parameters:**
+
 - `event_id` (string): Filter by event
 - `type` (string): Filter by communication type
 
 **Response:**
+
 ```json
 {
   "communications": [
@@ -487,13 +538,16 @@ Get communication history.
 ### 6. Analytics
 
 #### GET /api/analytics/dashboard
+
 Get dashboard analytics.
 
 **Query Parameters:**
+
 - `date_from` (string): Start date for analytics
 - `date_to` (string): End date for analytics
 
 **Response:**
+
 ```json
 {
   "analytics": {
@@ -510,16 +564,18 @@ Get dashboard analytics.
       "quote": 15,
       "follow_up": 9
     },
-    "revenue_estimate": 4250.00,
+    "revenue_estimate": 4250.0,
     "average_response_time": 1.2
   }
 }
 ```
 
 #### GET /api/analytics/events
+
 Get detailed event analytics.
 
 **Response:**
+
 ```json
 {
   "analytics": {
@@ -528,7 +584,7 @@ Get detailed event analytics.
         "date": "2025-01-15",
         "count": 5,
         "confirmed": 4,
-        "revenue": 520.00
+        "revenue": 520.0
       }
     ],
     "conversion_funnel": {
@@ -541,7 +597,7 @@ Get detailed event analytics.
       {
         "type": "service_call",
         "count": 28,
-        "revenue": 3200.00
+        "revenue": 3200.0
       }
     ]
   }
@@ -551,9 +607,11 @@ Get detailed event analytics.
 ### 7. User Management
 
 #### GET /api/user/profile
+
 Get user profile information.
 
 **Response:**
+
 ```json
 {
   "user": {
@@ -574,9 +632,11 @@ Get user profile information.
 ```
 
 #### PUT /api/user/profile
+
 Update user profile.
 
 **Request Body:**
+
 ```json
 {
   "full_name": "John Smith Jr.",
@@ -590,9 +650,11 @@ Update user profile.
 ```
 
 #### GET /api/user/settings
+
 Get user settings and preferences.
 
 **Response:**
+
 ```json
 {
   "settings": {
@@ -619,9 +681,11 @@ Get user settings and preferences.
 ```
 
 #### PUT /api/user/settings
+
 Update user settings.
 
 **Request Body:**
+
 ```json
 {
   "industry_configuration": {
@@ -637,6 +701,7 @@ Update user settings.
 ## Error Handling
 
 ### Standard Error Response Format
+
 ```json
 {
   "error": {
@@ -652,6 +717,7 @@ Update user settings.
 ```
 
 ### Common Error Codes
+
 - `AUTHENTICATION_REQUIRED` (401): Missing or invalid auth token
 - `FORBIDDEN` (403): User doesn't have access to resource
 - `NOT_FOUND` (404): Resource not found
@@ -662,12 +728,14 @@ Update user settings.
 ## Rate Limiting
 
 ### Rate Limits by Endpoint Type
+
 - **Public Webhooks**: No limit (Twilio verified)
 - **Standard API**: 1000 requests/hour per user
 - **Analytics**: 100 requests/hour per user
 - **Bulk Operations**: 10 requests/hour per user
 
 ### Rate Limit Headers
+
 ```
 X-RateLimit-Limit: 1000
 X-RateLimit-Remaining: 999
@@ -677,9 +745,11 @@ X-RateLimit-Reset: 1642694400
 ## Webhooks for Client Applications
 
 ### Event Notifications
+
 Flynn.ai can send webhooks to client applications for real-time updates.
 
 #### POST [client_webhook_url]
+
 ```json
 {
   "event": "event.status_changed",
@@ -695,11 +765,13 @@ Flynn.ai can send webhooks to client applications for real-time updates.
 ## API Versioning
 
 ### Version Strategy
+
 - Current Version: `v1`
 - URL Format: `/api/v1/endpoint`
 - Header Format: `API-Version: 2025-01-15`
 
 ### Deprecation Policy
+
 - 6 months notice for breaking changes
 - Backward compatibility for minor updates
 - Version sunset after 12 months
@@ -707,6 +779,7 @@ Flynn.ai can send webhooks to client applications for real-time updates.
 ## Testing Endpoints
 
 ### Development/Testing
+
 ```bash
 # Health check
 curl https://flynn.ai/api/health

@@ -20,14 +20,14 @@ interface RevenueChartProps {
   className?: string;
 }
 
-export default function RevenueChart({ 
-  data = [], 
+export default function RevenueChart({
+  data = [],
   isLoading = false,
-  className = '' 
+  className = '',
 }: RevenueChartProps) {
   const [timeRange, setTimeRange] = useState('6m');
   const [chartType, setChartType] = useState('mrr');
-  
+
   const timeRanges = [
     { key: '1m', label: 'Last Month' },
     { key: '3m', label: 'Last 3 Months' },
@@ -44,10 +44,17 @@ export default function RevenueChart({
 
   const getFilteredData = () => {
     const now = new Date();
-    const months = timeRange === '1m' ? 1 : timeRange === '3m' ? 3 : timeRange === '6m' ? 6 : 12;
+    const months =
+      timeRange === '1m'
+        ? 1
+        : timeRange === '3m'
+          ? 3
+          : timeRange === '6m'
+            ? 6
+            : 12;
     const cutoffDate = new Date(now.getFullYear(), now.getMonth() - months, 1);
-    
-    return data.filter(item => new Date(item.metric_date) >= cutoffDate);
+
+    return data.filter((item) => new Date(item.metric_date) >= cutoffDate);
   };
 
   const getChartValue = (item: RevenueData) => {
@@ -105,15 +112,19 @@ export default function RevenueChart({
       <CardHeader className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold">Revenue Analytics</h3>
-          <p className="text-sm text-default-600">Track your business growth over time</p>
+          <p className="text-sm text-default-600">
+            Track your business growth over time
+          </p>
         </div>
-        
+
         <div className="flex gap-2 flex-wrap">
           <Select
             size="sm"
             placeholder="Chart Type"
             selectedKeys={[chartType]}
-            onSelectionChange={(keys) => setChartType(Array.from(keys)[0] as string)}
+            onSelectionChange={(keys) =>
+              setChartType(Array.from(keys)[0] as string)
+            }
             className="w-48"
           >
             {chartTypes.map((type) => (
@@ -122,12 +133,14 @@ export default function RevenueChart({
               </SelectItem>
             ))}
           </Select>
-          
+
           <Select
             size="sm"
             placeholder="Time Range"
             selectedKeys={[timeRange]}
-            onSelectionChange={(keys) => setTimeRange(Array.from(keys)[0] as string)}
+            onSelectionChange={(keys) =>
+              setTimeRange(Array.from(keys)[0] as string)
+            }
             className="w-32"
           >
             {timeRanges.map((range) => (
@@ -138,13 +151,17 @@ export default function RevenueChart({
           </Select>
         </div>
       </CardHeader>
-      
+
       <CardBody>
         {filteredData.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-center">
             <CalendarIcon className="h-12 w-12 text-default-300 mb-4" />
-            <h4 className="text-lg font-semibold text-default-600 mb-2">No Data Available</h4>
-            <p className="text-default-500">No revenue data found for the selected time period.</p>
+            <h4 className="text-lg font-semibold text-default-600 mb-2">
+              No Data Available
+            </h4>
+            <p className="text-default-500">
+              No revenue data found for the selected time period.
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -153,11 +170,14 @@ export default function RevenueChart({
               {filteredData.map((item, index) => {
                 const value = getChartValue(item);
                 const percentage = maxValue > 0 ? (value / maxValue) * 100 : 0;
-                const date = new Date(item.metric_date).toLocaleDateString('en-US', {
-                  month: 'short',
-                  year: 'numeric',
-                });
-                
+                const date = new Date(item.metric_date).toLocaleDateString(
+                  'en-US',
+                  {
+                    month: 'short',
+                    year: 'numeric',
+                  }
+                );
+
                 return (
                   <div key={index} className="flex items-center gap-3">
                     <div className="w-16 text-xs text-default-500 text-right">
@@ -165,7 +185,7 @@ export default function RevenueChart({
                     </div>
                     <div className="flex-1 relative">
                       <div className="h-8 bg-default-100 rounded-md overflow-hidden">
-                        <div 
+                        <div
                           className="h-full bg-primary transition-all duration-300 flex items-center justify-end pr-2"
                           style={{ width: `${Math.max(percentage, 2)}%` }}
                         >
@@ -179,12 +199,19 @@ export default function RevenueChart({
                 );
               })}
             </div>
-            
+
             {/* Summary stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-default-200">
               <div>
                 <p className="text-xs text-default-500">Current</p>
-                <p className="font-semibold">{formatValue(getChartValue(filteredData[filteredData.length - 1] || {} as RevenueData))}</p>
+                <p className="font-semibold">
+                  {formatValue(
+                    getChartValue(
+                      filteredData[filteredData.length - 1] ||
+                        ({} as RevenueData)
+                    )
+                  )}
+                </p>
               </div>
               <div>
                 <p className="text-xs text-default-500">Peak</p>
@@ -197,7 +224,12 @@ export default function RevenueChart({
               <div>
                 <p className="text-xs text-default-500">Average</p>
                 <p className="font-semibold">
-                  {formatValue(filteredData.reduce((sum, item) => sum + getChartValue(item), 0) / filteredData.length)}
+                  {formatValue(
+                    filteredData.reduce(
+                      (sum, item) => sum + getChartValue(item),
+                      0
+                    ) / filteredData.length
+                  )}
                 </p>
               </div>
             </div>

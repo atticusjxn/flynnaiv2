@@ -121,9 +121,13 @@ SPECIAL SCHEDULING CONSIDERATIONS:
 - Document preparation deadlines
 `;
 
-export function buildLegalPrompt(context?: { practiceAreas?: string[]; userLocation?: string; businessHours?: string }): string {
+export function buildLegalPrompt(context?: {
+  practiceAreas?: string[];
+  userLocation?: string;
+  businessHours?: string;
+}): string {
   const basePrompt = buildSystemPrompt('legal');
-  
+
   return `${basePrompt}
 
 ${LEGAL_INDUSTRY_CONTEXT}
@@ -151,17 +155,40 @@ REMEMBER: Legal matters often have strict deadlines that cannot be missed. When 
 
 export const LEGAL_VALIDATION_RULES = {
   requiredFields: ['title', 'description', 'urgency'],
-  highValueFields: ['customer_name', 'customer_phone', 'proposed_datetime', 'notes'],
+  highValueFields: [
+    'customer_name',
+    'customer_phone',
+    'proposed_datetime',
+    'notes',
+  ],
   emergencyKeywords: [
-    'court tomorrow', 'statute', 'deadline', 'arrest', 'detained',
-    'hearing', 'trial', 'eviction', 'foreclosure', 'emergency'
+    'court tomorrow',
+    'statute',
+    'deadline',
+    'arrest',
+    'detained',
+    'hearing',
+    'trial',
+    'eviction',
+    'foreclosure',
+    'emergency',
   ],
   practiceAreaKeywords: [
-    'divorce', 'custody', 'criminal', 'accident', 'injury', 'contract',
-    'business', 'estate', 'will', 'lawsuit', 'immigration', 'bankruptcy'
+    'divorce',
+    'custody',
+    'criminal',
+    'accident',
+    'injury',
+    'contract',
+    'business',
+    'estate',
+    'will',
+    'lawsuit',
+    'immigration',
+    'bankruptcy',
   ],
   confidentialityRequired: true,
-  averageConsultationDuration: 60, // minutes  
+  averageConsultationDuration: 60, // minutes
   defaultBusinessHours: '09:00-17:00 Mon-Fri',
-  conflictCheckingRequired: true
+  conflictCheckingRequired: true,
 };

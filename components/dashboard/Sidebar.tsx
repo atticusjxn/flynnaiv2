@@ -7,51 +7,135 @@ import { cn } from '@/lib/utils';
 
 // Professional SVG Icons
 const HomeIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+    />
   </svg>
 );
 
 const PhoneIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"
+    />
   </svg>
 );
 
 const CalendarIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+    />
   </svg>
 );
 
 const DocumentTextIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5-3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5-3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+    />
   </svg>
 );
 
 const SearchIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+    />
   </svg>
 );
 
 const CogIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a6.759 6.759 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a6.759 6.759 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"
+    />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+    />
   </svg>
 );
 
 const CreditCardIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z"
+    />
   </svg>
 );
 
 const XMarkIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth={1.5}
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M6 18L18 6M6 6l12 12"
+    />
   </svg>
 );
 
@@ -69,27 +153,35 @@ interface SidebarProps {
   onClose?: () => void;
 }
 
-export default function Sidebar({ className, isOpen = false, onClose }: SidebarProps) {
+export default function Sidebar({
+  className,
+  isOpen = false,
+  onClose,
+}: SidebarProps) {
   const pathname = usePathname();
   const sidebarRef = useRef<HTMLDivElement>(null);
-  
+
   // Handle clicks outside sidebar to close on mobile
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (isOpen && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+      if (
+        isOpen &&
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node)
+      ) {
         onClose?.();
       }
     };
-    
+
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-    
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen, onClose]);
-  
+
   // Prevent body scroll when sidebar is open on mobile
   useEffect(() => {
     if (isOpen) {
@@ -97,7 +189,7 @@ export default function Sidebar({ className, isOpen = false, onClose }: SidebarP
     } else {
       document.body.style.overflow = '';
     }
-    
+
     return () => {
       document.body.style.overflow = '';
     };
@@ -108,69 +200,69 @@ export default function Sidebar({ className, isOpen = false, onClose }: SidebarP
       name: 'Dashboard',
       href: '/dashboard',
       icon: HomeIcon,
-      isActive: pathname === '/dashboard'
+      isActive: pathname === '/dashboard',
     },
     {
       name: 'Search',
       href: '/search',
       icon: SearchIcon,
-      isActive: pathname.startsWith('/search')
+      isActive: pathname.startsWith('/search'),
     },
     {
       name: 'Calls',
       href: '/calls',
       icon: PhoneIcon,
       badge: '3',
-      isActive: pathname.startsWith('/calls')
+      isActive: pathname.startsWith('/calls'),
     },
     {
       name: 'Events',
       href: '/events',
       icon: DocumentTextIcon,
       badge: '12',
-      isActive: pathname.startsWith('/events')
+      isActive: pathname.startsWith('/events'),
     },
     {
       name: 'Calendar',
       href: '/calendar',
       icon: CalendarIcon,
-      isActive: pathname.startsWith('/calendar')
+      isActive: pathname.startsWith('/calendar'),
     },
     {
       name: 'Settings',
       href: '/settings',
       icon: CogIcon,
-      isActive: pathname.startsWith('/settings')
+      isActive: pathname.startsWith('/settings'),
     },
     {
       name: 'Billing',
       href: '/billing',
       icon: CreditCardIcon,
-      isActive: pathname.startsWith('/billing')
-    }
+      isActive: pathname.startsWith('/billing'),
+    },
   ];
 
   return (
     <>
       {/* Mobile backdrop overlay */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
           onClick={onClose}
         />
       )}
-      
+
       {/* Sidebar */}
-      <div 
+      <div
         ref={sidebarRef}
         className={cn(
-          "flex flex-col h-full bg-sidebar border-r border-sidebar-border",
+          'flex flex-col h-full bg-sidebar border-r border-sidebar-border',
           // Desktop styles
-          "lg:w-64 lg:relative lg:translate-x-0",
+          'lg:w-64 lg:relative lg:translate-x-0',
           // Mobile styles
-          "fixed top-0 left-0 z-50 w-80 max-w-[85vw]",
-          "transform transition-transform duration-300 ease-in-out",
-          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+          'fixed top-0 left-0 z-50 w-80 max-w-[85vw]',
+          'transform transition-transform duration-300 ease-in-out',
+          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
           className
         )}
       >
@@ -181,18 +273,22 @@ export default function Sidebar({ className, isOpen = false, onClose }: SidebarP
               <div className="w-4 h-4 bg-white rounded-full" />
             </div>
             <div className="flex flex-col">
-              <h1 className="text-lg font-bold text-sidebar-foreground tracking-tight">Flynn.ai</h1>
-              <span className="text-xs text-sidebar-foreground/60 font-medium">v2</span>
+              <h1 className="text-lg font-bold text-sidebar-foreground tracking-tight">
+                Flynn.ai
+              </h1>
+              <span className="text-xs text-sidebar-foreground/60 font-medium">
+                v2
+              </span>
             </div>
           </div>
-          
+
           {/* Close button for mobile */}
           <button
             onClick={onClose}
             className={cn(
-              "lg:hidden p-2 rounded-lg transition-colors duration-200",
-              "hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground",
-              "touch-target focus-ring"
+              'lg:hidden p-2 rounded-lg transition-colors duration-200',
+              'hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground',
+              'touch-target focus-ring'
             )}
           >
             <XMarkIcon className="w-5 h-5" />
@@ -214,30 +310,30 @@ export default function Sidebar({ className, isOpen = false, onClose }: SidebarP
                   }
                 }}
                 className={cn(
-                  "group flex items-center px-3 py-3 text-sm font-medium rounded-xl transition-all duration-200 ease-in-out relative",
-                  "touch-target focus-ring", // Enhanced touch targets
-                  item.isActive 
-                    ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm" 
-                    : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-sm hover:scale-[1.02]"
+                  'group flex items-center px-3 py-3 text-sm font-medium rounded-xl transition-all duration-200 ease-in-out relative',
+                  'touch-target focus-ring', // Enhanced touch targets
+                  item.isActive
+                    ? 'bg-sidebar-primary text-sidebar-primary-foreground shadow-sm'
+                    : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-sm hover:scale-[1.02]'
                 )}
               >
                 <Icon className="w-5 h-5 mr-3 transition-colors duration-200 flex-shrink-0" />
-                
-                <span className="truncate">
-                  {item.name}
-                </span>
-                
+
+                <span className="truncate">{item.name}</span>
+
                 {item.badge && (
-                  <span className={cn(
-                    "ml-auto px-2 py-0.5 text-xs font-semibold rounded-full transition-colors duration-200 flex-shrink-0",
-                    item.isActive
-                      ? "bg-sidebar-primary-foreground/20 text-sidebar-primary-foreground"
-                      : "bg-sidebar-accent text-sidebar-accent-foreground"
-                  )}>
+                  <span
+                    className={cn(
+                      'ml-auto px-2 py-0.5 text-xs font-semibold rounded-full transition-colors duration-200 flex-shrink-0',
+                      item.isActive
+                        ? 'bg-sidebar-primary-foreground/20 text-sidebar-primary-foreground'
+                        : 'bg-sidebar-accent text-sidebar-accent-foreground'
+                    )}
+                  >
                     {item.badge}
                   </span>
                 )}
-                
+
                 {/* Active indicator */}
                 {item.isActive && (
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-sidebar-primary-foreground rounded-r-full" />
@@ -253,10 +349,14 @@ export default function Sidebar({ className, isOpen = false, onClose }: SidebarP
             <div className="w-8 h-8 bg-gradient-to-br from-gray-400 to-gray-500 rounded-full flex items-center justify-center flex-shrink-0">
               <span className="text-xs font-bold text-white">U</span>
             </div>
-            
+
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-sidebar-foreground truncate">User Name</p>
-              <p className="text-xs text-sidebar-foreground/60 truncate">Professional Plan</p>
+              <p className="text-sm font-medium text-sidebar-foreground truncate">
+                User Name
+              </p>
+              <p className="text-xs text-sidebar-foreground/60 truncate">
+                Professional Plan
+              </p>
             </div>
           </div>
         </div>

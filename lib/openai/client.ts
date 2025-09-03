@@ -15,13 +15,13 @@ export const OPENAI_CONFIG = {
     language: 'en', // English for business calls
     temperature: 0, // Deterministic for accuracy
   },
-  
+
   // GPT-4 event extraction settings
   extraction: {
     model: 'gpt-4o-mini', // Cost-effective while maintaining quality
     temperature: 0.1, // Low temperature for consistent extraction
     max_tokens: 2000, // Sufficient for event details
-    response_format: { type: "json_object" as const },
+    response_format: { type: 'json_object' as const },
   },
 
   // Rate limiting and retry configuration
@@ -29,22 +29,22 @@ export const OPENAI_CONFIG = {
     maxRetries: 3,
     retryDelay: 1000, // 1 second
     backoffMultiplier: 2,
-  }
+  },
 } as const;
 
 // Validate OpenAI configuration
 export function validateOpenAIConfig(): { isValid: boolean; error?: string } {
   if (!process.env.OPENAI_API_KEY) {
-    return { 
-      isValid: false, 
-      error: 'OPENAI_API_KEY environment variable is not set' 
+    return {
+      isValid: false,
+      error: 'OPENAI_API_KEY environment variable is not set',
     };
   }
 
   if (!process.env.OPENAI_API_KEY.startsWith('sk-')) {
-    return { 
-      isValid: false, 
-      error: 'OPENAI_API_KEY appears to be invalid (should start with sk-)' 
+    return {
+      isValid: false,
+      error: 'OPENAI_API_KEY appears to be invalid (should start with sk-)',
     };
   }
 
@@ -52,7 +52,10 @@ export function validateOpenAIConfig(): { isValid: boolean; error?: string } {
 }
 
 // Test OpenAI connection
-export async function testOpenAIConnection(): Promise<{ success: boolean; error?: string }> {
+export async function testOpenAIConnection(): Promise<{
+  success: boolean;
+  error?: string;
+}> {
   try {
     const validation = validateOpenAIConfig();
     if (!validation.isValid) {
@@ -73,9 +76,9 @@ export async function testOpenAIConnection(): Promise<{ success: boolean; error?
       return { success: false, error: 'Unexpected response from OpenAI API' };
     }
   } catch (error) {
-    return { 
-      success: false, 
-      error: `OpenAI API test failed: ${error instanceof Error ? error.message : 'Unknown error'}` 
+    return {
+      success: false,
+      error: `OpenAI API test failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
     };
   }
 }

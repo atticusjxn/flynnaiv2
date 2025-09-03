@@ -6,7 +6,9 @@ import { OAuth2Client } from 'google-auth-library';
 const GOOGLE_CALENDAR_CONFIG = {
   clientId: process.env.GOOGLE_CALENDAR_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CALENDAR_CLIENT_SECRET,
-  redirectUri: process.env.GOOGLE_CALENDAR_REDIRECT_URI || `${process.env.NEXTAUTH_URL}/api/calendar/google/callback`,
+  redirectUri:
+    process.env.GOOGLE_CALENDAR_REDIRECT_URI ||
+    `${process.env.NEXTAUTH_URL}/api/calendar/google/callback`,
   scopes: [
     'https://www.googleapis.com/auth/calendar',
     'https://www.googleapis.com/auth/calendar.events',
@@ -32,7 +34,10 @@ export class GoogleCalendarAuth {
   private oauth2Client: OAuth2Client;
 
   constructor() {
-    if (!GOOGLE_CALENDAR_CONFIG.clientId || !GOOGLE_CALENDAR_CONFIG.clientSecret) {
+    if (
+      !GOOGLE_CALENDAR_CONFIG.clientId ||
+      !GOOGLE_CALENDAR_CONFIG.clientSecret
+    ) {
       throw new Error('Google Calendar OAuth credentials not configured');
     }
 
@@ -61,12 +66,15 @@ export class GoogleCalendarAuth {
   /**
    * Exchange authorization code for tokens
    */
-  async exchangeCodeForTokens(code: string, state: string): Promise<CalendarAuthResult> {
+  async exchangeCodeForTokens(
+    code: string,
+    state: string
+  ): Promise<CalendarAuthResult> {
     try {
       console.log('Exchanging authorization code for tokens');
-      
+
       const { tokens } = await this.oauth2Client.getToken(code);
-      
+
       if (!tokens.access_token) {
         throw new Error('No access token received from Google');
       }
@@ -87,12 +95,14 @@ export class GoogleCalendarAuth {
 
       console.log('Successfully exchanged code for tokens');
       return result;
-
     } catch (error) {
       console.error('Error exchanging code for tokens:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to exchange authorization code',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to exchange authorization code',
       };
     }
   }
@@ -103,7 +113,7 @@ export class GoogleCalendarAuth {
   async refreshAccessToken(refreshToken: string): Promise<CalendarAuthResult> {
     try {
       console.log('Refreshing Google Calendar access token');
-      
+
       this.oauth2Client.setCredentials({
         refresh_token: refreshToken,
       });
@@ -127,12 +137,14 @@ export class GoogleCalendarAuth {
 
       console.log('Successfully refreshed access token');
       return result;
-
     } catch (error) {
       console.error('Error refreshing access token:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to refresh access token',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to refresh access token',
       };
     }
   }
@@ -165,11 +177,10 @@ export class GoogleCalendarAuth {
     try {
       const client = this.getAuthenticatedClient(tokens);
       const calendar = google.calendar({ version: 'v3', auth: client });
-      
+
       // Test API call to validate tokens
       await calendar.calendarList.list({ maxResults: 1 });
       return true;
-
     } catch (error) {
       console.error('Token validation failed:', error);
       return false;
@@ -185,7 +196,6 @@ export class GoogleCalendarAuth {
       await client.revokeCredentials();
       console.log('Successfully revoked Google Calendar access');
       return true;
-
     } catch (error) {
       console.error('Error revoking access:', error);
       return false;
@@ -198,7 +208,9 @@ export const googleCalendarAuth = new GoogleCalendarAuth();
 
 // Utility function to check if Google Calendar is configured
 export function isGoogleCalendarConfigured(): boolean {
-  return !!(GOOGLE_CALENDAR_CONFIG.clientId && GOOGLE_CALENDAR_CONFIG.clientSecret);
+  return !!(
+    GOOGLE_CALENDAR_CONFIG.clientId && GOOGLE_CALENDAR_CONFIG.clientSecret
+  );
 }
 
 // Export configuration for debugging

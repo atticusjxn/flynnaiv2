@@ -7,28 +7,28 @@ config:
     # Warm-up phase
     - duration: 60
       arrivalRate: 5
-      name: "Warm up"
-    
+      name: 'Warm up'
+
     # Ramp up phase
     - duration: 300
       arrivalRate: 10
       rampTo: 50
-      name: "Ramp up load"
-    
+      name: 'Ramp up load'
+
     # Sustained load phase
     - duration: 600
       arrivalRate: 50
-      name: "Sustained load"
-    
+      name: 'Sustained load'
+
     # Spike test phase
     - duration: 120
       arrivalRate: 100
-      name: "Spike test"
-    
+      name: 'Spike test'
+
     # Cool down phase
     - duration: 60
       arrivalRate: 10
-      name: "Cool down"
+      name: 'Cool down'
 
   # Load test configuration
   timeout: 30
@@ -39,99 +39,99 @@ config:
 
   # Performance thresholds
   ensure:
-    - http.response_time.p95: 2000  # 95th percentile < 2s
-    - http.response_time.p99: 5000  # 99th percentile < 5s
-    - http.codes.200: 95            # 95%+ success rate
-    - http.codes.500: 1             # < 1% server errors
+    - http.response_time.p95: 2000 # 95th percentile < 2s
+    - http.response_time.p99: 5000 # 99th percentile < 5s
+    - http.codes.200: 95 # 95%+ success rate
+    - http.codes.500: 1 # < 1% server errors
 
 # Test scenarios
 scenarios:
   # Basic health check
-  - name: "Health Check"
+  - name: 'Health Check'
     weight: 20
     flow:
       - get:
-          url: "/api/performance/health"
+          url: '/api/performance/health'
           headers:
-            Cache-Control: "no-cache"
+            Cache-Control: 'no-cache'
           expect:
             - statusCode: 200
-            - contentType: "application/json"
+            - contentType: 'application/json'
           capture:
-            - json: "$.status"
-              as: "health_status"
+            - json: '$.status'
+              as: 'health_status'
       - think: 1
 
   # Landing page load
-  - name: "Landing Page"
+  - name: 'Landing Page'
     weight: 30
     flow:
       - get:
-          url: "/"
+          url: '/'
           expect:
             - statusCode: 200
           capture:
-            - header: "content-length"
-              as: "page_size"
+            - header: 'content-length'
+              as: 'page_size'
       - think: 2
 
   # Authentication endpoints
-  - name: "Auth Endpoints"
+  - name: 'Auth Endpoints'
     weight: 15
     flow:
       - get:
-          url: "/login"
+          url: '/login'
           expect:
             - statusCode: [200, 302]
       - think: 1
       - get:
-          url: "/register"
+          url: '/register'
           expect:
             - statusCode: [200, 302]
       - think: 3
 
   # API endpoint testing
-  - name: "API Performance"
+  - name: 'API Performance'
     weight: 25
     flow:
       - get:
-          url: "/api/performance/analytics"
+          url: '/api/performance/analytics'
           headers:
-            Authorization: "Bearer {{ $processEnvironment.TEST_API_TOKEN }}"
+            Authorization: 'Bearer {{ $processEnvironment.TEST_API_TOKEN }}'
           expect:
             - statusCode: [200, 401]
       - think: 1
       - post:
-          url: "/api/webhooks/twilio/voice"
+          url: '/api/webhooks/twilio/voice'
           headers:
-            Content-Type: "application/x-www-form-urlencoded"
+            Content-Type: 'application/x-www-form-urlencoded'
           form:
-            CallSid: "CA{{ $randomString() }}"
-            From: "+15551234567"
-            To: "+15559876543"
-            CallStatus: "ringing"
+            CallSid: 'CA{{ $randomString() }}'
+            From: '+15551234567'
+            To: '+15559876543'
+            CallStatus: 'ringing'
           expect:
             - statusCode: [200, 400, 405]
       - think: 2
 
   # Database-heavy operations
-  - name: "Database Operations"
+  - name: 'Database Operations'
     weight: 10
     flow:
       - get:
-          url: "/api/performance/database"
+          url: '/api/performance/database'
           expect:
             - statusCode: 200
           capture:
-            - json: "$.connectionTime"
-              as: "db_connection_time"
+            - json: '$.connectionTime'
+              as: 'db_connection_time'
       - think: 1
 
 # Custom functions for realistic data
 functions:
   randomCallSid: |
     return 'CA' + Math.random().toString(36).substr(2, 32);
-  
+
   randomPhoneNumber: |
     return '+1555' + Math.floor(Math.random() * 10000000).toString().padStart(7, '0');
 
@@ -140,28 +140,28 @@ plugins:
   expect: {}
   metrics-by-endpoint:
     useOnlyRequestNames: true
-  
+
   # Custom metrics
   publish-metrics:
     - type: datadog
-      host: "api.datadoghq.com"
-      prefix: "flynn.loadtest"
+      host: 'api.datadoghq.com'
+      prefix: 'flynn.loadtest'
       tags:
-        - "environment:production"
-        - "test:api-stress"
-    
+        - 'environment:production'
+        - 'test:api-stress'
+
     - type: cloudwatch
-      region: "us-east-1"
-      namespace: "Flynn/LoadTest"
+      region: 'us-east-1'
+      namespace: 'Flynn/LoadTest'
 
 # Post-test analysis
 after:
   # Generate detailed report
-  - log: "Load test completed. Analyzing results..."
-  - log: "95th percentile response time: {{ http.response_time.p95 }}ms"
-  - log: "99th percentile response time: {{ http.response_time.p99 }}ms"
-  - log: "Success rate: {{ http.codes.200 }}%"
-  - log: "Error rate: {{ http.codes.500 }}%"
+  - log: 'Load test completed. Analyzing results...'
+  - log: '95th percentile response time: {{ http.response_time.p95 }}ms'
+  - log: '99th percentile response time: {{ http.response_time.p99 }}ms'
+  - log: 'Success rate: {{ http.codes.200 }}%'
+  - log: 'Error rate: {{ http.codes.500 }}%'
 
 # Environment-specific settings
 environments:
@@ -170,13 +170,13 @@ environments:
     phases:
       - duration: 30
         arrivalRate: 5
-  
+
   staging:
     target: 'https://staging.flynn.ai'
     phases:
       - duration: 120
         arrivalRate: 20
-  
+
   production:
     target: 'https://flynn.ai'
     # Use full test configuration above

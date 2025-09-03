@@ -15,7 +15,7 @@ const mockEvents = [
     customer: {
       name: 'John Smith',
       phone: '+61 412 345 678',
-      email: 'john.smith@email.com'
+      email: 'john.smith@email.com',
     },
     location: '123 Collins Street, Melbourne VIC 3000',
     status: 'pending' as const,
@@ -24,7 +24,7 @@ const mockEvents = [
     confidence: 0.95,
     extracted_at: '2024-01-14T09:15:00Z',
     call_id: 'call_001',
-    notes: 'Burst pipe in kitchen, water damage spreading'
+    notes: 'Burst pipe in kitchen, water damage spreading',
   },
   {
     id: '2',
@@ -34,7 +34,7 @@ const mockEvents = [
     customer: {
       name: 'Sarah Johnson',
       phone: '+61 423 456 789',
-      email: 'sarah.j@email.com'
+      email: 'sarah.j@email.com',
     },
     location: '456 Chapel Street, South Yarra VIC 3141',
     status: 'confirmed' as const,
@@ -43,7 +43,7 @@ const mockEvents = [
     confidence: 0.88,
     extracted_at: '2024-01-14T11:30:00Z',
     call_id: 'call_002',
-    notes: 'First home buyer, pre-approved for $800K'
+    notes: 'First home buyer, pre-approved for $800K',
   },
   {
     id: '3',
@@ -52,7 +52,7 @@ const mockEvents = [
     time: '15:00',
     customer: {
       name: 'Michael Brown',
-      phone: '+61 434 567 890'
+      phone: '+61 434 567 890',
     },
     location: 'Office meeting',
     status: 'pending' as const,
@@ -61,7 +61,7 @@ const mockEvents = [
     confidence: 0.92,
     extracted_at: '2024-01-14T14:45:00Z',
     call_id: 'call_003',
-    notes: 'Contract review and business acquisition'
+    notes: 'Contract review and business acquisition',
   },
   {
     id: '4',
@@ -71,7 +71,7 @@ const mockEvents = [
     customer: {
       name: 'Emily Davis',
       phone: '+61 445 678 901',
-      email: 'e.davis@email.com'
+      email: 'e.davis@email.com',
     },
     status: 'completed' as const,
     urgency: 'low' as const,
@@ -79,7 +79,7 @@ const mockEvents = [
     confidence: 0.85,
     extracted_at: '2024-01-14T16:20:00Z',
     call_id: 'call_004',
-    notes: 'Annual health screening appointment'
+    notes: 'Annual health screening appointment',
   },
   {
     id: '5',
@@ -89,7 +89,7 @@ const mockEvents = [
     customer: {
       name: 'David Wilson',
       phone: '+61 456 789 012',
-      email: 'david.wilson@company.com'
+      email: 'david.wilson@company.com',
     },
     status: 'cancelled' as const,
     urgency: 'medium' as const,
@@ -97,7 +97,7 @@ const mockEvents = [
     confidence: 0.78,
     extracted_at: '2024-01-14T18:10:00Z',
     call_id: 'call_005',
-    notes: 'Enterprise software demonstration'
+    notes: 'Enterprise software demonstration',
   },
   {
     id: '6',
@@ -107,7 +107,7 @@ const mockEvents = [
     customer: {
       name: 'Lisa Anderson',
       phone: '+61 467 890 123',
-      email: 'lisa.a@email.com'
+      email: 'lisa.a@email.com',
     },
     location: '789 High Street, Prahran VIC 3181',
     status: 'confirmed' as const,
@@ -116,40 +116,40 @@ const mockEvents = [
     confidence: 0.91,
     extracted_at: '2024-01-14T20:30:00Z',
     call_id: 'call_006',
-    notes: 'Full kitchen redesign, budget $25K'
-  }
+    notes: 'Full kitchen redesign, budget $25K',
+  },
 ];
 
 export default function EventEditPage() {
   const router = useRouter();
   const params = useParams();
   const eventId = params.id as string;
-  
-  const [event, setEvent] = useState(null);
+
+  const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     // Find the event by ID
-    const foundEvent = mockEvents.find(e => e.id === eventId);
+    const foundEvent = mockEvents.find((e) => e.id === eventId);
     setEvent(foundEvent || null);
     setLoading(false);
   }, [eventId]);
 
-  const handleSave = async (eventData) => {
+  const handleSave = async (eventData: any) => {
     setSaving(true);
     try {
       // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       console.log('Saving event:', eventData);
-      
+
       // In a real app, you would make an API call here
       // await updateEvent(eventId, eventData);
-      
+
       // Show success message (you could add toast notification here)
       console.log('Event saved successfully!');
-      
+
       // Navigate back to events list
       router.push('/events');
     } catch (error) {
@@ -169,7 +169,9 @@ export default function EventEditPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex items-center space-x-3">
           <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent"></div>
-          <span className="text-muted-foreground font-medium">Loading event...</span>
+          <span className="text-muted-foreground font-medium">
+            Loading event...
+          </span>
         </div>
       </div>
     );
@@ -195,7 +197,7 @@ export default function EventEditPage() {
 
   return (
     <div>
-      <EventEditForm 
+      <EventEditForm
         event={event}
         onSave={handleSave}
         onCancel={handleCancel}

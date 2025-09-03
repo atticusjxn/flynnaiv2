@@ -7,7 +7,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { Database } from '@/types/database.types';
 import { createClient } from '@/utils/supabase/client';
 
-type CommunicationLog = Database['public']['Tables']['communication_logs']['Row'];
+type CommunicationLog =
+  Database['public']['Tables']['communication_logs']['Row'];
 
 export interface CommunicationFilters {
   type?: 'email' | 'sms' | 'call';
@@ -73,60 +74,68 @@ export function useCommunications(filters: CommunicationFilters = {}) {
   const [communications, setCommunications] = useState<CommunicationLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [pagination, setPagination] = useState<UseCommunicationsResult['pagination']>(null);
-  
+  const [pagination, setPagination] =
+    useState<UseCommunicationsResult['pagination']>(null);
+
   const supabase = createClient();
 
-  const fetchCommunications = useCallback(async (loadMore = false) => {
-    try {
-      if (!loadMore) {
-        setLoading(true);
-        setError(null);
-      }
-
-      const params = new URLSearchParams();
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          params.append(key, value.toString());
+  const fetchCommunications = useCallback(
+    async (loadMore = false) => {
+      try {
+        if (!loadMore) {
+          setLoading(true);
+          setError(null);
         }
-      });
 
-      const response = await fetch(`/api/communications?${params}`, {
-        headers: {
-          'Content-Type': 'application/json'
+        const params = new URLSearchParams();
+        Object.entries(filters).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            params.append(key, value.toString());
+          }
+        });
+
+        const response = await fetch(`/api/communications?${params}`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch communications: ${response.statusText}`
+          );
         }
-      });
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch communications: ${response.statusText}`);
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to fetch communications');
+        }
+
+        if (loadMore && pagination) {
+          setCommunications((prev) => [...prev, ...result.data]);
+        } else {
+          setCommunications(result.data);
+        }
+
+        setPagination(result.pagination);
+      } catch (err) {
+        console.error('Error fetching communications:', err);
+        setError(
+          err instanceof Error ? err.message : 'Failed to fetch communications'
+        );
+      } finally {
+        setLoading(false);
       }
-
-      const result = await response.json();
-
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to fetch communications');
-      }
-
-      if (loadMore && pagination) {
-        setCommunications(prev => [...prev, ...result.data]);
-      } else {
-        setCommunications(result.data);
-      }
-      
-      setPagination(result.pagination);
-    } catch (err) {
-      console.error('Error fetching communications:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch communications');
-    } finally {
-      setLoading(false);
-    }
-  }, [filters, pagination]);
+    },
+    [filters, pagination]
+  );
 
   const loadMore = useCallback(async () => {
     if (pagination && pagination.hasNext && !loading) {
       const nextPageFilters = {
         ...filters,
-        page: pagination.page + 1
+        page: pagination.page + 1,
       };
       await fetchCommunications(true);
     }
@@ -145,24 +154,29 @@ export function useCommunications(filters: CommunicationFilters = {}) {
         {
           event: '*',
           schema: 'public',
-          table: 'communication_logs'
+          table: 'communication_logs',
         },
         (payload) => {
           console.log('Communication update:', payload);
-          
+
           if (payload.eventType === 'INSERT') {
-            setCommunications(prev => [payload.new as CommunicationLog, ...prev]);
+            setCommunications((prev) => [
+              payload.new as CommunicationLog,
+              ...prev,
+            ]);
           } else if (payload.eventType === 'UPDATE') {
-            setCommunications(prev => 
-              prev.map(comm => 
-                comm.id === (payload.new as CommunicationLog).id 
-                  ? payload.new as CommunicationLog 
+            setCommunications((prev) =>
+              prev.map((comm) =>
+                comm.id === (payload.new as CommunicationLog).id
+                  ? (payload.new as CommunicationLog)
                   : comm
               )
             );
           } else if (payload.eventType === 'DELETE') {
-            setCommunications(prev => 
-              prev.filter(comm => comm.id !== (payload.old as CommunicationLog).id)
+            setCommunications((prev) =>
+              prev.filter(
+                (comm) => comm.id !== (payload.old as CommunicationLog).id
+              )
             );
           }
         }
@@ -180,7 +194,7 @@ export function useCommunications(filters: CommunicationFilters = {}) {
     error,
     pagination,
     refetch: () => fetchCommunications(),
-    loadMore
+    loadMore,
   };
 }
 
@@ -200,7 +214,7 @@ export function useCommunicationMetrics(dateFrom?: string, dateTo?: string) {
       if (dateTo) params.append('dateTo', dateTo);
 
       const response = await fetch(`/api/communications/metrics?${params}`);
-      
+
       if (!response.ok) {
         throw new Error(`Failed to fetch metrics: ${response.statusText}`);
       }
@@ -239,7 +253,7 @@ export function useCommunicationMetrics(dateFrom?: string, dateTo?: string) {
     metrics,
     loading,
     error,
-    refetch: fetchMetrics
+    refetch: fetchMetrics,
   };
 }
 
@@ -256,13 +270,15 @@ export function useRetryCommunication() {
       const response = await fetch('/api/communications/retry', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ communicationId })
+        body: JSON.stringify({ communicationId }),
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to retry communication: ${response.statusText}`);
+        throw new Error(
+          `Failed to retry communication: ${response.statusText}`
+        );
       }
 
       const result = await response.json();
@@ -274,7 +290,8 @@ export function useRetryCommunication() {
       return result.data;
     } catch (err) {
       console.error('Error retrying communication:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to retry communication';
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to retry communication';
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -285,7 +302,7 @@ export function useRetryCommunication() {
   return {
     retryCommunication,
     loading,
-    error
+    error,
   };
 }
 
@@ -294,50 +311,56 @@ export function useSendCommunication() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const sendCommunication = useCallback(async (data: {
-    eventId?: string;
-    callId?: string;
-    communicationType: 'email' | 'sms' | 'call';
-    recipient: string;
-    subject?: string;
-    content: string;
-  }) => {
-    try {
-      setLoading(true);
-      setError(null);
+  const sendCommunication = useCallback(
+    async (data: {
+      eventId?: string;
+      callId?: string;
+      communicationType: 'email' | 'sms' | 'call';
+      recipient: string;
+      subject?: string;
+      content: string;
+    }) => {
+      try {
+        setLoading(true);
+        setError(null);
 
-      const response = await fetch('/api/communications', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
+        const response = await fetch('/api/communications', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
 
-      if (!response.ok) {
-        throw new Error(`Failed to send communication: ${response.statusText}`);
+        if (!response.ok) {
+          throw new Error(
+            `Failed to send communication: ${response.statusText}`
+          );
+        }
+
+        const result = await response.json();
+
+        if (!result.success) {
+          throw new Error(result.error || 'Failed to send communication');
+        }
+
+        return result.data;
+      } catch (err) {
+        console.error('Error sending communication:', err);
+        const errorMessage =
+          err instanceof Error ? err.message : 'Failed to send communication';
+        setError(errorMessage);
+        throw new Error(errorMessage);
+      } finally {
+        setLoading(false);
       }
-
-      const result = await response.json();
-
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to send communication');
-      }
-
-      return result.data;
-    } catch (err) {
-      console.error('Error sending communication:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Failed to send communication';
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   return {
     sendCommunication,
     loading,
-    error
+    error,
   };
 }

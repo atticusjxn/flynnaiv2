@@ -16,16 +16,29 @@ export interface EmailData {
 /**
  * Generate professional appointment summary email HTML
  */
-export async function generateAppointmentSummaryEmail(data: EmailData): Promise<string> {
-  const { companyName, industry, callSummary, extractedEvents, transcriptionSnippet, callId } = data;
-  
+export async function generateAppointmentSummaryEmail(
+  data: EmailData
+): Promise<string> {
+  const {
+    companyName,
+    industry,
+    callSummary,
+    extractedEvents,
+    transcriptionSnippet,
+    callId,
+  } = data;
+
   // Industry-specific styling and terminology
   const industryConfig = getIndustryEmailConfig(industry);
-  
-  const eventCards = extractedEvents.map(event => generateEventCard(event, industryConfig)).join('\n');
-  
-  const hasUrgentEvents = extractedEvents.some(e => e.urgency === 'emergency' || e.urgency === 'high');
-  
+
+  const eventCards = extractedEvents
+    .map((event) => generateEventCard(event, industryConfig))
+    .join('\n');
+
+  const hasUrgentEvents = extractedEvents.some(
+    (e) => e.urgency === 'emergency' || e.urgency === 'high'
+  );
+
   return `
 <!DOCTYPE html>
 <html lang="en">
@@ -281,24 +294,32 @@ export async function generateAppointmentSummaryEmail(data: EmailData): Promise<
                         <span>${formatTimestamp(callSummary.timestamp)}</span>
                     </div>
                 </div>
-                ${transcriptionSnippet ? `
+                ${
+                  transcriptionSnippet
+                    ? `
                 <div class="transcription-snippet">
                     "${transcriptionSnippet}${transcriptionSnippet.length >= 200 ? '...' : ''}"
                 </div>
-                ` : ''}
+                `
+                    : ''
+                }
             </div>
             
-            ${extractedEvents.length > 0 ? `
+            ${
+              extractedEvents.length > 0
+                ? `
             <div class="events-section">
                 <h2>🎯 ${industryConfig.terminology.events_title} (${extractedEvents.length})</h2>
                 ${eventCards}
             </div>
-            ` : `
+            `
+                : `
             <div class="no-events">
                 <h3>No specific appointments were detected in this call</h3>
                 <p>The call has been recorded and transcribed. You can review the full transcript in your dashboard if needed.</p>
             </div>
-            `}
+            `
+            }
         </div>
         
         <div class="actions">
@@ -327,7 +348,7 @@ function generateEventCard(event: any, industryConfig: any): string {
   const urgencyClass = event.urgency || 'low';
   const confidencePercent = Math.round((event.confidence || 0) * 100);
   const confidenceColor = getConfidenceColor(event.confidence || 0);
-  
+
   return `
     <div class="event-card ${urgencyClass === 'emergency' || urgencyClass === 'high' ? urgencyClass : ''}">
         <div class="urgency-badge urgency-${urgencyClass}">${urgencyClass}</div>
@@ -336,47 +357,71 @@ function generateEventCard(event: any, industryConfig: any): string {
         <h3 class="event-title">${event.title}</h3>
         
         <div class="event-details">
-            ${event.customer_name ? `
+            ${
+              event.customer_name
+                ? `
             <div class="detail-item">
                 <label>Customer</label>
                 <span>${event.customer_name}</span>
             </div>
-            ` : ''}
+            `
+                : ''
+            }
             
-            ${event.customer_phone ? `
+            ${
+              event.customer_phone
+                ? `
             <div class="detail-item">
                 <label>Phone</label>
                 <span>${event.customer_phone}</span>
             </div>
-            ` : ''}
+            `
+                : ''
+            }
             
-            ${event.location ? `
+            ${
+              event.location
+                ? `
             <div class="detail-item">
                 <label>Location</label>
                 <span>${event.location}</span>
             </div>
-            ` : ''}
+            `
+                : ''
+            }
             
-            ${event.proposed_datetime ? `
+            ${
+              event.proposed_datetime
+                ? `
             <div class="detail-item">
                 <label>Proposed Time</label>
                 <span>${formatDateTime(event.proposed_datetime)}</span>
             </div>
-            ` : ''}
+            `
+                : ''
+            }
             
-            ${event.price_estimate ? `
+            ${
+              event.price_estimate
+                ? `
             <div class="detail-item">
                 <label>Est. Price</label>
                 <span>${event.price_estimate}</span>
             </div>
-            ` : ''}
+            `
+                : ''
+            }
             
-            ${event.service_type ? `
+            ${
+              event.service_type
+                ? `
             <div class="detail-item">
                 <label>Service</label>
                 <span>${event.service_type}</span>
             </div>
-            ` : ''}
+            `
+                : ''
+            }
         </div>
         
         <div class="event-description">
@@ -404,8 +449,8 @@ function getIndustryEmailConfig(industry: string) {
         service_call: 'Service Call',
         quote: 'Quote Request',
         emergency: 'Emergency Service',
-        appointment: 'Service Appointment'
-      }
+        appointment: 'Service Appointment',
+      },
     },
     real_estate: {
       primaryColor: '#059669',
@@ -415,8 +460,8 @@ function getIndustryEmailConfig(industry: string) {
         events_title: 'Scheduled Showings',
         meeting: 'Property Showing',
         inspection: 'Property Inspection',
-        appointment: 'Client Meeting'
-      }
+        appointment: 'Client Meeting',
+      },
     },
     legal: {
       primaryColor: '#7c3aed',
@@ -426,8 +471,8 @@ function getIndustryEmailConfig(industry: string) {
         events_title: 'Legal Consultations',
         consultation: 'Legal Consultation',
         meeting: 'Client Meeting',
-        appointment: 'Legal Appointment'
-      }
+        appointment: 'Legal Appointment',
+      },
     },
     medical: {
       primaryColor: '#dc2626',
@@ -437,8 +482,8 @@ function getIndustryEmailConfig(industry: string) {
         events_title: 'Medical Appointments',
         appointment: 'Medical Appointment',
         consultation: 'Consultation',
-        urgent: 'Urgent Care'
-      }
+        urgent: 'Urgent Care',
+      },
     },
     general: {
       primaryColor: '#4f46e5',
@@ -448,11 +493,11 @@ function getIndustryEmailConfig(industry: string) {
         events_title: 'Appointments',
         appointment: 'Appointment',
         meeting: 'Meeting',
-        service_call: 'Service Request'
-      }
-    }
+        service_call: 'Service Request',
+      },
+    },
   };
-  
+
   return (configs as any)[industry] || configs.general;
 }
 
@@ -463,7 +508,9 @@ function formatDuration(seconds: number): string {
   if (seconds < 60) return `${seconds}s`;
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-  return remainingSeconds > 0 ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
+  return remainingSeconds > 0
+    ? `${minutes}m ${remainingSeconds}s`
+    : `${minutes}m`;
 }
 
 function formatTimestamp(timestamp: string): string {
@@ -471,7 +518,7 @@ function formatTimestamp(timestamp: string): string {
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   });
 }
 
@@ -481,7 +528,7 @@ function formatDateTime(datetime: string): string {
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   });
 }
 

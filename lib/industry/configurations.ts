@@ -205,7 +205,9 @@ export const INDUSTRY_CONFIGURATIONS: Record<string, IndustryConfiguration> = {
 /**
  * Get industry configuration by ID
  */
-export function getIndustryConfiguration(industryId: string): IndustryConfiguration {
+export function getIndustryConfiguration(
+  industryId: string
+): IndustryConfiguration {
   return INDUSTRY_CONFIGURATIONS[industryId] || INDUSTRY_CONFIGURATIONS.general;
 }
 
@@ -221,13 +223,16 @@ export function getAllIndustries(): IndustryConfiguration[] {
  */
 export function getIndustryByName(name: string): IndustryConfiguration | null {
   const normalizedName = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
-  
+
   for (const config of Object.values(INDUSTRY_CONFIGURATIONS)) {
-    if (config.id === normalizedName || config.name.toLowerCase().includes(normalizedName)) {
+    if (
+      config.id === normalizedName ||
+      config.name.toLowerCase().includes(normalizedName)
+    ) {
       return config;
     }
   }
-  
+
   return null;
 }
 
@@ -319,15 +324,18 @@ export function getUrgencyLevelConfig(urgency: string) {
 /**
  * Get industry-specific event type labels
  */
-export function getEventTypeLabel(eventType: string, industryId: string): string {
+export function getEventTypeLabel(
+  eventType: string,
+  industryId: string
+): string {
   const config = getIndustryConfiguration(industryId);
   const terminology = config.terminology;
-  
+
   // Try to find specific terminology first
   if (terminology[eventType]) {
     return terminology[eventType];
   }
-  
+
   // Fall back to generic labels
   const genericLabels = {
     service_call: 'Service Call',
@@ -340,15 +348,20 @@ export function getEventTypeLabel(eventType: string, industryId: string): string
     showing: 'Showing',
     follow_up: 'Follow-up',
   };
-  
-  return (genericLabels as any)[eventType] || 
-         eventType.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+  return (
+    (genericLabels as any)[eventType] ||
+    eventType.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase())
+  );
 }
 
 /**
  * Check if industry requires specific compliance
  */
-export function industryRequiresCompliance(industryId: string, requirement: string): boolean {
+export function industryRequiresCompliance(
+  industryId: string,
+  requirement: string
+): boolean {
   const config = getIndustryConfiguration(industryId);
   return config.complianceRequirements?.includes(requirement) || false;
 }
@@ -362,7 +375,7 @@ export function parseBusinessHours(businessHours: string): {
   days: string;
 } {
   const match = businessHours.match(/(\d{2}:\d{2})-(\d{2}:\d{2})\s+(.+)/);
-  
+
   if (match) {
     return {
       startTime: match[1],
@@ -370,7 +383,7 @@ export function parseBusinessHours(businessHours: string): {
       days: match[3],
     };
   }
-  
+
   return {
     startTime: '09:00',
     endTime: '17:00',

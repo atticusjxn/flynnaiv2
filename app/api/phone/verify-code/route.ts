@@ -5,29 +5,34 @@ import { twilioClient } from '@/lib/twilio/client';
 export async function POST(request: NextRequest) {
   try {
     const supabase = createClient();
-    
+
     // Get the authenticated user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     console.log('Auth result:', { user: user?.id, authError });
-    
+
     // For development/testing, use consistent test user
     let effectiveUser = user;
     if (!user || authError) {
       // Check if we're in development mode and should use test user
-      console.log('No authenticated user found, using test user for development');
-      effectiveUser = { 
-        id: '00000000-0000-0000-0000-000000000123', 
-        email: 'atticusjxn@gmail.com' 
+      console.log(
+        'No authenticated user found, using test user for development'
+      );
+      effectiveUser = {
+        id: '00000000-0000-0000-0000-000000000123',
+        email: 'atticusjxn@gmail.com',
       } as any;
     } else {
       console.log('Using authenticated user:', user.id);
       // In development, force use of test user for consistency
       if (process.env.NODE_ENV === 'development') {
         console.log('Development mode: forcing test user for consistency');
-        effectiveUser = { 
-          id: '00000000-0000-0000-0000-000000000123', 
-          email: 'atticusjxn@gmail.com' 
+        effectiveUser = {
+          id: '00000000-0000-0000-0000-000000000123',
+          email: 'atticusjxn@gmail.com',
         } as any;
       }
     }
@@ -41,7 +46,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-
     // Get the formatted phone number that was used for verification from user settings
     const { data: userData, error: userError } = await supabase
       .from('users')
@@ -49,7 +53,11 @@ export async function POST(request: NextRequest) {
       .eq('id', effectiveUser.id)
       .single();
 
-    console.log('User data retrieval:', { userData, userError, userId: effectiveUser.id });
+    console.log('User data retrieval:', {
+      userData,
+      userError,
+      userId: effectiveUser.id,
+    });
 
     const userSettings = userData?.settings as any;
     const formattedPhoneNumber = userSettings?.phone_number_pending;
@@ -67,16 +75,15 @@ export async function POST(request: NextRequest) {
       // Verify the code using Twilio Verify service with the formatted number
       const verificationCheck = await twilioClient.verify.v2
         .services(process.env.TWILIO_VERIFY_SERVICE_SID!)
-        .verificationChecks
-        .create({
+        .verificationChecks.create({
           to: formattedPhoneNumber,
-          code: code
+          code: code,
         });
 
       if (verificationCheck.status === 'approved') {
         // Now we need to provision a Twilio phone number for this user
         // This is where the magic happens - we automatically set up their number
-        
+
         // First, update the user's profile with verified phone number
         await supabase
           .from('users')
@@ -85,9 +92,9 @@ export async function POST(request: NextRequest) {
             settings: {
               phone_verified: true,
               phone_number_pending: null,
-              verification_timestamp: null
+              verification_timestamp: null,
             },
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
           })
           .eq('id', effectiveUser.id);
 
@@ -99,8 +106,9 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({
           success: true,
-          message: 'Phone number verified and AI call processing is now active!',
-          phoneNumber: formattedPhoneNumber
+          message:
+            'Phone number verified and AI call processing is now active!',
+          phoneNumber: formattedPhoneNumber,
         });
       } else {
         return NextResponse.json(
@@ -108,23 +116,21 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
-
     } catch (twilioError: any) {
       console.error('Twilio verification error:', twilioError);
-      
+
       if (twilioError.status === 404) {
         return NextResponse.json(
           { error: 'Verification code expired or invalid' },
           { status: 400 }
         );
       }
-      
+
       return NextResponse.json(
         { error: 'Invalid verification code' },
         { status: 400 }
       );
     }
-
   } catch (error) {
     console.error('Verify code error:', error);
     return NextResponse.json(

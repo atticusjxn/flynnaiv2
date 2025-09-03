@@ -10,13 +10,13 @@ export async function GET(request: NextRequest) {
   try {
     // Get user from session
     const supabase = createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Get usage analytics
@@ -28,7 +28,6 @@ export async function GET(request: NextRequest) {
       analytics,
       currentLimits: callLimits,
     });
-
   } catch (error) {
     console.error('Usage analytics error:', error);
     return NextResponse.json(
@@ -43,13 +42,13 @@ export async function POST(request: NextRequest) {
   try {
     // Get user from session
     const supabase = createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Check call limits
@@ -59,7 +58,6 @@ export async function POST(request: NextRequest) {
       success: true,
       ...canMakeCall,
     });
-
   } catch (error) {
     console.error('Call limit check error:', error);
     return NextResponse.json(

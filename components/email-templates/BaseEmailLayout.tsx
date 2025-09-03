@@ -46,7 +46,12 @@ export default function BaseEmailLayout({
       <Body style={main}>
         <Container style={container}>
           {/* Header */}
-          <Section style={{...header, background: `linear-gradient(135deg, ${primaryColor} 0%, ${adjustColor(primaryColor, 20)} 100%)`}}>
+          <Section
+            style={{
+              ...header,
+              background: `linear-gradient(135deg, ${primaryColor} 0%, ${adjustColor(primaryColor, 20)} 100%)`,
+            }}
+          >
             <div style={logoContainer}>
               <Img
                 src="https://flynn.ai/logo-white.png"
@@ -63,9 +68,7 @@ export default function BaseEmailLayout({
           </Section>
 
           {/* Main Content */}
-          <Section style={content}>
-            {children}
-          </Section>
+          <Section style={content}>{children}</Section>
 
           {/* Footer */}
           <Section style={footer}>
@@ -96,20 +99,29 @@ export default function BaseEmailLayout({
 
 // Utility function to adjust color brightness
 function adjustColor(color: string, percent: number): string {
-  const num = parseInt(color.replace("#", ""), 16);
+  const num = parseInt(color.replace('#', ''), 16);
   const amt = Math.round(2.55 * percent);
   const R = (num >> 16) + amt;
-  const G = (num >> 8 & 0x00FF) + amt;
-  const B = (num & 0x0000FF) + amt;
-  return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
-    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
-    (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+  const G = ((num >> 8) & 0x00ff) + amt;
+  const B = (num & 0x0000ff) + amt;
+  return (
+    '#' +
+    (
+      0x1000000 +
+      (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+      (G < 255 ? (G < 1 ? 0 : G) : 255) * 0x100 +
+      (B < 255 ? (B < 1 ? 0 : B) : 255)
+    )
+      .toString(16)
+      .slice(1)
+  );
 }
 
 // Styles
 const main = {
   backgroundColor: '#f8fafc',
-  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  fontFamily:
+    'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   padding: '20px 0',
 };
 
@@ -119,7 +131,8 @@ const container = {
   maxWidth: '600px',
   borderRadius: '8px',
   overflow: 'hidden',
-  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+  boxShadow:
+    '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
 };
 
 const header = {

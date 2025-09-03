@@ -1,5 +1,5 @@
-import type { Config } from 'tailwindcss'
-import { nextui } from '@nextui-org/react'
+import type { Config } from 'tailwindcss';
+import { nextui } from '@nextui-org/react';
 
 const config: Config = {
   darkMode: ['class'],
@@ -16,31 +16,31 @@ const config: Config = {
         foreground: 'var(--color-foreground)',
         card: {
           DEFAULT: 'var(--color-card)',
-          foreground: 'var(--color-card-foreground)'
+          foreground: 'var(--color-card-foreground)',
         },
         popover: {
           DEFAULT: 'var(--color-popover)',
-          foreground: 'var(--color-popover-foreground)'
+          foreground: 'var(--color-popover-foreground)',
         },
         primary: {
           DEFAULT: 'var(--color-primary)',
-          foreground: 'var(--color-primary-foreground)'
+          foreground: 'var(--color-primary-foreground)',
         },
         secondary: {
           DEFAULT: 'var(--color-secondary)',
-          foreground: 'var(--color-secondary-foreground)'
+          foreground: 'var(--color-secondary-foreground)',
         },
         muted: {
           DEFAULT: 'var(--color-muted)',
-          foreground: 'var(--color-muted-foreground)'
+          foreground: 'var(--color-muted-foreground)',
         },
         accent: {
           DEFAULT: 'var(--color-accent)',
-          foreground: 'var(--color-accent-foreground)'
+          foreground: 'var(--color-accent-foreground)',
         },
         destructive: {
           DEFAULT: 'var(--color-destructive)',
-          foreground: 'var(--color-destructive-foreground)'
+          foreground: 'var(--color-destructive-foreground)',
         },
         border: 'var(--color-border)',
         input: 'var(--color-input)',
@@ -61,7 +61,7 @@ const config: Config = {
           'accent-foreground': 'var(--color-sidebar-accent-foreground)',
           border: 'var(--color-sidebar-border)',
           ring: 'var(--color-sidebar-ring)',
-        }
+        },
       },
       borderRadius: {
         sm: 'var(--radius-sm)',
@@ -306,5 +306,5 @@ const config: Config = {
       },
     }),
   ],
-}
-export default config
+};
+export default config;

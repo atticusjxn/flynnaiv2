@@ -32,7 +32,7 @@ import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
 } from '@nextui-org/react';
 import {
   Search,
@@ -52,12 +52,16 @@ import {
   CheckCircle2,
   Clock,
   XCircle,
-  AlertTriangle
+  AlertTriangle,
 } from 'lucide-react';
-import { useCommunications, useRetryCommunication } from '@/hooks/useCommunications';
+import {
+  useCommunications,
+  useRetryCommunication,
+} from '@/hooks/useCommunications';
 import { Database } from '@/types/database.types';
 
-type CommunicationLog = Database['public']['Tables']['communication_logs']['Row'];
+type CommunicationLog =
+  Database['public']['Tables']['communication_logs']['Row'];
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -65,9 +69,9 @@ const containerVariants = {
     opacity: 1,
     transition: {
       duration: 0.3,
-      staggerChildren: 0.05
-    }
-  }
+      staggerChildren: 0.05,
+    },
+  },
 };
 
 const itemVariants = {
@@ -75,8 +79,8 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.3, ease: [0.23, 1, 0.32, 1] }
-  }
+    transition: { duration: 0.3, ease: [0.23, 1, 0.32, 1] as any },
+  },
 };
 
 export default function CommunicationHistory() {
@@ -85,23 +89,28 @@ export default function CommunicationHistory() {
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedDateRange, setSelectedDateRange] = useState<string>('all');
-  const [selectedCommunication, setSelectedCommunication] = useState<CommunicationLog | null>(null);
+  const [selectedCommunication, setSelectedCommunication] =
+    useState<CommunicationLog | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   // Modal states
-  const { isOpen: isViewModalOpen, onOpen: onViewModalOpen, onClose: onViewModalClose } = useDisclosure();
-  
+  const {
+    isOpen: isViewModalOpen,
+    onOpen: onViewModalOpen,
+    onClose: onViewModalClose,
+  } = useDisclosure();
+
   // Build filters for the hook
   const filters = useMemo(() => {
     const baseFilters: any = {
       page: currentPage,
-      limit: 20
+      limit: 20,
     };
 
     if (selectedType !== 'all') {
       baseFilters.type = selectedType;
     }
-    
+
     if (selectedStatus !== 'all') {
       baseFilters.status = selectedStatus;
     }
@@ -114,7 +123,7 @@ export default function CommunicationHistory() {
     if (selectedDateRange !== 'all') {
       const now = new Date();
       let dateFrom: Date;
-      
+
       switch (selectedDateRange) {
         case '24h':
           dateFrom = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -128,32 +137,45 @@ export default function CommunicationHistory() {
         default:
           dateFrom = new Date(0);
       }
-      
+
       baseFilters.dateFrom = dateFrom.toISOString();
       baseFilters.dateTo = now.toISOString();
     }
 
     return baseFilters;
-  }, [currentPage, selectedType, selectedStatus, searchQuery, selectedDateRange]);
+  }, [
+    currentPage,
+    selectedType,
+    selectedStatus,
+    searchQuery,
+    selectedDateRange,
+  ]);
 
   // Data fetching
-  const { communications, loading, error, pagination, refetch } = useCommunications(filters);
+  const { communications, loading, error, pagination, refetch } =
+    useCommunications(filters);
   const { retryCommunication, loading: retryLoading } = useRetryCommunication();
 
   // Event handlers
-  const handleViewCommunication = useCallback((communication: CommunicationLog) => {
-    setSelectedCommunication(communication);
-    onViewModalOpen();
-  }, [onViewModalOpen]);
+  const handleViewCommunication = useCallback(
+    (communication: CommunicationLog) => {
+      setSelectedCommunication(communication);
+      onViewModalOpen();
+    },
+    [onViewModalOpen]
+  );
 
-  const handleRetryCommunication = useCallback(async (communicationId: string) => {
-    try {
-      await retryCommunication(communicationId);
-      refetch();
-    } catch (error) {
-      console.error('Failed to retry communication:', error);
-    }
-  }, [retryCommunication, refetch]);
+  const handleRetryCommunication = useCallback(
+    async (communicationId: string) => {
+      try {
+        await retryCommunication(communicationId);
+        refetch();
+      } catch (error) {
+        console.error('Failed to retry communication:', error);
+      }
+    },
+    [retryCommunication, refetch]
+  );
 
   const handleExportData = useCallback(() => {
     // TODO: Implement CSV export functionality
@@ -196,7 +218,9 @@ export default function CommunicationHistory() {
     }
   };
 
-  const getStatusColor = (status: string): "success" | "warning" | "danger" | "default" => {
+  const getStatusColor = (
+    status: string
+  ): 'success' | 'warning' | 'danger' | 'default' => {
     switch (status) {
       case 'delivered':
       case 'sent':
@@ -216,9 +240,15 @@ export default function CommunicationHistory() {
       <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-700">
         <CardBody className="text-center py-12">
           <XCircle className="h-12 w-12 text-danger-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Failed to load communication history</h3>
+          <h3 className="text-lg font-semibold mb-2">
+            Failed to load communication history
+          </h3>
           <p className="text-slate-600 dark:text-slate-400 mb-4">{error}</p>
-          <Button color="primary" onPress={refetch} startContent={<RefreshCw />}>
+          <Button
+            color="primary"
+            onPress={refetch}
+            startContent={<RefreshCw />}
+          >
             Try Again
           </Button>
         </CardBody>
@@ -258,7 +288,9 @@ export default function CommunicationHistory() {
               <Select
                 placeholder="Type"
                 selectedKeys={selectedType ? [selectedType] : []}
-                onSelectionChange={(keys) => setSelectedType(Array.from(keys)[0] as string || 'all')}
+                onSelectionChange={(keys) =>
+                  setSelectedType((Array.from(keys)[0] as string) || 'all')
+                }
                 variant="bordered"
                 className="max-w-xs"
               >
@@ -271,7 +303,9 @@ export default function CommunicationHistory() {
               <Select
                 placeholder="Status"
                 selectedKeys={selectedStatus ? [selectedStatus] : []}
-                onSelectionChange={(keys) => setSelectedStatus(Array.from(keys)[0] as string || 'all')}
+                onSelectionChange={(keys) =>
+                  setSelectedStatus((Array.from(keys)[0] as string) || 'all')
+                }
                 variant="bordered"
                 className="max-w-xs"
               >
@@ -286,7 +320,9 @@ export default function CommunicationHistory() {
               <Select
                 placeholder="Date Range"
                 selectedKeys={selectedDateRange ? [selectedDateRange] : []}
-                onSelectionChange={(keys) => setSelectedDateRange(Array.from(keys)[0] as string || 'all')}
+                onSelectionChange={(keys) =>
+                  setSelectedDateRange((Array.from(keys)[0] as string) || 'all')
+                }
                 variant="bordered"
                 className="max-w-xs"
               >
@@ -327,9 +363,9 @@ export default function CommunicationHistory() {
               aria-label="Communication history table"
               removeWrapper
               classNames={{
-                th: "bg-slate-50 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 font-semibold",
-                td: "border-b border-slate-200 dark:border-slate-700",
-                tbody: "divide-y divide-slate-200 dark:divide-slate-700"
+                th: 'bg-slate-50 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 font-semibold',
+                td: 'border-b border-slate-200 dark:border-slate-700',
+                tbody: 'divide-y divide-slate-200 dark:divide-slate-700',
               }}
             >
               <TableHeader>
@@ -349,7 +385,9 @@ export default function CommunicationHistory() {
                   ) : (
                     <div className="text-center py-12">
                       <MessageSquare className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                      <p className="text-slate-500 dark:text-slate-400">No communications found</p>
+                      <p className="text-slate-500 dark:text-slate-400">
+                        No communications found
+                      </p>
                       <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">
                         Try adjusting your filters or search criteria
                       </p>
@@ -358,7 +396,10 @@ export default function CommunicationHistory() {
                 }
               >
                 {communications.map((communication) => (
-                  <TableRow key={communication.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                  <TableRow
+                    key={communication.id}
+                    className="hover:bg-slate-50 dark:hover:bg-slate-700/30"
+                  >
                     <TableCell>
                       <div className="flex items-center gap-3">
                         {getCommunicationIcon(communication.communication_type)}
@@ -370,7 +411,9 @@ export default function CommunicationHistory() {
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <User className="h-4 w-4 text-slate-400" />
-                        <span className="font-mono text-sm">{communication.recipient}</span>
+                        <span className="font-mono text-sm">
+                          {communication.recipient}
+                        </span>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -386,7 +429,9 @@ export default function CommunicationHistory() {
                         <Chip
                           size="sm"
                           variant="flat"
-                          color={getStatusColor(communication.status || 'unknown')}
+                          color={getStatusColor(
+                            communication.status || 'unknown'
+                          )}
                           className="capitalize"
                         >
                           {communication.status}
@@ -398,8 +443,7 @@ export default function CommunicationHistory() {
                         <Calendar className="h-4 w-4" />
                         {communication.sent_at
                           ? new Date(communication.sent_at).toLocaleString()
-                          : new Date(communication.created_at).toLocaleString()
-                        }
+                          : new Date(communication.created_at).toLocaleString()}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -425,9 +469,10 @@ export default function CommunicationHistory() {
                   color="primary"
                   showControls
                   classNames={{
-                    wrapper: "gap-0 overflow-visible h-8",
-                    item: "w-8 h-8 text-small rounded-none bg-transparent",
-                    cursor: "bg-gradient-to-br from-blue-500 to-purple-500 shadow-lg font-bold text-white"
+                    wrapper: 'gap-0 overflow-visible h-8',
+                    item: 'w-8 h-8 text-small rounded-none bg-transparent',
+                    cursor:
+                      'bg-gradient-to-br from-blue-500 to-purple-500 shadow-lg font-bold text-white',
                   }}
                 />
               </div>
@@ -455,7 +500,7 @@ function CommunicationActions({
   communication,
   onView,
   onRetry,
-  retryLoading
+  retryLoading,
 }: {
   communication: CommunicationLog;
   onView: (communication: CommunicationLog) => void;
@@ -474,10 +519,7 @@ function CommunicationActions({
           <MoreVertical className="h-4 w-4" />
         </Button>
       </DropdownTrigger>
-      <DropdownMenu
-        aria-label="Communication actions"
-        className="w-200"
-      >
+      <DropdownMenu aria-label="Communication actions" className="w-200">
         <DropdownItem
           key="view"
           startContent={<Eye className="h-4 w-4" />}
@@ -485,7 +527,7 @@ function CommunicationActions({
         >
           View Details
         </DropdownItem>
-        
+
         {communication.status === 'failed' && (
           <DropdownItem
             key="retry"
@@ -502,14 +544,17 @@ function CommunicationActions({
             Retry Communication
           </DropdownItem>
         )}
-        
+
         {communication.external_id && (
           <DropdownItem
             key="external"
             startContent={<ExternalLink className="h-4 w-4" />}
             onPress={() => {
               // TODO: Open external service dashboard
-              console.log('Opening external service:', communication.external_id);
+              console.log(
+                'Opening external service:',
+                communication.external_id
+              );
             }}
           >
             View in Service
@@ -524,7 +569,7 @@ function CommunicationActions({
 function CommunicationViewModal({
   communication,
   isOpen,
-  onClose
+  onClose,
 }: {
   communication: CommunicationLog;
   isOpen: boolean;
@@ -537,8 +582,9 @@ function CommunicationViewModal({
       size="2xl"
       scrollBehavior="inside"
       classNames={{
-        base: "bg-white dark:bg-slate-800",
-        backdrop: "bg-gradient-to-t from-zinc-900/60 to-zinc-900/20 backdrop-blur-sm"
+        base: 'bg-white dark:bg-slate-800',
+        backdrop:
+          'bg-gradient-to-t from-zinc-900/60 to-zinc-900/20 backdrop-blur-sm',
       }}
     >
       <ModalContent>
@@ -575,11 +621,12 @@ function CommunicationViewModal({
                   <Chip
                     variant="flat"
                     color={
-                      communication.status === 'delivered' || communication.status === 'sent'
+                      communication.status === 'delivered' ||
+                      communication.status === 'sent'
                         ? 'success'
                         : communication.status === 'pending'
-                        ? 'warning'
-                        : 'danger'
+                          ? 'warning'
+                          : 'danger'
                     }
                     className="capitalize"
                   >
@@ -594,8 +641,7 @@ function CommunicationViewModal({
                 <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                   {communication.sent_at
                     ? new Date(communication.sent_at).toLocaleString()
-                    : 'Not sent yet'
-                  }
+                    : 'Not sent yet'}
                 </p>
               </div>
             </div>

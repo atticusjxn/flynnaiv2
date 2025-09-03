@@ -4,30 +4,36 @@ import { retry } from '../utils/retry';
 
 export interface ExtractedEvent {
   id: string;
-  type: 'appointment' | 'service_call' | 'meeting' | 'consultation' | 'quote' | 'follow_up';
+  type:
+    | 'appointment'
+    | 'service_call'
+    | 'meeting'
+    | 'consultation'
+    | 'quote'
+    | 'follow_up';
   title: string;
   description: string;
-  
+
   // Time information
   proposed_date?: string; // ISO date string
   proposed_time?: string; // Time string
   duration_minutes?: number;
   urgency: 'low' | 'medium' | 'high' | 'emergency';
-  
+
   // Customer information
   customer_name?: string;
   customer_phone?: string;
   customer_email?: string;
-  
+
   // Location information
   service_address?: string;
   service_location?: string;
-  
+
   // Business details
   service_type?: string;
   estimated_price?: number;
   price_range?: string;
-  
+
   // AI metadata
   confidence_score: number;
   extraction_notes?: string;
@@ -58,7 +64,7 @@ export class EventExtractionService {
     callerInfo?: { from: string; to: string }
   ): Promise<ExtractionResult> {
     const startTime = Date.now();
-    
+
     try {
       console.log('Starting event extraction with GPT-4');
       console.log(`Transcription length: ${transcription.length} characters`);
@@ -69,16 +75,17 @@ export class EventExtractionService {
 
       // Call GPT-4 with retry logic
       const response = await retry(
-        () => openai.chat.completions.create({
-          model: OPENAI_CONFIG.extraction.model,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-          ],
-          temperature: OPENAI_CONFIG.extraction.temperature,
-          max_tokens: OPENAI_CONFIG.extraction.max_tokens,
-          response_format: OPENAI_CONFIG.extraction.response_format,
-        }),
+        () =>
+          openai.chat.completions.create({
+            model: OPENAI_CONFIG.extraction.model,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userPrompt },
+            ],
+            temperature: OPENAI_CONFIG.extraction.temperature,
+            max_tokens: OPENAI_CONFIG.extraction.max_tokens,
+            response_format: OPENAI_CONFIG.extraction.response_format,
+          }),
         {
           maxRetries: OPENAI_CONFIG.rateLimit.maxRetries,
           delay: OPENAI_CONFIG.rateLimit.retryDelay,
@@ -87,7 +94,7 @@ export class EventExtractionService {
       );
 
       const processingTime = Date.now() - startTime;
-      
+
       const content = response.choices[0]?.message?.content;
       if (!content) {
         throw new Error('No response content from GPT-4');
@@ -95,15 +102,19 @@ export class EventExtractionService {
 
       // Parse the JSON response
       const extractedData = JSON.parse(content);
-      
+
       // Validate and process the extracted data
-      const result = this.processExtractionResult(extractedData, processingTime);
-      
+      const result = this.processExtractionResult(
+        extractedData,
+        processingTime
+      );
+
       console.log(`Event extraction completed in ${processingTime}ms`);
-      console.log(`Extracted ${result.events.length} events with confidence ${result.total_confidence}`);
+      console.log(
+        `Extracted ${result.events.length} events with confidence ${result.total_confidence}`
+      );
 
       return result;
-
     } catch (error) {
       console.error('Event extraction error:', error);
       throw this.handleExtractionError(error);
@@ -161,8 +172,11 @@ JSON SCHEMA:
 
     // Add industry-specific context
     const industryContext = this.getIndustryContext(industry);
-    
-    return basePrompt + (industryContext ? `\n\nINDUSTRY CONTEXT:\n${industryContext}` : '');
+
+    return (
+      basePrompt +
+      (industryContext ? `\n\nINDUSTRY CONTEXT:\n${industryContext}` : '')
+    );
   }
 
   /**
@@ -204,7 +218,7 @@ JSON SCHEMA:
 - Focus on strategic meetings and project discussions
 - Common events: consultations, strategy sessions, workshops, check-ins
 - Project scope and timeline discussions
-- Retainer and project fee discussions common`
+- Retainer and project fee discussions common`,
     };
 
     return industry ? contexts[industry as keyof typeof contexts] : null;
@@ -213,7 +227,10 @@ JSON SCHEMA:
   /**
    * Build user prompt with transcription and context
    */
-  private buildUserPrompt(transcription: string, callerInfo?: { from: string; to: string }): string {
+  private buildUserPrompt(
+    transcription: string,
+    callerInfo?: { from: string; to: string }
+  ): string {
     let prompt = `TRANSCRIPTION TO ANALYZE:
 ${transcription}`;
 
@@ -231,38 +248,48 @@ ${transcription}`;
   /**
    * Process and validate extraction result
    */
-  private processExtractionResult(data: any, processingTime: number): ExtractionResult {
+  private processExtractionResult(
+    data: any,
+    processingTime: number
+  ): ExtractionResult {
     // Validate required fields
     if (!data.events || !Array.isArray(data.events)) {
       throw new Error('Invalid extraction result: missing events array');
     }
 
     // Process each event
-    const events: ExtractedEvent[] = data.events.map((event: any, index: number) => ({
-      id: event.id || `event_${index + 1}_${Date.now()}`,
-      type: event.type || 'appointment',
-      title: event.title || 'Extracted Event',
-      description: event.description || '',
-      proposed_date: event.proposed_date || null,
-      proposed_time: event.proposed_time || null,
-      duration_minutes: event.duration_minutes || null,
-      urgency: event.urgency || 'medium',
-      customer_name: event.customer_name || null,
-      customer_phone: event.customer_phone || null,
-      customer_email: event.customer_email || null,
-      service_address: event.service_address || null,
-      service_location: event.service_location || null,
-      service_type: event.service_type || null,
-      estimated_price: event.estimated_price || null,
-      price_range: event.price_range || null,
-      confidence_score: Math.max(0, Math.min(1, event.confidence_score || 0.7)),
-      extraction_notes: event.extraction_notes || null,
-    }));
+    const events: ExtractedEvent[] = data.events.map(
+      (event: any, index: number) => ({
+        id: event.id || `event_${index + 1}_${Date.now()}`,
+        type: event.type || 'appointment',
+        title: event.title || 'Extracted Event',
+        description: event.description || '',
+        proposed_date: event.proposed_date || null,
+        proposed_time: event.proposed_time || null,
+        duration_minutes: event.duration_minutes || null,
+        urgency: event.urgency || 'medium',
+        customer_name: event.customer_name || null,
+        customer_phone: event.customer_phone || null,
+        customer_email: event.customer_email || null,
+        service_address: event.service_address || null,
+        service_location: event.service_location || null,
+        service_type: event.service_type || null,
+        estimated_price: event.estimated_price || null,
+        price_range: event.price_range || null,
+        confidence_score: Math.max(
+          0,
+          Math.min(1, event.confidence_score || 0.7)
+        ),
+        extraction_notes: event.extraction_notes || null,
+      })
+    );
 
     // Calculate total confidence
-    const totalConfidence = events.length > 0 
-      ? events.reduce((sum, event) => sum + event.confidence_score, 0) / events.length
-      : 0;
+    const totalConfidence =
+      events.length > 0
+        ? events.reduce((sum, event) => sum + event.confidence_score, 0) /
+          events.length
+        : 0;
 
     return {
       events,
@@ -304,7 +331,8 @@ ${transcription}`;
 
     return {
       error: 'Event extraction failed',
-      details: error.message || 'Unknown error occurred during event extraction.',
+      details:
+        error.message || 'Unknown error occurred during event extraction.',
       retryable: false,
     };
   }
@@ -319,5 +347,9 @@ export async function extractEventsFromTranscription(
   industry?: string,
   callerInfo?: { from: string; to: string }
 ): Promise<ExtractionResult> {
-  return eventExtractionService.extractEvents(transcription, industry, callerInfo);
+  return eventExtractionService.extractEvents(
+    transcription,
+    industry,
+    callerInfo
+  );
 }

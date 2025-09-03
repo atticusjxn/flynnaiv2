@@ -10,7 +10,10 @@ import { UserSettings } from '@/types/settings.types';
 
 interface AccountSettingsProps {
   settings: UserSettings;
-  onUpdate: (section: 'profile', updates: Partial<UserSettings['profile']>) => void;
+  onUpdate: (
+    section: 'profile',
+    updates: Partial<UserSettings['profile']>
+  ) => void;
   hasChanges: boolean;
   onSave: () => void;
   isSaving: boolean;
@@ -35,51 +38,59 @@ const languages = [
   { value: 'french', label: 'French (Coming Soon)' },
 ];
 
-export default function AccountSettings({ 
-  settings, 
-  onUpdate, 
-  hasChanges, 
-  onSave, 
-  isSaving 
+export default function AccountSettings({
+  settings,
+  onUpdate,
+  hasChanges,
+  onSave,
+  isSaving,
 }: AccountSettingsProps) {
   const { user, profile } = useAuthContext();
   const [localSettings, setLocalSettings] = useState(settings.profile);
 
   const handleChange = (field: keyof UserSettings['profile'], value: any) => {
     const updates = { [field]: value };
-    setLocalSettings(prev => ({ ...prev, ...updates }));
+    setLocalSettings((prev) => ({ ...prev, ...updates }));
     onUpdate('profile', updates);
   };
 
   const toggleBusinessDay = (day: string, enabled: boolean) => {
     if (!localSettings.businessHours) return;
-    
+
     const updates = {
       businessHours: {
         ...localSettings.businessHours,
         [day]: {
-          ...localSettings.businessHours[day as keyof typeof localSettings.businessHours],
-          enabled
-        }
-      }
+          ...localSettings.businessHours[
+            day as keyof typeof localSettings.businessHours
+          ],
+          enabled,
+        },
+      },
     };
-    setLocalSettings(prev => ({ ...prev, ...updates }));
+    setLocalSettings((prev) => ({ ...prev, ...updates }));
     onUpdate('profile', updates);
   };
 
-  const updateBusinessHours = (day: string, field: 'startTime' | 'endTime', value: string) => {
+  const updateBusinessHours = (
+    day: string,
+    field: 'startTime' | 'endTime',
+    value: string
+  ) => {
     if (!localSettings.businessHours) return;
-    
+
     const updates = {
       businessHours: {
         ...localSettings.businessHours,
         [day]: {
-          ...localSettings.businessHours[day as keyof typeof localSettings.businessHours],
-          [field]: value
-        }
-      }
+          ...localSettings.businessHours[
+            day as keyof typeof localSettings.businessHours
+          ],
+          [field]: value,
+        },
+      },
     };
-    setLocalSettings(prev => ({ ...prev, ...updates }));
+    setLocalSettings((prev) => ({ ...prev, ...updates }));
     onUpdate('profile', updates);
   };
 
@@ -103,7 +114,9 @@ export default function AccountSettings({
       {/* Profile Information */}
       <div className="space-y-6">
         <div>
-          <h3 className="text-xl font-semibold text-foreground mb-2">Profile Information</h3>
+          <h3 className="text-xl font-semibold text-foreground mb-2">
+            Profile Information
+          </h3>
           <p className="text-muted-foreground text-sm">
             Update your personal and business information
           </p>
@@ -185,7 +198,9 @@ export default function AccountSettings({
       {/* Business Hours */}
       <div className="space-y-6">
         <div>
-          <h3 className="text-xl font-semibold text-foreground mb-2">Business Hours</h3>
+          <h3 className="text-xl font-semibold text-foreground mb-2">
+            Business Hours
+          </h3>
           <p className="text-muted-foreground text-sm">
             Configure your availability for appointment scheduling
           </p>
@@ -194,7 +209,9 @@ export default function AccountSettings({
         {/* Global Business Hours Toggle */}
         <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
           <div>
-            <h4 className="font-medium text-foreground">Enable Business Hours</h4>
+            <h4 className="font-medium text-foreground">
+              Enable Business Hours
+            </h4>
             <p className="text-sm text-muted-foreground">
               Use these hours for scheduling and availability
             </p>
@@ -204,10 +221,12 @@ export default function AccountSettings({
               type="checkbox"
               className="sr-only peer"
               checked={localSettings.businessHours?.enabled || false}
-              onChange={(e) => handleChange('businessHours', {
-                ...localSettings.businessHours,
-                enabled: e.target.checked
-              })}
+              onChange={(e) =>
+                handleChange('businessHours', {
+                  ...localSettings.businessHours,
+                  enabled: e.target.checked,
+                })
+              }
             />
             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
           </label>
@@ -217,21 +236,31 @@ export default function AccountSettings({
         {localSettings.businessHours?.enabled && (
           <div className="space-y-4">
             {businessDays.map((day) => {
-              const daySettings = localSettings.businessHours?.[day.key as keyof typeof localSettings.businessHours];
-              
+              const daySettings =
+                localSettings.businessHours?.[
+                  day.key as keyof typeof localSettings.businessHours
+                ];
+
               return (
-                <div key={day.key} className="flex items-center justify-between p-4 border border-border rounded-lg">
+                <div
+                  key={day.key}
+                  className="flex items-center justify-between p-4 border border-border rounded-lg"
+                >
                   <div className="flex items-center space-x-4">
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input
                         type="checkbox"
                         className="sr-only peer"
                         checked={daySettings?.enabled || false}
-                        onChange={(e) => toggleBusinessDay(day.key, e.target.checked)}
+                        onChange={(e) =>
+                          toggleBusinessDay(day.key, e.target.checked)
+                        }
                       />
                       <div className="w-8 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
                     </label>
-                    <span className="font-medium text-foreground min-w-[80px]">{day.label}</span>
+                    <span className="font-medium text-foreground min-w-[80px]">
+                      {day.label}
+                    </span>
                   </div>
 
                   {daySettings?.enabled && (
@@ -239,14 +268,26 @@ export default function AccountSettings({
                       <input
                         type="time"
                         value={daySettings.startTime}
-                        onChange={(e) => updateBusinessHours(day.key, 'startTime', e.target.value)}
+                        onChange={(e) =>
+                          updateBusinessHours(
+                            day.key,
+                            'startTime',
+                            e.target.value
+                          )
+                        }
                         className="px-3 py-1.5 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm"
                       />
                       <span className="text-muted-foreground">to</span>
                       <input
                         type="time"
                         value={daySettings.endTime}
-                        onChange={(e) => updateBusinessHours(day.key, 'endTime', e.target.value)}
+                        onChange={(e) =>
+                          updateBusinessHours(
+                            day.key,
+                            'endTime',
+                            e.target.value
+                          )
+                        }
                         className="px-3 py-1.5 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-sm"
                       />
                     </div>
@@ -261,7 +302,9 @@ export default function AccountSettings({
       {/* Account Information */}
       <div className="space-y-6">
         <div>
-          <h3 className="text-xl font-semibold text-foreground mb-2">Account Information</h3>
+          <h3 className="text-xl font-semibold text-foreground mb-2">
+            Account Information
+          </h3>
           <p className="text-muted-foreground text-sm">
             Your account details and subscription status
           </p>
@@ -270,24 +313,34 @@ export default function AccountSettings({
         <div className="bg-muted/30 rounded-lg p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">Email Address</Label>
+              <Label className="text-sm font-medium text-muted-foreground">
+                Email Address
+              </Label>
               <p className="text-foreground font-medium">{user?.email}</p>
             </div>
 
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">Phone Number</Label>
-              <p className="text-foreground font-medium">{profile?.phone_number || 'Not configured'}</p>
+              <Label className="text-sm font-medium text-muted-foreground">
+                Phone Number
+              </Label>
+              <p className="text-foreground font-medium">
+                {profile?.phone_number || 'Not configured'}
+              </p>
             </div>
 
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">Industry</Label>
+              <Label className="text-sm font-medium text-muted-foreground">
+                Industry
+              </Label>
               <p className="text-foreground font-medium capitalize">
                 {profile?.industry_type?.replace('_', ' ') || 'Not configured'}
               </p>
             </div>
 
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">Subscription</Label>
+              <Label className="text-sm font-medium text-muted-foreground">
+                Subscription
+              </Label>
               <p className="text-foreground font-medium capitalize">
                 {profile?.subscription_tier || 'Basic'} Plan
               </p>
@@ -295,9 +348,13 @@ export default function AccountSettings({
           </div>
 
           <div className="pt-4 border-t border-border">
-            <Label className="text-sm font-medium text-muted-foreground">Member Since</Label>
+            <Label className="text-sm font-medium text-muted-foreground">
+              Member Since
+            </Label>
             <p className="text-foreground font-medium">
-              {profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Unknown'}
+              {profile?.created_at
+                ? new Date(profile.created_at).toLocaleDateString()
+                : 'Unknown'}
             </p>
           </div>
         </div>

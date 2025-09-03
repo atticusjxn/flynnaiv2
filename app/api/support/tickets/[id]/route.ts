@@ -4,7 +4,9 @@ import { z } from 'zod';
 import type { Database } from '@/types/database.types';
 
 const UpdateTicketSchema = z.object({
-  status: z.enum(['open', 'in_progress', 'waiting_for_user', 'resolved', 'closed']).optional(),
+  status: z
+    .enum(['open', 'in_progress', 'waiting_for_user', 'resolved', 'closed'])
+    .optional(),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).optional(),
 });
 
@@ -14,10 +16,13 @@ export async function GET(
 ) {
   try {
     const supabase = createClient();
-    
+
     // Get current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -34,14 +39,11 @@ export async function GET(
         .from('support_messages')
         .select('*')
         .eq('ticket_id', params.id)
-        .order('created_at', { ascending: true })
+        .order('created_at', { ascending: true }),
     ]);
 
     if (ticketResult.error || !ticketResult.data) {
-      return NextResponse.json(
-        { error: 'Ticket not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Ticket not found' }, { status: 404 });
     }
 
     if (messagesResult.error) {
@@ -54,7 +56,7 @@ export async function GET(
 
     return NextResponse.json({
       ticket: ticketResult.data,
-      messages: messagesResult.data || []
+      messages: messagesResult.data || [],
     });
   } catch (error) {
     console.error('Support ticket fetch error:', error);
@@ -71,10 +73,13 @@ export async function PATCH(
 ) {
   try {
     const supabase = createClient();
-    
+
     // Get current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -114,10 +119,7 @@ export async function PATCH(
     }
 
     if (!ticket) {
-      return NextResponse.json(
-        { error: 'Ticket not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Ticket not found' }, { status: 404 });
     }
 
     return NextResponse.json({ ticket });
@@ -128,7 +130,7 @@ export async function PATCH(
         { status: 400 }
       );
     }
-    
+
     console.error('Support ticket update error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

@@ -70,11 +70,7 @@ export class CallService {
     return data;
   }
 
-  async getUserCalls(
-    userId: string,
-    limit = 20,
-    offset = 0
-  ): Promise<Call[]> {
+  async getUserCalls(userId: string, limit = 20, offset = 0): Promise<Call[]> {
     const { data, error } = await this.supabase
       .from('calls')
       .select('*')
@@ -114,10 +110,7 @@ export class CallService {
       updates.processed_at = processedAt;
     }
 
-    await this.supabase
-      .from('calls')
-      .update(updates)
-      .eq('id', callId);
+    await this.supabase.from('calls').update(updates).eq('id', callId);
   }
 
   async markEmailSent(callId: string): Promise<void> {
@@ -129,14 +122,16 @@ export class CallService {
 }
 
 // Individual function exports for webhook compatibility
-export async function createCallRecord(callData: CallInsert): Promise<Call | null> {
+export async function createCallRecord(
+  callData: CallInsert
+): Promise<Call | null> {
   const callService = new CallService();
   return await callService.createCall(callData);
 }
 
 export async function updateCallWithRecording(
-  twilioSid: string, 
-  recordingData: { 
+  twilioSid: string,
+  recordingData: {
     recording_url: string;
     recording_sid?: string;
     duration?: number | null;
@@ -144,7 +139,7 @@ export async function updateCallWithRecording(
   }
 ): Promise<Call | null> {
   const callService = new CallService();
-  
+
   // First get the call by Twilio SID
   const call = await callService.getCallByTwilioSid(twilioSid);
   if (!call) {
@@ -158,13 +153,16 @@ export async function updateCallWithRecording(
     recording_sid: recordingData.recording_sid,
     call_duration: recordingData.duration,
     call_status: recordingData.status as any,
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   });
 }
 
-export async function updateCallStatus(twilioSid: string, status: string): Promise<void> {
+export async function updateCallStatus(
+  twilioSid: string,
+  status: string
+): Promise<void> {
   const callService = new CallService();
-  
+
   // First get the call by Twilio SID
   const call = await callService.getCallByTwilioSid(twilioSid);
   if (!call) {
@@ -175,12 +173,12 @@ export async function updateCallStatus(twilioSid: string, status: string): Promi
   // Update the call status
   await callService.updateCall(call.id, {
     call_status: status as any,
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   });
 }
 
 export async function updateCallWithKeypadActivation(
-  twilioSid: string, 
+  twilioSid: string,
   activationData: {
     ai_processing_activated: boolean;
     ai_activation_time: string;
@@ -188,7 +186,7 @@ export async function updateCallWithKeypadActivation(
   }
 ): Promise<void> {
   const callService = new CallService();
-  
+
   // Get the call by Twilio SID
   const call = await callService.getCallByTwilioSid(twilioSid);
   if (!call) {
@@ -200,16 +198,16 @@ export async function updateCallWithKeypadActivation(
   await callService.updateCall(call.id, {
     ai_processing_status: 'processing' as any,
     // Store activation data in metadata (assuming metadata field exists)
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   });
 }
 
 export async function updateCallProcessingStatus(
-  twilioSid: string, 
+  twilioSid: string,
   status: string
 ): Promise<void> {
   const callService = new CallService();
-  
+
   // Get the call by Twilio SID
   const call = await callService.getCallByTwilioSid(twilioSid);
   if (!call) {
@@ -220,6 +218,6 @@ export async function updateCallProcessingStatus(
   // Update call processing status
   await callService.updateCall(call.id, {
     ai_processing_status: status as any,
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   });
 }

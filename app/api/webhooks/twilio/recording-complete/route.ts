@@ -21,13 +21,15 @@ export async function POST(request: NextRequest) {
     // Get the call record and user information
     const { data: callData, error: callError } = await supabase
       .from('calls')
-      .select(`
+      .select(
+        `
         *,
         users:user_id (
           id, email, full_name, company_name, industry_type, 
           ai_processing_enabled, phone_number
         )
-      `)
+      `
+      )
       .eq('call_sid', callSid)
       .single();
 
@@ -38,8 +40,14 @@ export async function POST(request: NextRequest) {
 
     // Check if AI processing is enabled for this user
     if (!callData.ai_processing_enabled) {
-      console.log('AI processing disabled for user, skipping:', callData.user_id);
-      return NextResponse.json({ success: true, message: 'AI processing disabled' });
+      console.log(
+        'AI processing disabled for user, skipping:',
+        callData.user_id
+      );
+      return NextResponse.json({
+        success: true,
+        message: 'AI processing disabled',
+      });
     }
 
     // Update call record with recording information
@@ -48,26 +56,27 @@ export async function POST(request: NextRequest) {
       .update({
         recording_sid: recordingSid,
         recording_url: recordingUrl,
-        recording_duration: recordingDuration ? parseInt(recordingDuration) : null,
+        recording_duration: recordingDuration
+          ? parseInt(recordingDuration)
+          : null,
         processing_status: 'queued',
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq('call_sid', callSid);
 
     // Queue the AI processing job (run in background)
     processCallWithAI(callData, recordingUrl)
-      .then(result => {
+      .then((result) => {
         console.log('AI processing completed for call:', callSid, result);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('AI processing failed for call:', callSid, error);
       });
 
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Recording processed, AI analysis queued' 
+    return NextResponse.json({
+      success: true,
+      message: 'Recording processed, AI analysis queued',
     });
-
   } catch (error) {
     console.error('Recording completion webhook error:', error);
     return NextResponse.json({ error: 'Processing failed' }, { status: 500 });
@@ -76,14 +85,14 @@ export async function POST(request: NextRequest) {
 
 async function processCallWithAI(callData: any, recordingUrl: string) {
   const supabase = createClient();
-  
+
   try {
     // Update status to processing
     await supabase
       .from('calls')
-      .update({ 
+      .update({
         processing_status: 'processing',
-        processing_started_at: new Date().toISOString()
+        processing_started_at: new Date().toISOString(),
       })
       .eq('call_sid', callData.call_sid);
 
@@ -98,22 +107,26 @@ async function processCallWithAI(callData: any, recordingUrl: string) {
       // Recording too short or transcription failed
       await supabase
         .from('calls')
-        .update({ 
+        .update({
           processing_status: 'completed',
-          transcription: transcription || 'Transcription failed or call too short',
+          transcription:
+            transcription || 'Transcription failed or call too short',
           business_call: false,
           events_extracted: 0,
-          processing_completed_at: new Date().toISOString()
+          processing_completed_at: new Date().toISOString(),
         })
         .eq('call_sid', callData.call_sid);
-      
-      return { success: true, message: 'Call too short or transcription failed' };
+
+      return {
+        success: true,
+        message: 'Call too short or transcription failed',
+      };
     }
 
     // Step 2: Determine if this is a business call
     console.log('Checking if business call:', callData.call_sid);
     const isBusinessCall = await aiPipeline.detectBusinessCall(
-      transcription, 
+      transcription,
       callData.users.industry_type
     );
 
@@ -121,16 +134,19 @@ async function processCallWithAI(callData: any, recordingUrl: string) {
       // Personal call - store transcription but don't process further
       await supabase
         .from('calls')
-        .update({ 
+        .update({
           processing_status: 'completed',
           transcription: transcription,
           business_call: false,
           events_extracted: 0,
-          processing_completed_at: new Date().toISOString()
+          processing_completed_at: new Date().toISOString(),
         })
         .eq('call_sid', callData.call_sid);
-      
-      console.log('Personal call detected, skipping event extraction:', callData.call_sid);
+
+      console.log(
+        'Personal call detected, skipping event extraction:',
+        callData.call_sid
+      );
       return { success: true, message: 'Personal call - no events extracted' };
     }
 
@@ -144,26 +160,24 @@ async function processCallWithAI(callData: any, recordingUrl: string) {
 
     // Step 4: Store extracted events
     const eventPromises = extractedEvents.map(async (event: any) => {
-      return supabase
-        .from('events')
-        .insert({
-          user_id: callData.user_id,
-          call_id: callData.id,
-          event_type: event.type,
-          title: event.title,
-          description: event.description,
-          proposed_date_time: event.proposedDateTime,
-          location: event.location,
-          customer_name: event.customerName,
-          customer_phone: event.customerPhone || callData.caller_number,
-          customer_email: event.customerEmail,
-          estimated_duration: event.estimatedDuration,
-          estimated_price: event.estimatedPrice,
-          urgency: event.urgency,
-          confidence_score: event.confidenceScore,
-          status: 'pending',
-          created_at: new Date().toISOString()
-        });
+      return supabase.from('events').insert({
+        user_id: callData.user_id,
+        call_id: callData.id,
+        event_type: event.type,
+        title: event.title,
+        description: event.description,
+        proposed_date_time: event.proposedDateTime,
+        location: event.location,
+        customer_name: event.customerName,
+        customer_phone: event.customerPhone || callData.caller_number,
+        customer_email: event.customerEmail,
+        estimated_duration: event.estimatedDuration,
+        estimated_price: event.estimatedPrice,
+        urgency: event.urgency,
+        confidence_score: event.confidenceScore,
+        status: 'pending',
+        created_at: new Date().toISOString(),
+      });
     });
 
     await Promise.all(eventPromises);
@@ -171,39 +185,41 @@ async function processCallWithAI(callData: any, recordingUrl: string) {
     // Step 5: Update call with processing results
     await supabase
       .from('calls')
-      .update({ 
+      .update({
         processing_status: 'completed',
         transcription: transcription,
         business_call: true,
         events_extracted: extractedEvents.length,
-        processing_completed_at: new Date().toISOString()
+        processing_completed_at: new Date().toISOString(),
       })
       .eq('call_sid', callData.call_sid);
 
     // Step 6: Send SMS summary and email (in parallel)
     await Promise.all([
       sendSMSSummary(callData, extractedEvents),
-      sendEmailSummary(callData, extractedEvents, transcription)
+      sendEmailSummary(callData, extractedEvents, transcription),
     ]);
 
-    console.log(`AI processing completed successfully for call ${callData.call_sid}: ${extractedEvents.length} events extracted`);
-    
-    return { 
-      success: true, 
-      eventsExtracted: extractedEvents.length,
-      businessCall: true
-    };
+    console.log(
+      `AI processing completed successfully for call ${callData.call_sid}: ${extractedEvents.length} events extracted`
+    );
 
+    return {
+      success: true,
+      eventsExtracted: extractedEvents.length,
+      businessCall: true,
+    };
   } catch (error) {
     console.error('AI processing error for call:', callData.call_sid, error);
-    
+
     // Update call with error status
     await supabase
       .from('calls')
-      .update({ 
+      .update({
         processing_status: 'failed',
-        processing_error: error instanceof Error ? error.message : 'Unknown error',
-        processing_completed_at: new Date().toISOString()
+        processing_error:
+          error instanceof Error ? error.message : 'Unknown error',
+        processing_completed_at: new Date().toISOString(),
       })
       .eq('call_sid', callData.call_sid);
 
@@ -223,7 +239,7 @@ async function sendSMSSummary(callData: any, extractedEvents: any[]) {
     );
 
     let message = `📞 Flynn.ai Call Summary\n\n`;
-    
+
     if (extractedEvents.length === 1) {
       const event = extractedEvents[0];
       message += `📅 ${event.title}\n`;
@@ -251,37 +267,42 @@ async function sendSMSSummary(callData: any, extractedEvents: any[]) {
     await twilio.messages.create({
       body: message,
       from: callData.users.phone_number, // Send from their Flynn.ai number
-      to: callData.users.phone_number // Send to their actual phone
+      to: callData.users.phone_number, // Send to their actual phone
     });
 
     console.log('SMS summary sent for call:', callData.call_sid);
-
   } catch (error) {
     console.error('Failed to send SMS summary:', error);
     // Don't throw - SMS failure shouldn't stop the process
   }
 }
 
-async function sendEmailSummary(callData: any, extractedEvents: any[], transcription: string) {
+async function sendEmailSummary(
+  callData: any,
+  extractedEvents: any[],
+  transcription: string
+) {
   try {
     // Use existing email system to send call overview
-    const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/emails/send-call-overview`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: callData.user_id,
-        callId: callData.id,
-        events: extractedEvents,
-        transcription: transcription
-      })
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_APP_URL}/api/emails/send-call-overview`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: callData.user_id,
+          callId: callData.id,
+          events: extractedEvents,
+          transcription: transcription,
+        }),
+      }
+    );
 
     if (!response.ok) {
       throw new Error('Email sending failed');
     }
 
     console.log('Email summary sent for call:', callData.call_sid);
-
   } catch (error) {
     console.error('Failed to send email summary:', error);
     // Don't throw - email failure shouldn't stop the process

@@ -84,17 +84,31 @@ export interface CalendarProvider {
 
   // Authentication
   isAuthenticated(): Promise<boolean>;
-  authenticate(userId: string): Promise<{ authUrl?: string; success: boolean; error?: string }>;
-  refreshAuth?(refreshToken: string): Promise<{ success: boolean; error?: string }>;
+  authenticate(
+    userId: string
+  ): Promise<{ authUrl?: string; success: boolean; error?: string }>;
+  refreshAuth?(
+    refreshToken: string
+  ): Promise<{ success: boolean; error?: string }>;
 
   // Calendar management
   listCalendars(): Promise<CalendarInfo[]>;
   getCalendar(calendarId: string): Promise<CalendarInfo | null>;
 
   // Event management
-  createEvent(calendarId: string, event: CalendarEvent): Promise<CalendarEventResult>;
-  updateEvent(calendarId: string, eventId: string, event: Partial<CalendarEvent>): Promise<CalendarEventResult>;
-  deleteEvent(calendarId: string, eventId: string): Promise<{ success: boolean; error?: string }>;
+  createEvent(
+    calendarId: string,
+    event: CalendarEvent
+  ): Promise<CalendarEventResult>;
+  updateEvent(
+    calendarId: string,
+    eventId: string,
+    event: Partial<CalendarEvent>
+  ): Promise<CalendarEventResult>;
+  deleteEvent(
+    calendarId: string,
+    eventId: string
+  ): Promise<{ success: boolean; error?: string }>;
   getEvent(calendarId: string, eventId: string): Promise<CalendarEvent | null>;
 
   // Event querying
@@ -110,10 +124,16 @@ export interface CalendarProvider {
   ): Promise<CalendarEvent[]>;
 
   // Conflict detection
-  checkConflicts(calendarId: string, event: CalendarEvent): Promise<CalendarConflict[]>;
+  checkConflicts(
+    calendarId: string,
+    event: CalendarEvent
+  ): Promise<CalendarConflict[]>;
 
   // Batch operations
-  batchCreateEvents?(calendarId: string, events: CalendarEvent[]): Promise<CalendarSyncResult>;
+  batchCreateEvents?(
+    calendarId: string,
+    events: CalendarEvent[]
+  ): Promise<CalendarSyncResult>;
 }
 
 // Database integration types
@@ -154,7 +174,13 @@ export interface FlynnEvent {
   call_id: string;
   title: string;
   description: string;
-  type: 'appointment' | 'service_call' | 'meeting' | 'consultation' | 'quote' | 'follow_up';
+  type:
+    | 'appointment'
+    | 'service_call'
+    | 'meeting'
+    | 'consultation'
+    | 'quote'
+    | 'follow_up';
   proposed_datetime?: string;
   duration_minutes?: number;
   urgency: 'low' | 'medium' | 'high' | 'emergency';

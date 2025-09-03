@@ -1,5 +1,7 @@
 import React from 'react';
-import CallOverviewEmail, { CallOverviewEmailProps } from '../CallOverviewEmail';
+import CallOverviewEmail, {
+  CallOverviewEmailProps,
+} from '../CallOverviewEmail';
 import { Section, Text, Link, Row, Column } from '@react-email/components';
 
 interface MedicalEmailProps extends CallOverviewEmailProps {
@@ -11,39 +13,42 @@ interface MedicalEmailProps extends CallOverviewEmailProps {
 }
 
 export default function MedicalEmail(props: MedicalEmailProps) {
-  const hasUrgentEvents = props.extractedEvents.some(e => e.urgency === 'emergency' || e.urgency === 'high');
-  const hasEmergencyEvents = props.extractedEvents.some(e => e.urgency === 'emergency');
+  const hasUrgentEvents = props.extractedEvents.some(
+    (e) => e.urgency === 'emergency' || e.urgency === 'high'
+  );
+  const hasEmergencyEvents = props.extractedEvents.some(
+    (e) => e.urgency === 'emergency'
+  );
 
   return (
     <CallOverviewEmail {...props}>
       {/* HIPAA Compliance Notice */}
       <Section style={hipaaNoticeSection}>
-        <Text style={hipaaTitle}>
-          🏥 HIPAA COMPLIANCE NOTICE
-        </Text>
+        <Text style={hipaaTitle}>🏥 HIPAA COMPLIANCE NOTICE</Text>
         <Text style={hipaaText}>
-          This communication contains limited patient health information. No detailed medical 
-          information is stored. All communications are processed in compliance with HIPAA 
-          regulations for protected health information (PHI).
+          This communication contains limited patient health information. No
+          detailed medical information is stored. All communications are
+          processed in compliance with HIPAA regulations for protected health
+          information (PHI).
         </Text>
-        
+
         <Text style={hipaaDisclaimer}>
-          ⚠️ Patient identity verification required before discussing specific medical conditions
+          ⚠️ Patient identity verification required before discussing specific
+          medical conditions
         </Text>
       </Section>
 
       {/* Medical Emergency Alert */}
       {hasEmergencyEvents && (
         <Section style={emergencyMedicalSection}>
-          <Text style={emergencyMedicalTitle}>
-            🚨 MEDICAL EMERGENCY ALERT
-          </Text>
+          <Text style={emergencyMedicalTitle}>🚨 MEDICAL EMERGENCY ALERT</Text>
           <Text style={emergencyMedicalText}>
-            This call contains potential medical emergency situations requiring immediate attention. 
-            Life-threatening conditions or urgent medical needs may require priority scheduling 
-            or emergency department referral.
+            This call contains potential medical emergency situations requiring
+            immediate attention. Life-threatening conditions or urgent medical
+            needs may require priority scheduling or emergency department
+            referral.
           </Text>
-          
+
           <Row style={emergencyActions}>
             <Column>
               <Link
@@ -68,11 +73,9 @@ export default function MedicalEmail(props: MedicalEmailProps) {
       {/* Urgent Care Alert */}
       {hasUrgentEvents && !hasEmergencyEvents && (
         <Section style={urgentCareSection}>
-          <Text style={urgentCareTitle}>
-            ⏰ URGENT CARE NEEDED
-          </Text>
+          <Text style={urgentCareTitle}>⏰ URGENT CARE NEEDED</Text>
           <Text style={urgentCareText}>
-            This appointment request indicates urgent medical care needs. 
+            This appointment request indicates urgent medical care needs.
             Priority scheduling recommended within 24 hours.
           </Text>
         </Section>
@@ -85,22 +88,28 @@ export default function MedicalEmail(props: MedicalEmailProps) {
           <Column>
             <Text style={classificationLabel}>Visit Type:</Text>
             <Text style={classificationText}>
-              {determineVisitType(props.extractedEvents, props.transcriptionSnippet)}
+              {determineVisitType(
+                props.extractedEvents,
+                props.transcriptionSnippet
+              )}
             </Text>
           </Column>
           <Column>
             <Text style={classificationLabel}>Specialty Needed:</Text>
             <Text style={classificationText}>
-              {determineSpecialty(props.extractedEvents, props.transcriptionSnippet)}
+              {determineSpecialty(
+                props.extractedEvents,
+                props.transcriptionSnippet
+              )}
             </Text>
           </Column>
         </Row>
-        
+
         <Text style={classificationLabel}>Chief Concern Category:</Text>
         <Text style={classificationText}>
           {categorizeChiefConcern(props.transcriptionSnippet)}
         </Text>
-        
+
         <Text style={classificationLabel}>Insurance/Payment:</Text>
         <Text style={classificationText}>
           {extractInsuranceInfo(props.transcriptionSnippet)}
@@ -114,17 +123,24 @@ export default function MedicalEmail(props: MedicalEmailProps) {
           <Column>
             <Text style={appointmentLabel}>Scheduling Priority:</Text>
             <Text style={appointmentText}>
-              {hasEmergencyEvents ? 'STAT (immediate)' : hasUrgentEvents ? 'Urgent (< 24 hours)' : 'Routine (within 1 week)'}
+              {hasEmergencyEvents
+                ? 'STAT (immediate)'
+                : hasUrgentEvents
+                  ? 'Urgent (< 24 hours)'
+                  : 'Routine (within 1 week)'}
             </Text>
           </Column>
           <Column>
             <Text style={appointmentLabel}>Appointment Duration:</Text>
             <Text style={appointmentText}>
-              {determineAppointmentDuration(props.extractedEvents, props.transcriptionSnippet)}
+              {determineAppointmentDuration(
+                props.extractedEvents,
+                props.transcriptionSnippet
+              )}
             </Text>
           </Column>
         </Row>
-        
+
         <Text style={medicalTip}>
           💡 Clinical Tip: {getMedicalTip(props.extractedEvents)}
         </Text>
@@ -137,7 +153,7 @@ export default function MedicalEmail(props: MedicalEmailProps) {
           <Column>
             <Link
               href={`${props.dashboardUrl}/patient-intake?call=${props.callId}`}
-              style={{...careButton, ...intakeButton}}
+              style={{ ...careButton, ...intakeButton }}
             >
               📋 Patient Intake
             </Link>
@@ -145,17 +161,17 @@ export default function MedicalEmail(props: MedicalEmailProps) {
           <Column>
             <Link
               href={`${props.dashboardUrl}/insurance-verification?call=${props.callId}`}
-              style={{...careButton, ...insuranceButton}}
+              style={{ ...careButton, ...insuranceButton }}
             >
               💳 Insurance Check
             </Link>
           </Column>
         </Row>
-        <Row style={{marginTop: '8px'}}>
+        <Row style={{ marginTop: '8px' }}>
           <Column>
             <Link
               href={`${props.dashboardUrl}/appointment-scheduler?call=${props.callId}`}
-              style={{...careButton, ...schedulerButton}}
+              style={{ ...careButton, ...schedulerButton }}
             >
               📅 Schedule Appointment
             </Link>
@@ -163,7 +179,7 @@ export default function MedicalEmail(props: MedicalEmailProps) {
           <Column>
             <Link
               href={`${props.dashboardUrl}/pre-visit-forms?call=${props.callId}`}
-              style={{...careButton, ...formsButton}}
+              style={{ ...careButton, ...formsButton }}
             >
               📄 Pre-Visit Forms
             </Link>
@@ -175,26 +191,39 @@ export default function MedicalEmail(props: MedicalEmailProps) {
       <Section style={complianceSection}>
         <Text style={complianceTitle}>🔒 HIPAA & Medical Compliance</Text>
         <Text style={complianceText}>
-          • All patient communications protected under HIPAA regulations<br />
-          • Patient consent required for appointment confirmations<br />
-          • Medical records access restricted to authorized personnel<br />
-          • Scheduling system maintains audit trail for compliance<br />
-          • Patient identity verification required before medical discussions
+          • All patient communications protected under HIPAA regulations
+          <br />
+          • Patient consent required for appointment confirmations
+          <br />
+          • Medical records access restricted to authorized personnel
+          <br />
+          • Scheduling system maintains audit trail for compliance
+          <br />• Patient identity verification required before medical
+          discussions
           {props.providerNPI && `<br />• Provider NPI: ${props.providerNPI}`}
-          {props.medicalFacility && `<br />• Medical Facility: ${props.medicalFacility}`}
+          {props.medicalFacility &&
+            `<br />• Medical Facility: ${props.medicalFacility}`}
         </Text>
       </Section>
 
       {/* Medical Office Best Practices */}
       <Section style={bestPracticesSection}>
-        <Text style={bestPracticesTitle}>🏥 Medical Office Best Practices:</Text>
+        <Text style={bestPracticesTitle}>
+          🏥 Medical Office Best Practices:
+        </Text>
         <Text style={bestPracticesList}>
-          • <strong>Patient Verification:</strong> Verify identity with DOB and address<br />
-          • <strong>Insurance Authorization:</strong> Check coverage before visit<br />
-          • <strong>Medical History:</strong> Review previous visits and medications<br />
-          • <strong>Appointment Prep:</strong> Send pre-visit forms and instructions<br />
-          • <strong>Follow-up Care:</strong> Schedule appropriate follow-up visits<br />
-          • <strong>Emergency Protocol:</strong> Direct emergencies to appropriate care level
+          • <strong>Patient Verification:</strong> Verify identity with DOB and
+          address
+          <br />• <strong>Insurance Authorization:</strong> Check coverage
+          before visit
+          <br />• <strong>Medical History:</strong> Review previous visits and
+          medications
+          <br />• <strong>Appointment Prep:</strong> Send pre-visit forms and
+          instructions
+          <br />• <strong>Follow-up Care:</strong> Schedule appropriate
+          follow-up visits
+          <br />• <strong>Emergency Protocol:</strong> Direct emergencies to
+          appropriate care level
         </Text>
       </Section>
 
@@ -202,10 +231,16 @@ export default function MedicalEmail(props: MedicalEmailProps) {
       <Section style={safetySection}>
         <Text style={safetyTitle}>⚠️ Patient Safety Reminders</Text>
         <Text style={safetyText}>
-          • Medical emergencies should be directed to call 911 or visit emergency department<br />
-          • Urgent symptoms requiring same-day evaluation should be triaged by clinical staff<br />
-          • Prescription refills and medication questions require provider review<br />
-          • Test results and diagnostic follow-ups need secure patient portal communication
+          • Medical emergencies should be directed to call 911 or visit
+          emergency department
+          <br />
+          • Urgent symptoms requiring same-day evaluation should be triaged by
+          clinical staff
+          <br />
+          • Prescription refills and medication questions require provider
+          review
+          <br />• Test results and diagnostic follow-ups need secure patient
+          portal communication
         </Text>
       </Section>
     </CallOverviewEmail>
@@ -215,118 +250,220 @@ export default function MedicalEmail(props: MedicalEmailProps) {
 // Helper functions for medical practice
 function determineVisitType(events: any[], transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
-  
-  if (content.includes('new patient') || content.includes('first visit') || 
-      content.includes('never been')) return 'New Patient Visit';
-  
-  if (content.includes('follow up') || content.includes('follow-up') || 
-      content.includes('check up') || content.includes('recheck')) return 'Follow-up Visit';
-  
-  if (content.includes('physical') || content.includes('annual') || 
-      content.includes('yearly') || content.includes('wellness')) return 'Preventive Care Visit';
-  
-  if (content.includes('sick') || content.includes('symptoms') || 
-      content.includes('pain') || content.includes('problem')) return 'Problem-Focused Visit';
-  
-  if (content.includes('procedure') || content.includes('surgery') || 
-      content.includes('biopsy') || content.includes('injection')) return 'Procedure Visit';
-  
-  if (content.includes('urgent') || content.includes('can\'t wait') || 
-      content.includes('getting worse')) return 'Urgent Care Visit';
-  
+
+  if (
+    content.includes('new patient') ||
+    content.includes('first visit') ||
+    content.includes('never been')
+  )
+    return 'New Patient Visit';
+
+  if (
+    content.includes('follow up') ||
+    content.includes('follow-up') ||
+    content.includes('check up') ||
+    content.includes('recheck')
+  )
+    return 'Follow-up Visit';
+
+  if (
+    content.includes('physical') ||
+    content.includes('annual') ||
+    content.includes('yearly') ||
+    content.includes('wellness')
+  )
+    return 'Preventive Care Visit';
+
+  if (
+    content.includes('sick') ||
+    content.includes('symptoms') ||
+    content.includes('pain') ||
+    content.includes('problem')
+  )
+    return 'Problem-Focused Visit';
+
+  if (
+    content.includes('procedure') ||
+    content.includes('surgery') ||
+    content.includes('biopsy') ||
+    content.includes('injection')
+  )
+    return 'Procedure Visit';
+
+  if (
+    content.includes('urgent') ||
+    content.includes("can't wait") ||
+    content.includes('getting worse')
+  )
+    return 'Urgent Care Visit';
+
   return 'General Medical Visit';
 }
 
 function determineSpecialty(events: any[], transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
-  
+
   // Cardiology
-  if (content.includes('heart') || content.includes('chest pain') || 
-      content.includes('cardiology') || content.includes('blood pressure')) return 'Cardiology';
-  
+  if (
+    content.includes('heart') ||
+    content.includes('chest pain') ||
+    content.includes('cardiology') ||
+    content.includes('blood pressure')
+  )
+    return 'Cardiology';
+
   // Dermatology
-  if (content.includes('skin') || content.includes('rash') || 
-      content.includes('dermatology') || content.includes('mole')) return 'Dermatology';
-  
+  if (
+    content.includes('skin') ||
+    content.includes('rash') ||
+    content.includes('dermatology') ||
+    content.includes('mole')
+  )
+    return 'Dermatology';
+
   // Orthopedics
-  if (content.includes('bone') || content.includes('joint') || 
-      content.includes('orthopedic') || content.includes('fracture')) return 'Orthopedics';
-  
+  if (
+    content.includes('bone') ||
+    content.includes('joint') ||
+    content.includes('orthopedic') ||
+    content.includes('fracture')
+  )
+    return 'Orthopedics';
+
   // OB/GYN
-  if (content.includes('gynecology') || content.includes('pregnancy') || 
-      content.includes('obstetrics') || content.includes('women\'s health')) return 'OB/GYN';
-  
+  if (
+    content.includes('gynecology') ||
+    content.includes('pregnancy') ||
+    content.includes('obstetrics') ||
+    content.includes("women's health")
+  )
+    return 'OB/GYN';
+
   // Pediatrics
-  if (content.includes('child') || content.includes('pediatric') || 
-      content.includes('baby') || content.includes('infant')) return 'Pediatrics';
-  
+  if (
+    content.includes('child') ||
+    content.includes('pediatric') ||
+    content.includes('baby') ||
+    content.includes('infant')
+  )
+    return 'Pediatrics';
+
   // Mental Health
-  if (content.includes('depression') || content.includes('anxiety') || 
-      content.includes('mental health') || content.includes('psychiatry')) return 'Mental Health';
-  
+  if (
+    content.includes('depression') ||
+    content.includes('anxiety') ||
+    content.includes('mental health') ||
+    content.includes('psychiatry')
+  )
+    return 'Mental Health';
+
   // Gastroenterology
-  if (content.includes('stomach') || content.includes('digestive') || 
-      content.includes('gastro') || content.includes('colonoscopy')) return 'Gastroenterology';
-  
+  if (
+    content.includes('stomach') ||
+    content.includes('digestive') ||
+    content.includes('gastro') ||
+    content.includes('colonoscopy')
+  )
+    return 'Gastroenterology';
+
   return 'Primary Care';
 }
 
 function categorizeChiefConcern(transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
-  
-  if (content.includes('pain') || content.includes('hurt') || content.includes('ache')) {
+
+  if (
+    content.includes('pain') ||
+    content.includes('hurt') ||
+    content.includes('ache')
+  ) {
     return 'Pain Management - Location and severity assessment needed';
   }
-  
-  if (content.includes('fever') || content.includes('temperature') || content.includes('chills')) {
+
+  if (
+    content.includes('fever') ||
+    content.includes('temperature') ||
+    content.includes('chills')
+  ) {
     return 'Infection/Fever - Temperature monitoring required';
   }
-  
-  if (content.includes('shortness of breath') || content.includes('breathing') || 
-      content.includes('chest pain')) {
+
+  if (
+    content.includes('shortness of breath') ||
+    content.includes('breathing') ||
+    content.includes('chest pain')
+  ) {
     return 'Respiratory/Cardiac - Priority assessment needed';
   }
-  
-  if (content.includes('injury') || content.includes('accident') || content.includes('fall')) {
+
+  if (
+    content.includes('injury') ||
+    content.includes('accident') ||
+    content.includes('fall')
+  ) {
     return 'Injury/Trauma - Mechanism and severity assessment';
   }
-  
-  if (content.includes('medication') || content.includes('prescription') || 
-      content.includes('refill')) {
+
+  if (
+    content.includes('medication') ||
+    content.includes('prescription') ||
+    content.includes('refill')
+  ) {
     return 'Medication Management - Provider review required';
   }
-  
-  if (content.includes('test result') || content.includes('lab') || content.includes('x-ray')) {
+
+  if (
+    content.includes('test result') ||
+    content.includes('lab') ||
+    content.includes('x-ray')
+  ) {
     return 'Results Follow-up - Provider interpretation needed';
   }
-  
+
   return 'General Medical Concern - Clinical assessment needed';
 }
 
 function extractInsuranceInfo(transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
-  
-  if (content.includes('medicare')) return 'Medicare - Verify eligibility and coverage';
-  if (content.includes('medicaid')) return 'Medicaid - Check current authorization status';
-  if (content.includes('blue cross') || content.includes('bcbs')) return 'Blue Cross Blue Shield - Verify benefits';
+
+  if (content.includes('medicare'))
+    return 'Medicare - Verify eligibility and coverage';
+  if (content.includes('medicaid'))
+    return 'Medicaid - Check current authorization status';
+  if (content.includes('blue cross') || content.includes('bcbs'))
+    return 'Blue Cross Blue Shield - Verify benefits';
   if (content.includes('aetna')) return 'Aetna - Check network and coverage';
-  if (content.includes('cigna')) return 'Cigna - Verify benefits and authorizations';
-  if (content.includes('united healthcare') || content.includes('uhc')) return 'United Healthcare - Check coverage';
-  if (content.includes('no insurance') || content.includes('self pay') || 
-      content.includes('cash pay')) return 'Self-Pay - Discuss payment options';
-  
+  if (content.includes('cigna'))
+    return 'Cigna - Verify benefits and authorizations';
+  if (content.includes('united healthcare') || content.includes('uhc'))
+    return 'United Healthcare - Check coverage';
+  if (
+    content.includes('no insurance') ||
+    content.includes('self pay') ||
+    content.includes('cash pay')
+  )
+    return 'Self-Pay - Discuss payment options';
+
   return 'Insurance verification needed - Check coverage and benefits';
 }
 
-function determineAppointmentDuration(events: any[], transcription?: string): string {
+function determineAppointmentDuration(
+  events: any[],
+  transcription?: string
+): string {
   const content = transcription?.toLowerCase() || '';
-  
-  if (content.includes('new patient') || content.includes('first visit')) return '45-60 minutes (New Patient)';
-  if (content.includes('physical') || content.includes('annual')) return '30-45 minutes (Comprehensive)';
-  if (content.includes('procedure') || content.includes('biopsy')) return '30-60 minutes (Procedure)';
-  if (content.includes('urgent') || content.includes('problem')) return '15-30 minutes (Problem-focused)';
-  if (content.includes('follow up') || content.includes('recheck')) return '15-20 minutes (Follow-up)';
-  
+
+  if (content.includes('new patient') || content.includes('first visit'))
+    return '45-60 minutes (New Patient)';
+  if (content.includes('physical') || content.includes('annual'))
+    return '30-45 minutes (Comprehensive)';
+  if (content.includes('procedure') || content.includes('biopsy'))
+    return '30-60 minutes (Procedure)';
+  if (content.includes('urgent') || content.includes('problem'))
+    return '15-30 minutes (Problem-focused)';
+  if (content.includes('follow up') || content.includes('recheck'))
+    return '15-20 minutes (Follow-up)';
+
   return '15-30 minutes (Standard)';
 }
 
@@ -338,7 +475,7 @@ function getMedicalTip(events: any[]): string {
     'Triage urgent symptoms appropriately - when in doubt, err on side of caution',
     'Maintain HIPAA compliance in all patient communications and record keeping',
   ];
-  
+
   return tips[Math.floor(Math.random() * tips.length)];
 }
 

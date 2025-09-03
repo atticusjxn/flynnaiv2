@@ -12,8 +12,6 @@ export function NextUIProvider({ children }: NextUIProviderProps) {
   const router = useRouter();
 
   return (
-    <NextUIProviderBase navigate={router.push}>
-      {children}
-    </NextUIProviderBase>
+    <NextUIProviderBase navigate={router.push}>{children}</NextUIProviderBase>
   );
 }

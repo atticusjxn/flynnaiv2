@@ -1,63 +1,77 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useDashboardRealtime, RecentActivity } from '@/hooks/useDashboardRealtime'
-import { Button } from '@/components/ui/Button'
-import { Card, CardContent } from '@/components/ui/Card'
-import { Badge } from '@/components/ui/badge'
-import { X, Bell, AlertCircle, CheckCircle, Calendar, Phone, Wifi, WifiOff } from 'lucide-react'
+import { useEffect, useState } from 'react';
+import {
+  useDashboardRealtime,
+  RecentActivity,
+} from '@/hooks/useDashboardRealtime';
+import { Button } from '@/components/ui/Button';
+import { Card, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/badge';
+import {
+  X,
+  Bell,
+  AlertCircle,
+  CheckCircle,
+  Calendar,
+  Phone,
+  Wifi,
+  WifiOff,
+} from 'lucide-react';
 
 interface RealtimeNotificationsProps {
-  className?: string
+  className?: string;
 }
 
-export function RealtimeNotifications({ className }: RealtimeNotificationsProps) {
+export function RealtimeNotifications({
+  className,
+}: RealtimeNotificationsProps) {
   const {
     notifications,
     isConnected,
     error,
     clearNotification,
-    clearAllNotifications
-  } = useDashboardRealtime()
+    clearAllNotifications,
+  } = useDashboardRealtime();
 
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible, setIsVisible] = useState(false);
 
   // Show notifications panel when there are unread notifications
   useEffect(() => {
     if (notifications.length > 0) {
-      setIsVisible(true)
+      setIsVisible(true);
     }
-  }, [notifications.length])
+  }, [notifications.length]);
 
   const getActivityIcon = (type: RecentActivity['type']) => {
     switch (type) {
       case 'call':
-        return <Phone className="h-4 w-4 text-blue-500" />
+        return <Phone className="h-4 w-4 text-blue-500" />;
       case 'event':
-        return <Calendar className="h-4 w-4 text-green-500" />
+        return <Calendar className="h-4 w-4 text-green-500" />;
       case 'calendar_sync':
-        return <CheckCircle className="h-4 w-4 text-green-500" />
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
       case 'error':
-        return <AlertCircle className="h-4 w-4 text-red-500" />
+        return <AlertCircle className="h-4 w-4 text-red-500" />;
       default:
-        return <Bell className="h-4 w-4 text-gray-500" />
+        return <Bell className="h-4 w-4 text-gray-500" />;
     }
-  }
+  };
 
   const getActivityColor = (type: RecentActivity['type']) => {
     switch (type) {
       case 'call':
-        return 'bg-blue-50 border-blue-200'
+        return 'bg-blue-50 border-blue-200';
       case 'event':
-        return 'bg-green-50 border-green-200'
+        return 'bg-green-50 border-green-200';
       case 'calendar_sync':
-        return 'bg-green-50 border-green-200'
+        return 'bg-green-50 border-green-200';
       case 'error':
-        return 'bg-red-50 border-red-200'
+        return 'bg-red-50 border-red-200';
       default:
-        return 'bg-gray-50 border-gray-200'
+        return 'bg-gray-50 border-gray-200';
     }
-  }
+  };
 
   if (!isVisible || notifications.length === 0) {
     return (
@@ -73,7 +87,7 @@ export function RealtimeNotifications({ className }: RealtimeNotificationsProps)
           </span>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -148,7 +162,7 @@ export function RealtimeNotifications({ className }: RealtimeNotificationsProps)
                     <p className="text-xs text-gray-500 mt-1">
                       {new Date(notification.timestamp).toLocaleTimeString()}
                     </p>
-                    
+
                     {notification.metadata?.urgent && (
                       <Badge variant="destructive" className="mt-2 text-xs">
                         Urgent
@@ -162,7 +176,7 @@ export function RealtimeNotifications({ className }: RealtimeNotificationsProps)
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
-export default RealtimeNotifications
+export default RealtimeNotifications;

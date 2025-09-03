@@ -90,9 +90,12 @@ SPECIAL CONSIDERATIONS:
 - Property type affects service complexity (house vs apartment vs commercial)
 `;
 
-export function buildPlumbingPrompt(context?: { userLocation?: string; businessHours?: string }): string {
+export function buildPlumbingPrompt(context?: {
+  userLocation?: string;
+  businessHours?: string;
+}): string {
   const basePrompt = buildSystemPrompt('plumbing');
-  
+
   return `${basePrompt}
 
 ${PLUMBING_INDUSTRY_CONTEXT}
@@ -121,14 +124,30 @@ export const PLUMBING_VALIDATION_RULES = {
   requiredFields: ['title', 'description', 'urgency'],
   highValueFields: ['location', 'customer_name', 'customer_phone'],
   emergencyKeywords: [
-    'flooding', 'burst pipe', 'no water', 'sewage backup', 
-    'gas leak', 'water everywhere', 'basement flood', 'toilet overflow'
+    'flooding',
+    'burst pipe',
+    'no water',
+    'sewage backup',
+    'gas leak',
+    'water everywhere',
+    'basement flood',
+    'toilet overflow',
   ],
   serviceKeywords: [
-    'leak', 'drain', 'toilet', 'faucet', 'water heater', 'pipe', 
-    'plumbing', 'clogged', 'running', 'dripping', 'install', 'replace'
+    'leak',
+    'drain',
+    'toilet',
+    'faucet',
+    'water heater',
+    'pipe',
+    'plumbing',
+    'clogged',
+    'running',
+    'dripping',
+    'install',
+    'replace',
   ],
   locationRequired: true,
   averageCallDuration: 90, // minutes
-  defaultBusinessHours: '08:00-17:00 Mon-Sat'
+  defaultBusinessHours: '08:00-17:00 Mon-Sat',
 };

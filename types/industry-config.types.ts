@@ -44,7 +44,12 @@ export interface EmailTemplate {
   textContent: string;
   variables: string[];
   isDefault: boolean;
-  category: 'call_summary' | 'event_confirmation' | 'follow_up' | 'emergency' | 'custom';
+  category:
+    | 'call_summary'
+    | 'event_confirmation'
+    | 'follow_up'
+    | 'emergency'
+    | 'custom';
   industryId?: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -97,7 +102,11 @@ export interface ExtendedIndustryConfiguration extends IndustryConfiguration {
 export interface EscalationRule {
   id: string;
   name: string;
-  triggerCondition: 'urgency_level' | 'response_time' | 'customer_type' | 'event_type';
+  triggerCondition:
+    | 'urgency_level'
+    | 'response_time'
+    | 'customer_type'
+    | 'event_type';
   triggerValue: string | number;
   action: 'email' | 'sms' | 'webhook' | 'phone_call';
   recipient: string;
@@ -109,7 +118,12 @@ export interface EscalationRule {
 export interface ConfigurationChange {
   id: string;
   userId: string;
-  changeType: 'industry' | 'event_type' | 'terminology' | 'template' | 'workflow';
+  changeType:
+    | 'industry'
+    | 'event_type'
+    | 'terminology'
+    | 'template'
+    | 'workflow';
   entityId: string;
   oldValue: any;
   newValue: any;
@@ -220,7 +234,7 @@ export interface IndustryConfigurationContextValue {
   isLoading: boolean;
   hasUnsavedChanges: boolean;
   validationResult: ValidationResult | null;
-  
+
   // Actions
   updateIndustry: (industry: IndustryConfiguration) => void;
   updateEventTypes: (eventTypes: EventType[]) => void;
@@ -263,11 +277,13 @@ export type TerminologyCategory = TerminologyItem['category'];
 export type ConfigurationChangeType = ConfigurationChange['changeType'];
 
 // Form data types for controlled components
-export interface EventTypeFormData extends Omit<EventType, 'id' | 'createdAt' | 'updatedAt'> {
+export interface EventTypeFormData
+  extends Omit<EventType, 'id' | 'createdAt' | 'updatedAt'> {
   id?: string;
 }
 
-export interface TemplateFormData extends Omit<EmailTemplate, 'id' | 'createdAt' | 'updatedAt'> {
+export interface TemplateFormData
+  extends Omit<EmailTemplate, 'id' | 'createdAt' | 'updatedAt'> {
   id?: string;
 }
 
@@ -295,8 +311,10 @@ export interface UseIndustryConfigurationReturn {
   isLoading: boolean;
   error: string | null;
   hasChanges: boolean;
-  
-  updateConfiguration: (updates: Partial<ExtendedIndustryConfiguration>) => void;
+
+  updateConfiguration: (
+    updates: Partial<ExtendedIndustryConfiguration>
+  ) => void;
   saveConfiguration: () => Promise<SaveConfigurationResponse>;
   resetConfiguration: () => void;
   validateConfiguration: () => ValidationResult;

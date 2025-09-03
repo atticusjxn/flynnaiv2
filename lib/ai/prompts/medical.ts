@@ -139,9 +139,13 @@ COMMUNICATION PATTERNS:
 - Health literacy variations
 `;
 
-export function buildMedicalPrompt(context?: { practiceType?: string; userLocation?: string; businessHours?: string }): string {
+export function buildMedicalPrompt(context?: {
+  practiceType?: string;
+  userLocation?: string;
+  businessHours?: string;
+}): string {
   const basePrompt = buildSystemPrompt('medical');
-  
+
   return `${basePrompt}
 
 ${MEDICAL_INDUSTRY_CONTEXT}
@@ -171,18 +175,38 @@ REMEMBER: Patient safety is paramount. When in doubt about symptom urgency, err 
 
 export const MEDICAL_VALIDATION_RULES = {
   requiredFields: ['title', 'description', 'urgency'],
-  highValueFields: ['customer_name', 'customer_phone', 'proposed_datetime', 'notes'],
+  highValueFields: [
+    'customer_name',
+    'customer_phone',
+    'proposed_datetime',
+    'notes',
+  ],
   emergencyKeywords: [
-    'chest pain', 'heart attack', 'stroke', 'bleeding', 'breathing',
-    'unconscious', 'overdose', 'allergic reaction', 'severe pain'
+    'chest pain',
+    'heart attack',
+    'stroke',
+    'bleeding',
+    'breathing',
+    'unconscious',
+    'overdose',
+    'allergic reaction',
+    'severe pain',
   ],
   appointmentKeywords: [
-    'appointment', 'visit', 'check-up', 'physical', 'follow-up',
-    'consultation', 'procedure', 'urgent care', 'specialist'
+    'appointment',
+    'visit',
+    'check-up',
+    'physical',
+    'follow-up',
+    'consultation',
+    'procedure',
+    'urgent care',
+    'specialist',
   ],
   hipaaRequired: true,
   patientSafetyPriority: true,
   averageAppointmentDuration: 30, // minutes
   defaultBusinessHours: '08:00-17:00 Mon-Fri',
-  emergencyRedirect: 'Emergency situations should direct to ER, not office scheduling'
+  emergencyRedirect:
+    'Emergency situations should direct to ER, not office scheduling',
 };

@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { processRealTimeAudio, startRealTimeProcessing, stopRealTimeProcessing } from '@/lib/ai/RealTimeProcessor';
+import {
+  processRealTimeAudio,
+  startRealTimeProcessing,
+  stopRealTimeProcessing,
+} from '@/lib/ai/RealTimeProcessor';
 import { updateCallProcessingStatus } from '@/lib/supabase/calls';
 import { isAIProcessingActive } from '@/lib/ai/KeypadActivation';
 
@@ -7,11 +11,11 @@ import { isAIProcessingActive } from '@/lib/ai/KeypadActivation';
 export async function GET(request: NextRequest) {
   // Twilio Media Streams use WebSocket connections
   // This endpoint will be upgraded to WebSocket by Twilio
-  return new NextResponse('WebSocket endpoint for Twilio Media Streams', { 
+  return new NextResponse('WebSocket endpoint for Twilio Media Streams', {
     status: 200,
     headers: {
-      'Content-Type': 'text/plain'
-    }
+      'Content-Type': 'text/plain',
+    },
   });
 }
 
@@ -51,11 +55,10 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true });
-
   } catch (error) {
     console.error('Media stream webhook error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' }, 
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

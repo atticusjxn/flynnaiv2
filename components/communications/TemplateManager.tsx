@@ -33,7 +33,7 @@ import {
   DropdownItem,
   Switch,
   Divider,
-  Tooltip
+  Tooltip,
 } from '@nextui-org/react';
 import {
   FileText,
@@ -54,7 +54,7 @@ import {
   AlertTriangle,
   Sparkles,
   Code,
-  Globe
+  Globe,
 } from 'lucide-react';
 
 interface CommunicationTemplate {
@@ -91,24 +91,37 @@ Our technician will arrive within the scheduled window. If you have any question
 
 Best regards,
 {{companyName}}`,
-    variables: ['customerName', 'serviceType', 'appointmentDate', 'serviceAddress', 'duration', 'companyName'],
+    variables: [
+      'customerName',
+      'serviceType',
+      'appointmentDate',
+      'serviceAddress',
+      'duration',
+      'companyName',
+    ],
     industry: 'plumbing',
     isActive: true,
     isDefault: false,
     createdAt: '2024-01-15T10:00:00Z',
-    updatedAt: '2024-01-15T10:00:00Z'
+    updatedAt: '2024-01-15T10:00:00Z',
   },
   {
     id: '2',
     name: 'SMS Reminder',
     type: 'sms',
-    content: 'Hi {{customerName}}! Reminder: Your {{serviceType}} appointment is scheduled for {{appointmentTime}} at {{serviceAddress}}. Reply CONFIRM to acknowledge.',
-    variables: ['customerName', 'serviceType', 'appointmentTime', 'serviceAddress'],
+    content:
+      'Hi {{customerName}}! Reminder: Your {{serviceType}} appointment is scheduled for {{appointmentTime}} at {{serviceAddress}}. Reply CONFIRM to acknowledge.',
+    variables: [
+      'customerName',
+      'serviceType',
+      'appointmentTime',
+      'serviceAddress',
+    ],
     industry: 'plumbing',
     isActive: true,
     isDefault: true,
     createdAt: '2024-01-15T10:00:00Z',
-    updatedAt: '2024-01-15T10:00:00Z'
+    updatedAt: '2024-01-15T10:00:00Z',
   },
   {
     id: '3',
@@ -128,13 +141,20 @@ Please bring a valid ID and arrive 5 minutes early. If you have any questions, f
 
 Best regards,
 {{companyName}} Real Estate`,
-    variables: ['clientName', 'propertyAddress', 'showingDate', 'duration', 'agentName', 'companyName'],
+    variables: [
+      'clientName',
+      'propertyAddress',
+      'showingDate',
+      'duration',
+      'agentName',
+      'companyName',
+    ],
     industry: 'real_estate',
     isActive: true,
     isDefault: false,
     createdAt: '2024-01-16T14:30:00Z',
-    updatedAt: '2024-01-16T14:30:00Z'
-  }
+    updatedAt: '2024-01-16T14:30:00Z',
+  },
 ];
 
 const containerVariants = {
@@ -143,9 +163,9 @@ const containerVariants = {
     opacity: 1,
     transition: {
       duration: 0.3,
-      staggerChildren: 0.05
-    }
-  }
+      staggerChildren: 0.05,
+    },
+  },
 };
 
 const itemVariants = {
@@ -153,32 +173,50 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.3, ease: [0.23, 1, 0.32, 1] }
-  }
+    transition: { duration: 0.3, ease: [0.23, 1, 0.32, 1] as any },
+  },
 };
 
 export default function TemplateManager() {
   // State management
-  const [templates, setTemplates] = useState<CommunicationTemplate[]>(mockTemplates);
+  const [templates, setTemplates] =
+    useState<CommunicationTemplate[]>(mockTemplates);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedIndustry, setSelectedIndustry] = useState<string>('all');
-  const [editingTemplate, setEditingTemplate] = useState<CommunicationTemplate | null>(null);
-  const [previewTemplate, setPreviewTemplate] = useState<CommunicationTemplate | null>(null);
+  const [editingTemplate, setEditingTemplate] =
+    useState<CommunicationTemplate | null>(null);
+  const [previewTemplate, setPreviewTemplate] =
+    useState<CommunicationTemplate | null>(null);
 
   // Modal states
-  const { isOpen: isEditModalOpen, onOpen: onEditModalOpen, onClose: onEditModalClose } = useDisclosure();
-  const { isOpen: isPreviewModalOpen, onOpen: onPreviewModalOpen, onClose: onPreviewModalClose } = useDisclosure();
-  const { isOpen: isDeleteModalOpen, onOpen: onDeleteModalOpen, onClose: onDeleteModalClose } = useDisclosure();
+  const {
+    isOpen: isEditModalOpen,
+    onOpen: onEditModalOpen,
+    onClose: onEditModalClose,
+  } = useDisclosure();
+  const {
+    isOpen: isPreviewModalOpen,
+    onOpen: onPreviewModalOpen,
+    onClose: onPreviewModalClose,
+  } = useDisclosure();
+  const {
+    isOpen: isDeleteModalOpen,
+    onOpen: onDeleteModalOpen,
+    onClose: onDeleteModalClose,
+  } = useDisclosure();
 
   // Filtered templates
   const filteredTemplates = useMemo(() => {
-    return templates.filter(template => {
-      const matchesSearch = template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           template.content.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesType = selectedType === 'all' || template.type === selectedType;
-      const matchesIndustry = selectedIndustry === 'all' || template.industry === selectedIndustry;
-      
+    return templates.filter((template) => {
+      const matchesSearch =
+        template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        template.content.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesType =
+        selectedType === 'all' || template.type === selectedType;
+      const matchesIndustry =
+        selectedIndustry === 'all' || template.industry === selectedIndustry;
+
       return matchesSearch && matchesType && matchesIndustry;
     });
   }, [templates, searchQuery, selectedType, selectedIndustry]);
@@ -186,8 +224,8 @@ export default function TemplateManager() {
   // Industries from templates
   const availableIndustries = useMemo(() => {
     const industries = templates
-      .filter(t => t.industry)
-      .map(t => t.industry!)
+      .filter((t) => t.industry)
+      .map((t) => t.industry!)
       .filter((value, index, self) => self.indexOf(value) === index);
     return industries;
   }, [templates]);
@@ -205,21 +243,27 @@ export default function TemplateManager() {
       isActive: true,
       isDefault: false,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
     setEditingTemplate(newTemplate);
     onEditModalOpen();
   }, [onEditModalOpen]);
 
-  const handleEdit = useCallback((template: CommunicationTemplate) => {
-    setEditingTemplate({ ...template });
-    onEditModalOpen();
-  }, [onEditModalOpen]);
+  const handleEdit = useCallback(
+    (template: CommunicationTemplate) => {
+      setEditingTemplate({ ...template });
+      onEditModalOpen();
+    },
+    [onEditModalOpen]
+  );
 
-  const handlePreview = useCallback((template: CommunicationTemplate) => {
-    setPreviewTemplate(template);
-    onPreviewModalOpen();
-  }, [onPreviewModalOpen]);
+  const handlePreview = useCallback(
+    (template: CommunicationTemplate) => {
+      setPreviewTemplate(template);
+      onPreviewModalOpen();
+    },
+    [onPreviewModalOpen]
+  );
 
   const handleDuplicate = useCallback((template: CommunicationTemplate) => {
     const duplicatedTemplate: CommunicationTemplate = {
@@ -228,52 +272,62 @@ export default function TemplateManager() {
       name: `${template.name} (Copy)`,
       isDefault: false,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
-    setTemplates(prev => [...prev, duplicatedTemplate]);
+    setTemplates((prev) => [...prev, duplicatedTemplate]);
   }, []);
 
-  const handleDelete = useCallback((template: CommunicationTemplate) => {
-    setEditingTemplate(template);
-    onDeleteModalOpen();
-  }, [onDeleteModalOpen]);
+  const handleDelete = useCallback(
+    (template: CommunicationTemplate) => {
+      setEditingTemplate(template);
+      onDeleteModalOpen();
+    },
+    [onDeleteModalOpen]
+  );
 
   const confirmDelete = useCallback(() => {
     if (editingTemplate) {
-      setTemplates(prev => prev.filter(t => t.id !== editingTemplate.id));
+      setTemplates((prev) => prev.filter((t) => t.id !== editingTemplate.id));
       onDeleteModalClose();
       setEditingTemplate(null);
     }
   }, [editingTemplate, onDeleteModalClose]);
 
-  const handleSaveTemplate = useCallback((template: CommunicationTemplate) => {
-    if (template.id === '') {
-      // Create new template
-      const newTemplate = {
-        ...template,
-        id: `template_${Date.now()}`,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      setTemplates(prev => [...prev, newTemplate]);
-    } else {
-      // Update existing template
-      setTemplates(prev => prev.map(t => 
-        t.id === template.id 
-          ? { ...template, updatedAt: new Date().toISOString() }
-          : t
-      ));
-    }
-    onEditModalClose();
-    setEditingTemplate(null);
-  }, [onEditModalClose]);
+  const handleSaveTemplate = useCallback(
+    (template: CommunicationTemplate) => {
+      if (template.id === '') {
+        // Create new template
+        const newTemplate = {
+          ...template,
+          id: `template_${Date.now()}`,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        setTemplates((prev) => [...prev, newTemplate]);
+      } else {
+        // Update existing template
+        setTemplates((prev) =>
+          prev.map((t) =>
+            t.id === template.id
+              ? { ...template, updatedAt: new Date().toISOString() }
+              : t
+          )
+        );
+      }
+      onEditModalClose();
+      setEditingTemplate(null);
+    },
+    [onEditModalClose]
+  );
 
   const toggleTemplateStatus = useCallback((templateId: string) => {
-    setTemplates(prev => prev.map(t => 
-      t.id === templateId 
-        ? { ...t, isActive: !t.isActive, updatedAt: new Date().toISOString() }
-        : t
-    ));
+    setTemplates((prev) =>
+      prev.map((t) =>
+        t.id === templateId
+          ? { ...t, isActive: !t.isActive, updatedAt: new Date().toISOString() }
+          : t
+      )
+    );
   }, []);
 
   const getTypeIcon = (type: string) => {
@@ -337,7 +391,9 @@ export default function TemplateManager() {
               <Select
                 placeholder="Type"
                 selectedKeys={selectedType ? [selectedType] : []}
-                onSelectionChange={(keys) => setSelectedType(Array.from(keys)[0] as string || 'all')}
+                onSelectionChange={(keys) =>
+                  setSelectedType((Array.from(keys)[0] as string) || 'all')
+                }
                 variant="bordered"
                 className="max-w-xs"
               >
@@ -349,7 +405,9 @@ export default function TemplateManager() {
               <Select
                 placeholder="Industry"
                 selectedKeys={selectedIndustry ? [selectedIndustry] : []}
-                onSelectionChange={(keys) => setSelectedIndustry(Array.from(keys)[0] as string || 'all')}
+                onSelectionChange={(keys) =>
+                  setSelectedIndustry((Array.from(keys)[0] as string) || 'all')
+                }
                 variant="bordered"
                 className="max-w-xs"
               >
@@ -373,9 +431,9 @@ export default function TemplateManager() {
               aria-label="Templates table"
               removeWrapper
               classNames={{
-                th: "bg-slate-50 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 font-semibold",
-                td: "border-b border-slate-200 dark:border-slate-700",
-                tbody: "divide-y divide-slate-200 dark:divide-slate-700"
+                th: 'bg-slate-50 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 font-semibold',
+                td: 'border-b border-slate-200 dark:border-slate-700',
+                tbody: 'divide-y divide-slate-200 dark:divide-slate-700',
               }}
             >
               <TableHeader>
@@ -390,7 +448,9 @@ export default function TemplateManager() {
                 emptyContent={
                   <div className="text-center py-12">
                     <FileText className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
-                    <p className="text-slate-500 dark:text-slate-400">No templates found</p>
+                    <p className="text-slate-500 dark:text-slate-400">
+                      No templates found
+                    </p>
                     <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">
                       Create your first template to get started
                     </p>
@@ -398,7 +458,10 @@ export default function TemplateManager() {
                 }
               >
                 {filteredTemplates.map((template) => (
-                  <TableRow key={template.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+                  <TableRow
+                    key={template.id}
+                    className="hover:bg-slate-50 dark:hover:bg-slate-700/30"
+                  >
                     <TableCell>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
@@ -411,12 +474,21 @@ export default function TemplateManager() {
                         </div>
                         <div className="flex flex-wrap gap-1">
                           {template.variables.slice(0, 3).map((variable) => (
-                            <Chip key={variable} size="sm" variant="bordered" className="text-xs">
+                            <Chip
+                              key={variable}
+                              size="sm"
+                              variant="bordered"
+                              className="text-xs"
+                            >
                               {variable}
                             </Chip>
                           ))}
                           {template.variables.length > 3 && (
-                            <Chip size="sm" variant="bordered" className="text-xs">
+                            <Chip
+                              size="sm"
+                              variant="bordered"
+                              className="text-xs"
+                            >
                               +{template.variables.length - 3}
                             </Chip>
                           )}
@@ -426,12 +498,19 @@ export default function TemplateManager() {
                     <TableCell>
                       <div className="flex items-center gap-3">
                         {getTypeIcon(template.type)}
-                        <span className="capitalize font-medium">{template.type}</span>
+                        <span className="capitalize font-medium">
+                          {template.type}
+                        </span>
                       </div>
                     </TableCell>
                     <TableCell>
                       {template.industry ? (
-                        <Chip size="sm" color="secondary" variant="flat" className="capitalize">
+                        <Chip
+                          size="sm"
+                          color="secondary"
+                          variant="flat"
+                          className="capitalize"
+                        >
                           {template.industry.replace('_', ' ')}
                         </Chip>
                       ) : (
@@ -443,10 +522,14 @@ export default function TemplateManager() {
                         <Switch
                           size="sm"
                           isSelected={template.isActive}
-                          onValueChange={() => toggleTemplateStatus(template.id)}
+                          onValueChange={() =>
+                            toggleTemplateStatus(template.id)
+                          }
                           color="success"
                         />
-                        <span className={`text-sm ${template.isActive ? 'text-success-600' : 'text-slate-400'}`}>
+                        <span
+                          className={`text-sm ${template.isActive ? 'text-success-600' : 'text-slate-400'}`}
+                        >
                           {template.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </div>
@@ -502,8 +585,9 @@ export default function TemplateManager() {
         onClose={onDeleteModalClose}
         size="md"
         classNames={{
-          base: "bg-white dark:bg-slate-800",
-          backdrop: "bg-gradient-to-t from-zinc-900/60 to-zinc-900/20 backdrop-blur-sm"
+          base: 'bg-white dark:bg-slate-800',
+          backdrop:
+            'bg-gradient-to-t from-zinc-900/60 to-zinc-900/20 backdrop-blur-sm',
         }}
       >
         <ModalContent>
@@ -520,8 +604,9 @@ export default function TemplateManager() {
           </ModalHeader>
           <ModalBody>
             <p className="text-slate-600 dark:text-slate-400">
-              Are you sure you want to delete the template "{editingTemplate?.name}"? 
-              This will permanently remove the template and cannot be undone.
+              Are you sure you want to delete the template "
+              {editingTemplate?.name}"? This will permanently remove the
+              template and cannot be undone.
             </p>
           </ModalBody>
           <ModalFooter>
@@ -544,7 +629,7 @@ function TemplateActions({
   onEdit,
   onPreview,
   onDuplicate,
-  onDelete
+  onDelete,
 }: {
   template: CommunicationTemplate;
   onEdit: (template: CommunicationTemplate) => void;
@@ -605,55 +690,71 @@ function EditTemplateModal({
   template,
   isOpen,
   onClose,
-  onSave
+  onSave,
 }: {
   template: CommunicationTemplate;
   isOpen: boolean;
   onClose: () => void;
   onSave: (template: CommunicationTemplate) => void;
 }) {
-  const [editedTemplate, setEditedTemplate] = useState<CommunicationTemplate>(template);
-  const [variablesInput, setVariablesInput] = useState(template.variables.join(', '));
+  const [editedTemplate, setEditedTemplate] =
+    useState<CommunicationTemplate>(template);
+  const [variablesInput, setVariablesInput] = useState(
+    template.variables.join(', ')
+  );
 
-  const extractVariablesFromContent = useCallback((content: string): string[] => {
-    const matches = content.match(/\{\{(\w+)\}\}/g);
-    if (!matches) return [];
-    
-    return [...new Set(matches.map(match => match.replace(/[{}]/g, '')))];
-  }, []);
+  const extractVariablesFromContent = useCallback(
+    (content: string): string[] => {
+      const matches = content.match(/\{\{(\w+)\}\}/g);
+      if (!matches) return [];
 
-  const handleContentChange = useCallback((content: string) => {
-    const extractedVariables = extractVariablesFromContent(content);
-    setEditedTemplate(prev => ({
-      ...prev,
-      content,
-      variables: extractedVariables
-    }));
-    setVariablesInput(extractedVariables.join(', '));
-  }, [extractVariablesFromContent]);
+      return [...new Set(matches.map((match) => match.replace(/[{}]/g, '')))];
+    },
+    []
+  );
 
-  const handleSubjectChange = useCallback((subject: string) => {
-    const contentVariables = extractVariablesFromContent(editedTemplate.content);
-    const subjectVariables = extractVariablesFromContent(subject);
-    const allVariables = [...new Set([...contentVariables, ...subjectVariables])];
-    
-    setEditedTemplate(prev => ({
-      ...prev,
-      subject,
-      variables: allVariables
-    }));
-    setVariablesInput(allVariables.join(', '));
-  }, [editedTemplate.content, extractVariablesFromContent]);
+  const handleContentChange = useCallback(
+    (content: string) => {
+      const extractedVariables = extractVariablesFromContent(content);
+      setEditedTemplate((prev) => ({
+        ...prev,
+        content,
+        variables: extractedVariables,
+      }));
+      setVariablesInput(extractedVariables.join(', '));
+    },
+    [extractVariablesFromContent]
+  );
+
+  const handleSubjectChange = useCallback(
+    (subject: string) => {
+      const contentVariables = extractVariablesFromContent(
+        editedTemplate.content
+      );
+      const subjectVariables = extractVariablesFromContent(subject);
+      const allVariables = [
+        ...new Set([...contentVariables, ...subjectVariables]),
+      ];
+
+      setEditedTemplate((prev) => ({
+        ...prev,
+        subject,
+        variables: allVariables,
+      }));
+      setVariablesInput(allVariables.join(', '));
+    },
+    [editedTemplate.content, extractVariablesFromContent]
+  );
 
   const handleSave = useCallback(() => {
     const variablesList = variablesInput
       .split(',')
-      .map(v => v.trim())
-      .filter(v => v.length > 0);
+      .map((v) => v.trim())
+      .filter((v) => v.length > 0);
 
     onSave({
       ...editedTemplate,
-      variables: variablesList
+      variables: variablesList,
     });
   }, [editedTemplate, variablesInput, onSave]);
 
@@ -667,8 +768,9 @@ function EditTemplateModal({
       scrollBehavior="inside"
       isDismissable={false}
       classNames={{
-        base: "bg-white dark:bg-slate-800",
-        backdrop: "bg-gradient-to-t from-zinc-900/60 to-zinc-900/20 backdrop-blur-sm"
+        base: 'bg-white dark:bg-slate-800',
+        backdrop:
+          'bg-gradient-to-t from-zinc-900/60 to-zinc-900/20 backdrop-blur-sm',
       }}
     >
       <ModalContent>
@@ -685,7 +787,7 @@ function EditTemplateModal({
             </div>
           </div>
         </ModalHeader>
-        
+
         <ModalBody className="py-6 space-y-6">
           {/* Basic Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -693,16 +795,21 @@ function EditTemplateModal({
               label="Template Name"
               placeholder="Enter template name..."
               value={editedTemplate.name}
-              onValueChange={(value) => setEditedTemplate(prev => ({ ...prev, name: value }))}
+              onValueChange={(value) =>
+                setEditedTemplate((prev) => ({ ...prev, name: value }))
+              }
               variant="bordered"
               isRequired
             />
-            
+
             <Select
               label="Type"
               selectedKeys={[editedTemplate.type]}
-              onSelectionChange={(keys) => 
-                setEditedTemplate(prev => ({ ...prev, type: Array.from(keys)[0] as 'email' | 'sms' }))
+              onSelectionChange={(keys) =>
+                setEditedTemplate((prev) => ({
+                  ...prev,
+                  type: Array.from(keys)[0] as 'email' | 'sms',
+                }))
               }
               variant="bordered"
               isRequired
@@ -717,22 +824,28 @@ function EditTemplateModal({
               label="Industry (Optional)"
               placeholder="e.g., plumbing, real_estate"
               value={editedTemplate.industry || ''}
-              onValueChange={(value) => setEditedTemplate(prev => ({ ...prev, industry: value }))}
+              onValueChange={(value) =>
+                setEditedTemplate((prev) => ({ ...prev, industry: value }))
+              }
               variant="bordered"
             />
 
             <div className="flex items-center gap-4">
               <Switch
                 isSelected={editedTemplate.isActive}
-                onValueChange={(value) => setEditedTemplate(prev => ({ ...prev, isActive: value }))}
+                onValueChange={(value) =>
+                  setEditedTemplate((prev) => ({ ...prev, isActive: value }))
+                }
                 color="success"
               >
                 Active Template
               </Switch>
-              
+
               <Switch
                 isSelected={editedTemplate.isDefault}
-                onValueChange={(value) => setEditedTemplate(prev => ({ ...prev, isDefault: value }))}
+                onValueChange={(value) =>
+                  setEditedTemplate((prev) => ({ ...prev, isDefault: value }))
+                }
                 color="primary"
               >
                 Default Template
@@ -761,16 +874,22 @@ function EditTemplateModal({
               {editedTemplate.type === 'sms' && (
                 <Chip
                   size="sm"
-                  color={editedTemplate.content.length > 160 ? "danger" : "success"}
+                  color={
+                    editedTemplate.content.length > 160 ? 'danger' : 'success'
+                  }
                   variant="flat"
                 >
                   {editedTemplate.content.length}/160 chars
                 </Chip>
               )}
             </div>
-            
+
             <Textarea
-              placeholder={editedTemplate.type === 'email' ? "Enter email content..." : "Enter SMS message..."}
+              placeholder={
+                editedTemplate.type === 'email'
+                  ? 'Enter email content...'
+                  : 'Enter SMS message...'
+              }
               value={editedTemplate.content}
               onValueChange={handleContentChange}
               variant="bordered"
@@ -778,13 +897,15 @@ function EditTemplateModal({
               maxRows={editedTemplate.type === 'email' ? 15 : 8}
               isRequired
             />
-            
-            {editedTemplate.type === 'sms' && editedTemplate.content.length > 160 && (
-              <p className="text-sm text-danger-500 flex items-center gap-1">
-                <AlertTriangle className="h-4 w-4" />
-                SMS messages over 160 characters may be split into multiple messages
-              </p>
-            )}
+
+            {editedTemplate.type === 'sms' &&
+              editedTemplate.content.length > 160 && (
+                <p className="text-sm text-danger-500 flex items-center gap-1">
+                  <AlertTriangle className="h-4 w-4" />
+                  SMS messages over 160 characters may be split into multiple
+                  messages
+                </p>
+              )}
           </div>
 
           {/* Variables */}
@@ -795,7 +916,7 @@ function EditTemplateModal({
                 Template Variables
               </label>
             </div>
-            
+
             <Input
               placeholder="customerName, serviceType, appointmentDate"
               value={variablesInput}
@@ -803,7 +924,7 @@ function EditTemplateModal({
               variant="bordered"
               description="Comma-separated list of variables. Use {{variableName}} in your content."
             />
-            
+
             <div className="flex flex-wrap gap-2">
               {editedTemplate.variables.map((variable) => (
                 <Chip key={variable} size="sm" color="primary" variant="flat">
@@ -813,7 +934,7 @@ function EditTemplateModal({
             </div>
           </div>
         </ModalBody>
-        
+
         <ModalFooter>
           <Button variant="light" onPress={onClose}>
             Cancel
@@ -836,7 +957,7 @@ function EditTemplateModal({
 function PreviewTemplateModal({
   template,
   isOpen,
-  onClose
+  onClose,
 }: {
   template: CommunicationTemplate;
   isOpen: boolean;
@@ -849,8 +970,9 @@ function PreviewTemplateModal({
       size="2xl"
       scrollBehavior="inside"
       classNames={{
-        base: "bg-white dark:bg-slate-800",
-        backdrop: "bg-gradient-to-t from-zinc-900/60 to-zinc-900/20 backdrop-blur-sm"
+        base: 'bg-white dark:bg-slate-800',
+        backdrop:
+          'bg-gradient-to-t from-zinc-900/60 to-zinc-900/20 backdrop-blur-sm',
       }}
     >
       <ModalContent>
@@ -865,7 +987,7 @@ function PreviewTemplateModal({
             </div>
           </div>
         </ModalHeader>
-        
+
         <ModalBody className="py-6">
           <div className="space-y-4">
             {/* Template Info */}
@@ -875,11 +997,20 @@ function PreviewTemplateModal({
                   {template.type.toUpperCase()}
                 </Chip>
                 {template.industry && (
-                  <Chip size="sm" color="secondary" variant="flat" className="capitalize">
+                  <Chip
+                    size="sm"
+                    color="secondary"
+                    variant="flat"
+                    className="capitalize"
+                  >
                     {template.industry.replace('_', ' ')}
                   </Chip>
                 )}
-                <Chip size="sm" color={template.isActive ? "success" : "default"} variant="flat">
+                <Chip
+                  size="sm"
+                  color={template.isActive ? 'success' : 'default'}
+                  variant="flat"
+                >
                   {template.isActive ? 'Active' : 'Inactive'}
                 </Chip>
                 {template.isDefault && (
@@ -904,7 +1035,7 @@ function PreviewTemplateModal({
                   </div>
                 </div>
               )}
-              
+
               <div>
                 <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                   Content
@@ -925,7 +1056,12 @@ function PreviewTemplateModal({
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {template.variables.map((variable) => (
-                    <Chip key={variable} size="sm" color="primary" variant="bordered">
+                    <Chip
+                      key={variable}
+                      size="sm"
+                      color="primary"
+                      variant="bordered"
+                    >
                       {`{{${variable}}}`}
                     </Chip>
                   ))}
@@ -934,7 +1070,7 @@ function PreviewTemplateModal({
             )}
           </div>
         </ModalBody>
-        
+
         <ModalFooter>
           <Button variant="light" onPress={onClose}>
             Close

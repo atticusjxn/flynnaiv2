@@ -15,8 +15,10 @@ const formatIndustryName = (industryType: string) => {
     general_services: 'General Services',
     other: 'Other',
   };
-  
-  return industryNames[industryType] || industryType.replace('_', ' ').toUpperCase();
+
+  return (
+    industryNames[industryType] || industryType.replace('_', ' ').toUpperCase()
+  );
 };
 
 export default function TestAuthPage() {
@@ -29,16 +31,16 @@ export default function TestAuthPage() {
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const { error } = await updateProfile(testUpdate);
-    
+
     if (error) {
       setUpdateStatus(`❌ Update failed: ${error}`);
     } else {
       setUpdateStatus('✅ Profile updated successfully!');
       setTestUpdate({ company_name: '', phone_number: '' });
     }
-    
+
     setTimeout(() => setUpdateStatus(''), 3000);
   };
 
@@ -80,7 +82,9 @@ export default function TestAuthPage() {
               <div className="space-y-2">
                 <div>
                   <span className="font-medium text-gray-700">ID:</span>{' '}
-                  <span className="text-gray-600 font-mono text-xs">{user?.id}</span>
+                  <span className="text-gray-600 font-mono text-xs">
+                    {user?.id}
+                  </span>
                 </div>
                 <div>
                   <span className="font-medium text-gray-700">Email:</span>{' '}
@@ -88,34 +92,46 @@ export default function TestAuthPage() {
                 </div>
                 <div>
                   <span className="font-medium text-gray-700">Full Name:</span>{' '}
-                  <span className="text-gray-600">{profile?.full_name || 'Not set'}</span>
+                  <span className="text-gray-600">
+                    {profile?.full_name || 'Not set'}
+                  </span>
                 </div>
                 <div>
                   <span className="font-medium text-gray-700">Company:</span>{' '}
-                  <span className="text-gray-600">{profile?.company_name || 'Not set'}</span>
+                  <span className="text-gray-600">
+                    {profile?.company_name || 'Not set'}
+                  </span>
                 </div>
               </div>
               <div className="space-y-2">
                 <div>
                   <span className="font-medium text-gray-700">Industry:</span>{' '}
                   <span className="text-gray-600">
-                    {profile?.industry_type ? formatIndustryName(profile.industry_type) : 'Not set'}
+                    {profile?.industry_type
+                      ? formatIndustryName(profile.industry_type)
+                      : 'Not set'}
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-gray-700">Subscription:</span>{' '}
+                  <span className="font-medium text-gray-700">
+                    Subscription:
+                  </span>{' '}
                   <span className="text-gray-600 capitalize">
                     {profile?.subscription_tier || 'Basic'}
                   </span>
                 </div>
                 <div>
                   <span className="font-medium text-gray-700">Phone:</span>{' '}
-                  <span className="text-gray-600">{profile?.phone_number || 'Not set'}</span>
+                  <span className="text-gray-600">
+                    {profile?.phone_number || 'Not set'}
+                  </span>
                 </div>
                 <div>
                   <span className="font-medium text-gray-700">Created:</span>{' '}
                   <span className="text-gray-600 text-xs">
-                    {profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Unknown'}
+                    {profile?.created_at
+                      ? new Date(profile.created_at).toLocaleDateString()
+                      : 'Unknown'}
                   </span>
                 </div>
               </div>
@@ -135,7 +151,12 @@ export default function TestAuthPage() {
                 <input
                   type="text"
                   value={testUpdate.company_name}
-                  onChange={(e) => setTestUpdate({ ...testUpdate, company_name: e.target.value })}
+                  onChange={(e) =>
+                    setTestUpdate({
+                      ...testUpdate,
+                      company_name: e.target.value,
+                    })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   placeholder="New company name"
                 />
@@ -147,7 +168,12 @@ export default function TestAuthPage() {
                 <input
                   type="tel"
                   value={testUpdate.phone_number}
-                  onChange={(e) => setTestUpdate({ ...testUpdate, phone_number: e.target.value })}
+                  onChange={(e) =>
+                    setTestUpdate({
+                      ...testUpdate,
+                      phone_number: e.target.value,
+                    })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   placeholder="+1 (555) 123-4567"
                 />
@@ -172,17 +198,30 @@ export default function TestAuthPage() {
               Test Results Summary
             </h2>
             <div className="space-y-2 text-sm">
-              <div className="text-green-600">✅ Authentication hook working</div>
-              <div className="text-green-600">✅ User context providing correct data</div>
-              <div className="text-green-600">✅ Profile data loaded from database</div>
-              <div className="text-green-600">✅ Protected routes functional</div>
-              <div className="text-green-600">✅ Session persistence working</div>
-              <div className="text-green-600">✅ Profile update functionality ready</div>
+              <div className="text-green-600">
+                ✅ Authentication hook working
+              </div>
+              <div className="text-green-600">
+                ✅ User context providing correct data
+              </div>
+              <div className="text-green-600">
+                ✅ Profile data loaded from database
+              </div>
+              <div className="text-green-600">
+                ✅ Protected routes functional
+              </div>
+              <div className="text-green-600">
+                ✅ Session persistence working
+              </div>
+              <div className="text-green-600">
+                ✅ Profile update functionality ready
+              </div>
             </div>
-            
+
             <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
               <p className="text-green-800 text-sm font-medium">
-                🎉 Authentication system is fully functional and ready for production!
+                🎉 Authentication system is fully functional and ready for
+                production!
               </p>
             </div>
           </div>

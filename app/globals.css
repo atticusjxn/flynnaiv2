@@ -5,98 +5,110 @@
 @tailwind utilities;
 
 :root {
-  --background: oklch(0.9950 0.0020 105);
-  --foreground: oklch(0.0900 0.0050 264);
+  --background: oklch(0.995 0.002 105);
+  --foreground: oklch(0.09 0.005 264);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.0900 0.0050 264);
+  --card-foreground: oklch(0.09 0.005 264);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.0900 0.0050 264);
-  --primary: oklch(0.4880 0.2430 264.3760);
-  --primary-foreground: oklch(0.9850 0 0);
-  --secondary: oklch(0.9650 0.0080 106);
-  --secondary-foreground: oklch(0.0900 0.0050 264);
-  --muted: oklch(0.9650 0.0080 106);
-  --muted-foreground: oklch(0.4500 0.0070 264);
-  --accent: oklch(0.9650 0.0080 106);
-  --accent-foreground: oklch(0.0900 0.0050 264);
-  --destructive: oklch(0.5770 0.2450 27.3250);
+  --popover-foreground: oklch(0.09 0.005 264);
+  --primary: oklch(0.488 0.243 264.376);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.965 0.008 106);
+  --secondary-foreground: oklch(0.09 0.005 264);
+  --muted: oklch(0.965 0.008 106);
+  --muted-foreground: oklch(0.45 0.007 264);
+  --accent: oklch(0.965 0.008 106);
+  --accent-foreground: oklch(0.09 0.005 264);
+  --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.9100 0.0140 106);
-  --input: oklch(0.9100 0.0140 106);
-  --ring: oklch(0.4880 0.2430 264.3760);
-  --chart-1: oklch(0.6200 0.1900 260);
-  --chart-2: oklch(0.7100 0.1800 160);
-  --chart-3: oklch(0.6800 0.1900 40);
-  --chart-4: oklch(0.6200 0.1900 300);
-  --chart-5: oklch(0.5500 0.2200 200);
-  --sidebar: oklch(0.9850 0.0040 264);
-  --sidebar-foreground: oklch(0.1200 0.0080 264);
-  --sidebar-primary: oklch(0.4880 0.2430 264.3760);
-  --sidebar-primary-foreground: oklch(0.9850 0 0);
-  --sidebar-accent: oklch(0.9650 0.0080 264);
-  --sidebar-accent-foreground: oklch(0.1200 0.0080 264);
-  --sidebar-border: oklch(0.9100 0.0140 264);
-  --sidebar-ring: oklch(0.4880 0.2430 264.3760);
+  --border: oklch(0.91 0.014 106);
+  --input: oklch(0.91 0.014 106);
+  --ring: oklch(0.488 0.243 264.376);
+  --chart-1: oklch(0.62 0.19 260);
+  --chart-2: oklch(0.71 0.18 160);
+  --chart-3: oklch(0.68 0.19 40);
+  --chart-4: oklch(0.62 0.19 300);
+  --chart-5: oklch(0.55 0.22 200);
+  --sidebar: oklch(0.985 0.004 264);
+  --sidebar-foreground: oklch(0.12 0.008 264);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.965 0.008 264);
+  --sidebar-accent-foreground: oklch(0.12 0.008 264);
+  --sidebar-border: oklch(0.91 0.014 264);
+  --sidebar-ring: oklch(0.488 0.243 264.376);
   --font-sans: 'Archivo Black', ui-sans-serif, sans-serif, system-ui;
-  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
   --radius: 0.625rem;
   --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
   --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-  --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
-  --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
-  --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
-  --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 4px 6px -1px hsl(0 0% 0% / 0.10);
-  --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 8px 10px -1px hsl(0 0% 0% / 0.10);
+  --shadow-sm:
+    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+  --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+  --shadow-md:
+    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
+  --shadow-lg:
+    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
+  --shadow-xl:
+    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
   --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 }
 
 .dark {
-  --background: oklch(0.0900 0.0080 264);
-  --foreground: oklch(0.9650 0.0080 264);
-  --card: oklch(0.1200 0.0120 264);
-  --card-foreground: oklch(0.9650 0.0080 264);
-  --popover: oklch(0.1500 0.0140 264);
-  --popover-foreground: oklch(0.9650 0.0080 264);
-  --primary: oklch(0.6200 0.2400 264);
-  --primary-foreground: oklch(0.0900 0.0080 264);
-  --secondary: oklch(0.1500 0.0140 264);
-  --secondary-foreground: oklch(0.9650 0.0080 264);
-  --muted: oklch(0.1500 0.0140 264);
-  --muted-foreground: oklch(0.6500 0.0160 264);
-  --accent: oklch(0.1800 0.0160 264);
-  --accent-foreground: oklch(0.9650 0.0080 264);
-  --destructive: oklch(0.7040 0.1910 22.2160);
-  --destructive-foreground: oklch(0.9850 0 0);
-  --border: oklch(0.1800 0.0160 264);
-  --input: oklch(0.2200 0.0180 264);
-  --ring: oklch(0.6200 0.2400 264);
-  --chart-1: oklch(0.6200 0.1900 260);
-  --chart-2: oklch(0.7100 0.1800 160);
-  --chart-3: oklch(0.6800 0.1900 40);
-  --chart-4: oklch(0.6200 0.1900 300);
-  --chart-5: oklch(0.5500 0.2200 200);
-  --sidebar: oklch(0.1000 0.0100 264);
-  --sidebar-foreground: oklch(0.9450 0.0120 264);
-  --sidebar-primary: oklch(0.6200 0.2400 264);
-  --sidebar-primary-foreground: oklch(0.0900 0.0080 264);
-  --sidebar-accent: oklch(0.1500 0.0140 264);
-  --sidebar-accent-foreground: oklch(0.9450 0.0120 264);
-  --sidebar-border: oklch(0.1800 0.0160 264);
-  --sidebar-ring: oklch(0.6200 0.2400 264);
+  --background: oklch(0.09 0.008 264);
+  --foreground: oklch(0.965 0.008 264);
+  --card: oklch(0.12 0.012 264);
+  --card-foreground: oklch(0.965 0.008 264);
+  --popover: oklch(0.15 0.014 264);
+  --popover-foreground: oklch(0.965 0.008 264);
+  --primary: oklch(0.62 0.24 264);
+  --primary-foreground: oklch(0.09 0.008 264);
+  --secondary: oklch(0.15 0.014 264);
+  --secondary-foreground: oklch(0.965 0.008 264);
+  --muted: oklch(0.15 0.014 264);
+  --muted-foreground: oklch(0.65 0.016 264);
+  --accent: oklch(0.18 0.016 264);
+  --accent-foreground: oklch(0.965 0.008 264);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.18 0.016 264);
+  --input: oklch(0.22 0.018 264);
+  --ring: oklch(0.62 0.24 264);
+  --chart-1: oklch(0.62 0.19 260);
+  --chart-2: oklch(0.71 0.18 160);
+  --chart-3: oklch(0.68 0.19 40);
+  --chart-4: oklch(0.62 0.19 300);
+  --chart-5: oklch(0.55 0.22 200);
+  --sidebar: oklch(0.1 0.01 264);
+  --sidebar-foreground: oklch(0.945 0.012 264);
+  --sidebar-primary: oklch(0.62 0.24 264);
+  --sidebar-primary-foreground: oklch(0.09 0.008 264);
+  --sidebar-accent: oklch(0.15 0.014 264);
+  --sidebar-accent-foreground: oklch(0.945 0.012 264);
+  --sidebar-border: oklch(0.18 0.016 264);
+  --sidebar-ring: oklch(0.62 0.24 264);
   --font-sans: 'Archivo Black', ui-sans-serif, sans-serif, system-ui;
-  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
   --radius: 0.625rem;
   --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
   --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
-  --shadow-sm: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
-  --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 1px 2px -1px hsl(0 0% 0% / 0.10);
-  --shadow-md: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 2px 4px -1px hsl(0 0% 0% / 0.10);
-  --shadow-lg: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 4px 6px -1px hsl(0 0% 0% / 0.10);
-  --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.10), 0 8px 10px -1px hsl(0 0% 0% / 0.10);
+  --shadow-sm:
+    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+  --shadow: 0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+  --shadow-md:
+    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
+  --shadow-lg:
+    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 4px 6px -1px hsl(0 0% 0% / 0.1);
+  --shadow-xl:
+    0 1px 3px 0px hsl(0 0% 0% / 0.1), 0 8px 10px -1px hsl(0 0% 0% / 0.1);
   --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
 }
 
@@ -157,7 +169,8 @@
   border-color: var(--border);
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -167,11 +180,18 @@ html, body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-feature-settings: "rlig" 1, "calt" 1;
+  font-feature-settings:
+    'rlig' 1,
+    'calt' 1;
   font-family: ui-sans-serif, system-ui, sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-sans);
 }
 
@@ -179,98 +199,142 @@ h1, h2, h3, h4, h5, h6 {
   .text-balance {
     text-wrap: balance;
   }
-  
+
   /* Premium Animation Utilities */
   .animate-in {
     animation-fill-mode: both;
   }
-  
+
   .fade-in {
     animation-name: fade-in;
   }
-  
+
   .slide-in-from-bottom-4 {
     animation-name: slide-in-from-bottom-4;
   }
-  
+
   .slide-in-from-bottom-6 {
     animation-name: slide-in-from-bottom-6;
   }
-  
+
   .slide-in-from-bottom-8 {
     animation-name: slide-in-from-bottom-8;
   }
-  
+
   .slide-in-from-left-2 {
     animation-name: slide-in-from-left-2;
   }
-  
+
   .slide-in-from-left-4 {
     animation-name: slide-in-from-left-4;
   }
-  
+
   .premium-shimmer {
     animation-name: premium-shimmer;
   }
-  
+
   .premium-pulse {
     animation-name: premium-pulse;
   }
-  
+
   .premium-float {
     animation-name: premium-float;
   }
-  
+
   .premium-glow {
     animation-name: premium-glow;
   }
-  
+
   /* Duration Classes for Staggered Animations */
-  .duration-300 { animation-duration: 300ms; }
-  .duration-350 { animation-duration: 350ms; }
-  .duration-400 { animation-duration: 400ms; }
-  .duration-450 { animation-duration: 450ms; }
-  .duration-500 { animation-duration: 500ms; }
-  .duration-550 { animation-duration: 550ms; }
-  .duration-600 { animation-duration: 600ms; }
-  .duration-700 { animation-duration: 700ms; }
-  .duration-800 { animation-duration: 800ms; }
-  .duration-1000 { animation-duration: 1000ms; }
-  
+  .duration-300 {
+    animation-duration: 300ms;
+  }
+  .duration-350 {
+    animation-duration: 350ms;
+  }
+  .duration-400 {
+    animation-duration: 400ms;
+  }
+  .duration-450 {
+    animation-duration: 450ms;
+  }
+  .duration-500 {
+    animation-duration: 500ms;
+  }
+  .duration-550 {
+    animation-duration: 550ms;
+  }
+  .duration-600 {
+    animation-duration: 600ms;
+  }
+  .duration-700 {
+    animation-duration: 700ms;
+  }
+  .duration-800 {
+    animation-duration: 800ms;
+  }
+  .duration-1000 {
+    animation-duration: 1000ms;
+  }
+
   /* Animation Fill Mode Classes */
-  .fill-mode-both { animation-fill-mode: both; }
-  .fill-mode-forwards { animation-fill-mode: forwards; }
-  .fill-mode-backwards { animation-fill-mode: backwards; }
-  
+  .fill-mode-both {
+    animation-fill-mode: both;
+  }
+  .fill-mode-forwards {
+    animation-fill-mode: forwards;
+  }
+  .fill-mode-backwards {
+    animation-fill-mode: backwards;
+  }
+
   /* Animation Delay Classes for Premium Staggered Effects */
-  .delay-50 { animation-delay: 50ms; }
-  .delay-75 { animation-delay: 75ms; }
-  .delay-100 { animation-delay: 100ms; }
-  .delay-150 { animation-delay: 150ms; }
-  .delay-200 { animation-delay: 200ms; }
-  .delay-300 { animation-delay: 300ms; }
-  .delay-500 { animation-delay: 500ms; }
-  
+  .delay-50 {
+    animation-delay: 50ms;
+  }
+  .delay-75 {
+    animation-delay: 75ms;
+  }
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+  .delay-150 {
+    animation-delay: 150ms;
+  }
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+  .delay-500 {
+    animation-delay: 500ms;
+  }
+
   /* Premium Hover Effects */
   .hover-lift {
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    transition:
+      transform 0.2s ease-in-out,
+      box-shadow 0.2s ease-in-out;
   }
-  
+
   .hover-lift:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    box-shadow:
+      0 10px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
-  
+
   /* Interactive Element States */
   .interaction-ring {
     @apply ring-2 ring-primary/30 ring-offset-2 ring-offset-background;
   }
-  
+
   .touch-target {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   /* Line Clamp Utilities */
   .line-clamp-1 {
     overflow: hidden;
@@ -278,56 +342,56 @@ h1, h2, h3, h4, h5, h6 {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 1;
   }
-  
+
   .line-clamp-2 {
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
   }
-  
+
   /* Enhanced Focus Styles */
   .focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
   }
-  
+
   /* Premium Button Variants */
   .btn-premium {
     @apply relative inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg
            transition-all duration-200 focus-ring touch-target;
   }
-  
+
   .btn-primary {
     @apply btn-premium bg-primary text-primary-foreground hover:bg-primary/90 
            hover:scale-105 hover:shadow-lg;
   }
-  
+
   .btn-secondary {
     @apply btn-premium bg-secondary text-secondary-foreground hover:bg-secondary/80
            hover:scale-105 hover:shadow-md;
   }
-  
+
   .btn-ghost {
     @apply btn-premium hover:bg-muted/50 text-muted-foreground hover:text-foreground
            hover:scale-105;
   }
-  
+
   /* Loading States */
   .loading-spinner {
     @apply inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin;
   }
-  
+
   /* Premium Card Styles */
   .premium-card {
     @apply bg-card border border-border rounded-xl shadow-sm
            hover:shadow-md hover:border-border/80 transition-all duration-200;
   }
-  
+
   /* Data Table Enhancements */
   .table-row-hover {
     @apply hover:bg-muted/30 transition-colors duration-150;
   }
-  
+
   .table-cell-padding {
     @apply p-6;
   }
@@ -397,7 +461,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes premium-pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
@@ -408,7 +473,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes premium-float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -417,7 +483,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @keyframes premium-glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px rgba(var(--primary), 0.1);
   }
   50% {
@@ -481,8 +548,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Improved Typography */
-h1, h2, h3, h4, h5, h6 {
-  font-feature-settings: "rlig" 1, "calt" 1;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-feature-settings:
+    'rlig' 1,
+    'calt' 1;
   letter-spacing: -0.025em;
   line-height: 1.2;
 }
@@ -517,18 +591,18 @@ html {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: var(--muted)/20;
+  background: var(--muted) / 20;
   border-radius: 2px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--primary)/30;
+  background: var(--primary) / 30;
   border-radius: 2px;
   transition: background-color 0.2s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--primary)/50;
+  background: var(--primary) / 50;
 }
 
 /* Focus styles for accessibility */
@@ -552,24 +626,24 @@ html {
     min-height: 48px;
     min-width: 48px;
   }
-  
+
   /* Better modal sizing on mobile */
   .mobile-modal {
     max-height: 95vh;
     margin: 2.5vh 1rem;
   }
-  
+
   /* Improved form field spacing on mobile */
   .mobile-form-spacing {
     gap: 1.5rem;
   }
-  
+
   /* Premium mobile scrolling */
   .mobile-scroll {
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
   }
-  
+
   /* Enhanced mobile focus states */
   .mobile-focus:focus-within {
     transform: scale(1.01);
@@ -596,12 +670,12 @@ html {
 /* NextUI Dropdown/Select Background Fix - MAXIMUM AGGRESSIVE */
 
 /* Target ALL possible dropdown elements with white background */
-[data-slot="listbox"],
-[role="listbox"],
-[data-slot="base"],
-[data-slot="content"],
-[data-open="true"],
-div[role="dialog"],
+[data-slot='listbox'],
+[role='listbox'],
+[data-slot='base'],
+[data-slot='content'],
+[data-open='true'],
+div[role='dialog'],
 .nextui-listbox,
 .nextui-popover,
 .nextui-dropdown,
@@ -610,7 +684,9 @@ div[role="dialog"],
   background: white !important;
   background-color: white !important;
   border: 1px solid #e5e7eb !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
   border-radius: 0.5rem !important;
 }
 
@@ -622,108 +698,116 @@ ul.w-full.flex.flex-col.outline-none {
   background: white !important;
   background-color: white !important;
   border: 1px solid #e5e7eb !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
   border-radius: 0.5rem !important;
 }
 
 /* Nuclear option - target by exact class patterns found in inspection */
-div[class*="bg-transparent"],
-div[class*="bg-content1"],
-div[class*="z-0 relative bg-transparent"],
-div[class*="z-10 inline-flex flex-col"],
-div[class*="w-full relative flex flex-col"],
-ul[class*="w-full flex flex-col gap-0.5"] {
+div[class*='bg-transparent'],
+div[class*='bg-content1'],
+div[class*='z-0 relative bg-transparent'],
+div[class*='z-10 inline-flex flex-col'],
+div[class*='w-full relative flex flex-col'],
+ul[class*='w-full flex flex-col gap-0.5'] {
   background: white !important;
   background-color: white !important;
   border: 1px solid #e5e7eb !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
   border-radius: 0.5rem !important;
 }
 
 /* Dark mode versions */
-.dark [data-slot="listbox"],
-.dark [role="listbox"],
-.dark [data-slot="base"],
-.dark [data-slot="content"],
-.dark [data-open="true"],
-.dark div[role="dialog"],
+.dark [data-slot='listbox'],
+.dark [role='listbox'],
+.dark [data-slot='base'],
+.dark [data-slot='content'],
+.dark [data-open='true'],
+.dark div[role='dialog'],
 .dark .nextui-listbox,
 .dark .nextui-popover,
 .dark .nextui-dropdown,
 .dark .bg-content1,
 .dark .bg-transparent,
-.dark div[class*="bg-transparent"],
-.dark div[class*="bg-content1"] {
+.dark div[class*='bg-transparent'],
+.dark div[class*='bg-content1'] {
   background: #1f2937 !important;
   background-color: #1f2937 !important;
   border: 1px solid #374151 !important;
 }
 
 /* Ensure proper z-index and positioning for dropdowns */
-[data-slot="base"][role="dialog"],
-[data-slot="listbox"],
-[role="listbox"],
-[role="dialog"],
-[data-open="true"] {
+[data-slot='base'][role='dialog'],
+[data-slot='listbox'],
+[role='listbox'],
+[role='dialog'],
+[data-open='true'] {
   z-index: 9999 !important;
   position: fixed !important;
 }
 
 /* FINAL NUCLEAR OPTION - force white background on any dialog or listbox */
-*[role="dialog"],
-*[role="listbox"],
-*[data-slot="base"],
-*[data-slot="content"],
-*[data-slot="listbox"] {
+*[role='dialog'],
+*[role='listbox'],
+*[data-slot='base'],
+*[data-slot='content'],
+*[data-slot='listbox'] {
   background: white !important;
   background-color: white !important;
 }
 
-.dark *[role="dialog"],
-.dark *[role="listbox"],
-.dark *[data-slot="base"],
-.dark *[data-slot="content"],
-.dark *[data-slot="listbox"] {
+.dark *[role='dialog'],
+.dark *[role='listbox'],
+.dark *[data-slot='base'],
+.dark *[data-slot='content'],
+.dark *[data-slot='listbox'] {
   background: #1f2937 !important;
   background-color: #1f2937 !important;
 }
 
 /* ULTIMATE NUCLEAR OPTION - Override EVERY possible transparent background */
-div[class*="bg-transparent"],
+div[class*='bg-transparent'],
 div.bg-transparent,
 .bg-transparent,
-[class*="bg-transparent"],
-*[class*="bg-transparent"] {
+[class*='bg-transparent'],
+*[class*='bg-transparent'] {
   background: white !important;
   background-color: white !important;
   border: 1px solid #e5e7eb !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
   border-radius: 0.375rem !important;
 }
 
 /* NUCLEAR NextUI Select Fixes - Override Everything */
 
 /* Force dropdown popover/listbox backgrounds to be solid white */
-[role="listbox"],
-[role="dialog"][data-slot="base"],
-div[role="dialog"],
+[role='listbox'],
+[role='dialog'][data-slot='base'],
+div[role='dialog'],
 .nextui-popover-content,
 .nextui-select-popover,
-*[data-open="true"][role="dialog"],
-*[data-slot="base"][role="dialog"],
-*[role="listbox"][data-slot="listbox"] {
+*[data-open='true'][role='dialog'],
+*[data-slot='base'][role='dialog'],
+*[role='listbox'][data-slot='listbox'] {
   background: white !important;
   background-color: white !important;
   backdrop-filter: none !important;
   border: 1px solid #e5e7eb !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
   border-radius: 0.5rem !important;
   z-index: 50 !important;
   position: fixed !important;
 }
 
 /* Force all select trigger containers to have proper layout */
-[data-slot="trigger"] {
+[data-slot='trigger'] {
   position: relative !important;
   display: flex !important;
   align-items: center !important;
@@ -733,7 +817,7 @@ div[role="dialog"],
 }
 
 /* Force selector icon positioning */
-[data-slot="selectorIcon"] {
+[data-slot='selectorIcon'] {
   position: absolute !important;
   right: 0.75rem !important;
   top: 50% !important;
@@ -745,11 +829,11 @@ div[role="dialog"],
 }
 
 /* Target NextUI Select component classes directly */
-.nextui-select [data-slot="trigger"] {
+.nextui-select [data-slot='trigger'] {
   padding-right: 2.5rem !important;
 }
 
-.nextui-select [data-slot="selectorIcon"] {
+.nextui-select [data-slot='selectorIcon'] {
   right: 0.75rem !important;
   position: absolute !important;
   top: 50% !important;
@@ -757,23 +841,23 @@ div[role="dialog"],
 }
 
 /* Override any transparent backgrounds in select components */
-.nextui-select *[class*="bg-transparent"],
+.nextui-select *[class*='bg-transparent'],
 .nextui-select .bg-transparent,
-*[aria-expanded="true"] *[class*="bg-transparent"],
-*[aria-expanded="true"] .bg-transparent {
+*[aria-expanded='true'] *[class*='bg-transparent'],
+*[aria-expanded='true'] .bg-transparent {
   background: white !important;
   background-color: white !important;
 }
 
 /* Dark mode support */
-.dark [role="listbox"],
-.dark [role="dialog"][data-slot="base"],
-.dark div[role="dialog"],
+.dark [role='listbox'],
+.dark [role='dialog'][data-slot='base'],
+.dark div[role='dialog'],
 .dark .nextui-popover-content,
 .dark .nextui-select-popover,
-.dark *[data-open="true"][role="dialog"],
-.dark *[data-slot="base"][role="dialog"],
-.dark *[role="listbox"][data-slot="listbox"] {
+.dark *[data-open='true'][role='dialog'],
+.dark *[data-slot='base'][role='dialog'],
+.dark *[role='listbox'][data-slot='listbox'] {
   background: #1f2937 !important;
   background-color: #1f2937 !important;
   border: 1px solid #374151 !important;
@@ -782,35 +866,39 @@ div[role="dialog"],
 /* Target the EXACT class name that's causing issues */
 .z-0.relative.bg-transparent,
 div.z-0.relative.bg-transparent,
-*[class="z-0 relative bg-transparent"],
-*[class*="z-0 relative bg-transparent"] {
+*[class='z-0 relative bg-transparent'],
+*[class*='z-0 relative bg-transparent'] {
   background: white !important;
   background-color: white !important;
   border: 1px solid #e5e7eb !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
   border-radius: 0.5rem !important;
 }
 
 /* Force all NextUI content backgrounds */
 .z-10.inline-flex.flex-col.items-center.justify-center.subpixel-antialiased.outline-none.box-border.text-small.bg-content1,
-div[class*="bg-content1"],
+div[class*='bg-content1'],
 .bg-content1 {
   background: white !important;
   background-color: white !important;
   border: 1px solid #e5e7eb !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
   border-radius: 0.5rem !important;
 }
 
 /* Dark mode overrides */
-.dark div[class*="bg-transparent"],
+.dark div[class*='bg-transparent'],
 .dark div.bg-transparent,
 .dark .bg-transparent,
-.dark [class*="bg-transparent"],
-.dark *[class*="bg-transparent"],
+.dark [class*='bg-transparent'],
+.dark *[class*='bg-transparent'],
 .dark .z-0.relative.bg-transparent,
 .dark div.z-0.relative.bg-transparent,
-.dark div[class*="bg-content1"],
+.dark div[class*='bg-content1'],
 .dark .bg-content1 {
   background: #1f2937 !important;
   background-color: #1f2937 !important;

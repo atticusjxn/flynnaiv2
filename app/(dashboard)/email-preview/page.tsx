@@ -17,7 +17,7 @@ export default function EmailPreviewPage() {
   const [previewKey, setPreviewKey] = useState(0);
 
   const handleRefresh = () => {
-    setPreviewKey(prev => prev + 1);
+    setPreviewKey((prev) => prev + 1);
   };
 
   const previewUrl = `/api/email/preview?industry=${selectedIndustry}&urgent=${hasUrgentEvents}`;
@@ -30,13 +30,17 @@ export default function EmailPreviewPage() {
             Professional Email Templates Preview
           </h1>
           <p className="text-gray-600 mb-6">
-            Preview and test the industry-adaptive email templates for Flynn.ai call summaries.
+            Preview and test the industry-adaptive email templates for Flynn.ai
+            call summaries.
           </p>
 
           {/* Controls */}
           <div className="flex flex-wrap items-center gap-6 mb-6">
             <div className="flex items-center gap-3">
-              <label htmlFor="industry" className="text-sm font-medium text-gray-700">
+              <label
+                htmlFor="industry"
+                className="text-sm font-medium text-gray-700"
+              >
                 Industry:
               </label>
               <select
@@ -45,7 +49,7 @@ export default function EmailPreviewPage() {
                 onChange={(e) => setSelectedIndustry(e.target.value)}
                 className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
-                {industries.map(industry => (
+                {industries.map((industry) => (
                   <option key={industry.value} value={industry.value}>
                     {industry.label}
                   </option>
@@ -77,8 +81,10 @@ export default function EmailPreviewPage() {
 
           {/* Quick Links */}
           <div className="flex flex-wrap gap-2 mb-6">
-            <span className="text-sm font-medium text-gray-700 mr-2">Quick Tests:</span>
-            {industries.map(industry => (
+            <span className="text-sm font-medium text-gray-700 mr-2">
+              Quick Tests:
+            </span>
+            {industries.map((industry) => (
               <button
                 key={industry.value}
                 onClick={() => setSelectedIndustry(industry.value)}
@@ -98,30 +104,39 @@ export default function EmailPreviewPage() {
             <div className="bg-green-50 border border-green-200 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-green-600">✅</span>
-                <span className="text-sm font-medium text-green-800">Industry-Adaptive</span>
+                <span className="text-sm font-medium text-green-800">
+                  Industry-Adaptive
+                </span>
               </div>
               <p className="text-xs text-green-700">
-                Templates automatically adjust terminology, colors, and content based on industry
+                Templates automatically adjust terminology, colors, and content
+                based on industry
               </p>
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-blue-600">📱</span>
-                <span className="text-sm font-medium text-blue-800">Mobile-Responsive</span>
+                <span className="text-sm font-medium text-blue-800">
+                  Mobile-Responsive
+                </span>
               </div>
               <p className="text-xs text-blue-700">
-                Emails render perfectly across all email clients and mobile devices
+                Emails render perfectly across all email clients and mobile
+                devices
               </p>
             </div>
 
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-purple-600">🎨</span>
-                <span className="text-sm font-medium text-purple-800">Professional Design</span>
+                <span className="text-sm font-medium text-purple-800">
+                  Professional Design
+                </span>
               </div>
               <p className="text-xs text-purple-700">
-                Clean, modern design with clear visual hierarchy and actionable CTAs
+                Clean, modern design with clear visual hierarchy and actionable
+                CTAs
               </p>
             </div>
           </div>
@@ -132,7 +147,8 @@ export default function EmailPreviewPage() {
           <div className="bg-gray-50 border-b border-gray-200 px-6 py-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-900">
-                Email Preview - {industries.find(i => i.value === selectedIndustry)?.label}
+                Email Preview -{' '}
+                {industries.find((i) => i.value === selectedIndustry)?.label}
               </h2>
               <div className="flex items-center gap-3 text-sm text-gray-600">
                 <span>Industry: {selectedIndustry}</span>
@@ -144,7 +160,7 @@ export default function EmailPreviewPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="relative" style={{ height: '800px' }}>
             <iframe
               key={previewKey}
@@ -161,10 +177,14 @@ export default function EmailPreviewPage() {
 
         {/* Technical Details */}
         <div className="mt-6 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Technical Implementation</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            Technical Implementation
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h4 className="text-sm font-medium text-gray-800 mb-2">React Email Components</h4>
+              <h4 className="text-sm font-medium text-gray-800 mb-2">
+                React Email Components
+              </h4>
               <ul className="text-sm text-gray-600 space-y-1">
                 <li>• BaseEmailLayout.tsx - Universal email wrapper</li>
                 <li>• CallOverviewEmail.tsx - Main email template</li>
@@ -173,7 +193,9 @@ export default function EmailPreviewPage() {
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-medium text-gray-800 mb-2">Features</h4>
+              <h4 className="text-sm font-medium text-gray-800 mb-2">
+                Features
+              </h4>
               <ul className="text-sm text-gray-600 space-y-1">
                 <li>• Industry-aware terminology and colors</li>
                 <li>• Urgent event highlighting</li>

@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       callSid,
       callStatus,
       direction,
-      duration
+      duration,
     });
 
     if (!callSid) {
@@ -26,19 +26,22 @@ export async function POST(request: NextRequest) {
     await updateCallStatus(callSid, callStatus);
 
     // Handle call completion for processing cleanup
-    if (['completed', 'busy', 'failed', 'no-answer', 'cancelled'].includes(callStatus)) {
+    if (
+      ['completed', 'busy', 'failed', 'no-answer', 'cancelled'].includes(
+        callStatus
+      )
+    ) {
       console.log(`Call ended with status: ${callStatus} for call: ${callSid}`);
-      
+
       // Trigger silent processing completion
       await handleCallEndProcessing(callSid);
     }
 
     return NextResponse.json({ success: true });
-
   } catch (error) {
     console.error('Call status webhook error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' }, 
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

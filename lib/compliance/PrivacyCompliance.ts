@@ -49,12 +49,12 @@ export class PrivacyComplianceManager {
 
       // Check user privacy settings
       const userSettings = await this.getUserPrivacySettings(userId);
-      
+
       if (!userSettings.allowRecording) {
         return {
           compliant: false,
           reason: 'User has disabled call recording',
-          actions: ['Skip AI processing', 'Log compliance violation']
+          actions: ['Skip AI processing', 'Log compliance violation'],
         };
       }
 
@@ -62,25 +62,27 @@ export class PrivacyComplianceManager {
         return {
           compliant: false,
           reason: 'User has disabled AI processing',
-          actions: ['Record only', 'Skip event extraction']
+          actions: ['Record only', 'Skip event extraction'],
         };
       }
 
       // Check industry-specific compliance requirements
-      const industryChecks = await this.validateIndustryCompliance(userId, callerPhone);
+      const industryChecks = await this.validateIndustryCompliance(
+        userId,
+        callerPhone
+      );
       if (!industryChecks.compliant) {
         return industryChecks;
       }
 
       // All checks passed
       return { compliant: true };
-
     } catch (error) {
       console.error(`Compliance validation error for call ${callSid}:`, error);
       return {
         compliant: false,
         reason: 'Compliance validation failed',
-        actions: ['Log error', 'Skip processing']
+        actions: ['Log error', 'Skip processing'],
       };
     }
   }
@@ -95,7 +97,7 @@ export class PrivacyComplianceManager {
   ): Promise<void> {
     try {
       const userSettings = await this.getUserPrivacySettings(userId);
-      
+
       const complianceRecord: ComplianceRecord = {
         callSid,
         userId,
@@ -105,16 +107,20 @@ export class PrivacyComplianceManager {
         dataProcessingPurpose: [
           'appointment_extraction',
           'email_delivery',
-          'calendar_integration'
+          'calendar_integration',
         ],
-        retentionDate: this.calculateRetentionDate(userSettings.dataRetentionDays),
-        complianceFlags: this.generateComplianceFlags(userSettings, consentMethod)
+        retentionDate: this.calculateRetentionDate(
+          userSettings.dataRetentionDays
+        ),
+        complianceFlags: this.generateComplianceFlags(
+          userSettings,
+          consentMethod
+        ),
       };
 
       await this.storeComplianceRecord(complianceRecord);
-      
-      console.log(`Compliance recorded for call ${callSid}: ${consentMethod}`);
 
+      console.log(`Compliance recorded for call ${callSid}: ${consentMethod}`);
     } catch (error) {
       console.error(`Error recording compliance for call ${callSid}:`, error);
     }
@@ -123,7 +129,9 @@ export class PrivacyComplianceManager {
   /**
    * Get user privacy settings
    */
-  private async getUserPrivacySettings(userId: string): Promise<PrivacySettings> {
+  private async getUserPrivacySettings(
+    userId: string
+  ): Promise<PrivacySettings> {
     try {
       // This would typically fetch from database
       // For now, return secure defaults
@@ -134,12 +142,15 @@ export class PrivacyComplianceManager {
         allowAIProcessing: true,
         shareWithThirdParties: false,
         consentRequired: true,
-        industryCompliance: ['GDPR', 'CCPA']
+        industryCompliance: ['GDPR', 'CCPA'],
       };
 
       return defaultSettings;
     } catch (error) {
-      console.error(`Error fetching privacy settings for user ${userId}:`, error);
+      console.error(
+        `Error fetching privacy settings for user ${userId}:`,
+        error
+      );
       // Return most restrictive settings on error
       return {
         dataRetentionDays: 30,
@@ -148,7 +159,7 @@ export class PrivacyComplianceManager {
         allowAIProcessing: false,
         shareWithThirdParties: false,
         consentRequired: true,
-        industryCompliance: ['GDPR', 'CCPA', 'HIPAA']
+        industryCompliance: ['GDPR', 'CCPA', 'HIPAA'],
       };
     }
   }
@@ -167,22 +178,21 @@ export class PrivacyComplianceManager {
       switch (userIndustry) {
         case 'medical':
           return this.validateHIPAACompliance(callerPhone);
-        
+
         case 'legal':
           return this.validateLegalPrivilegeCompliance(callerPhone);
-        
+
         case 'financial':
           return this.validateFinancialCompliance(callerPhone);
-        
+
         default:
           return { compliant: true };
       }
-
     } catch (error) {
       console.error(`Industry compliance validation error:`, error);
       return {
         compliant: false,
-        reason: 'Industry compliance check failed'
+        reason: 'Industry compliance check failed',
       };
     }
   }
@@ -200,8 +210,8 @@ export class PrivacyComplianceManager {
         'Mark as PHI',
         'Enable encryption',
         'Set 30-day retention',
-        'Log HIPAA access'
-      ]
+        'Log HIPAA access',
+      ],
     };
   }
 
@@ -217,8 +227,8 @@ export class PrivacyComplianceManager {
         'Mark as privileged',
         'Enable attorney-client protection',
         'Restrict AI analysis',
-        'Extended retention'
-      ]
+        'Extended retention',
+      ],
     };
   }
 
@@ -233,8 +243,8 @@ export class PrivacyComplianceManager {
       actions: [
         'Enable financial compliance mode',
         'Restrict data sharing',
-        'Audit trail required'
-      ]
+        'Audit trail required',
+      ],
     };
   }
 
@@ -291,7 +301,7 @@ export class PrivacyComplianceManager {
         consent: record.consentGiven,
         version: record.privacyNoticeVersion,
         retention: record.retentionDate,
-        flags: record.complianceFlags.join(', ')
+        flags: record.complianceFlags.join(', '),
       });
 
       // In a real implementation, this would:
@@ -299,7 +309,6 @@ export class PrivacyComplianceManager {
       // 2. Update call record with compliance flags
       // 3. Set up automated data deletion job
       // 4. Send compliance confirmation if required
-
     } catch (error) {
       console.error('Error storing compliance record:', error);
       throw error;
@@ -332,7 +341,6 @@ export class PrivacyComplianceManager {
       // 2. Delete call recordings, transcripts, and AI data
       // 3. Keep compliance audit trail
       // 4. Log deletion activities
-
     } catch (error) {
       console.error('Error in scheduled data deletion:', error);
     }
@@ -359,9 +367,12 @@ Version: ${this.CURRENT_PRIVACY_VERSION}
     `;
 
     const industryAdditions = {
-      medical: '\n• HIPAA compliance maintained\n• Patient information protected\n• Healthcare privacy standards applied',
-      legal: '\n• Attorney-client privilege respected\n• Legal confidentiality maintained\n• Professional ethics compliance',
-      financial: '\n• Financial data protection\n• Regulatory compliance maintained\n• Audit trail preserved'
+      medical:
+        '\n• HIPAA compliance maintained\n• Patient information protected\n• Healthcare privacy standards applied',
+      legal:
+        '\n• Attorney-client privilege respected\n• Legal confidentiality maintained\n• Professional ethics compliance',
+      financial:
+        '\n• Financial data protection\n• Regulatory compliance maintained\n• Audit trail preserved',
     };
 
     return baseNotice + ((industryAdditions as any)[industry] || '');
@@ -377,13 +388,24 @@ export async function validateCallCompliance(
   userId: string,
   callerPhone?: string
 ): Promise<{ compliant: boolean; reason?: string; actions?: string[] }> {
-  return await privacyComplianceManager.validateCallCompliance(callSid, userId, callerPhone);
+  return await privacyComplianceManager.validateCallCompliance(
+    callSid,
+    userId,
+    callerPhone
+  );
 }
 
 export async function recordCallCompliance(
   callSid: string,
   userId: string,
-  consentMethod: 'keypad_activation' | 'explicit_consent' | 'implied_consent' = 'keypad_activation'
+  consentMethod:
+    | 'keypad_activation'
+    | 'explicit_consent'
+    | 'implied_consent' = 'keypad_activation'
 ): Promise<void> {
-  return await privacyComplianceManager.recordCallCompliance(callSid, userId, consentMethod);
+  return await privacyComplianceManager.recordCallCompliance(
+    callSid,
+    userId,
+    consentMethod
+  );
 }

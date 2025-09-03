@@ -16,13 +16,13 @@ export async function POST(request: NextRequest) {
   try {
     // Get user from session
     const supabase = createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Parse and validate request body
@@ -43,10 +43,9 @@ export async function POST(request: NextRequest) {
       url: session.url,
       tier: validatedData.tier,
     });
-
   } catch (error) {
     console.error('Checkout creation error:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid request data', details: error.errors },

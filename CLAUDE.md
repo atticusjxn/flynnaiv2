@@ -3,14 +3,17 @@
 ## 🎯 Project Overview
 
 ### Vision Statement
+
 Flynn.ai v2 is a universal AI-powered platform that transforms business phone calls into organized calendar events. We're building the future of call-to-calendar automation for 15+ million professionals across all industries.
 
 ### Strategic Mission
+
 **"Turn every business call into actionable calendar events within 2 minutes"**
 
 Replace manual scheduling friction with intelligent automation that adapts to any industry - from plumbers handling emergencies to real estate agents scheduling showings to lawyers managing consultations.
 
 ### Core Value Proposition
+
 - **Always-On Call Intelligence**: Every business call automatically processed and organized
 - **10-Second Setup**: Simple call forwarding - works with any phone, any carrier
 - **Universal Industry Support**: One platform adapts to all business types
@@ -20,9 +23,11 @@ Replace manual scheduling friction with intelligent automation that adapts to an
 - **Mobile-First**: Built for professionals who live on their phones
 
 ### Business Model
+
 **Tiered SaaS Pricing:**
+
 - **Basic ($29/month)**: AI Call Notes with email delivery
-- **Professional ($79/month)**: Advanced calendar/CRM integrations  
+- **Professional ($79/month)**: Advanced calendar/CRM integrations
 - **Enterprise ($149/month)**: Full job management with native app
 
 **Target Market Size**: 15M+ professionals across industries
@@ -31,6 +36,7 @@ Replace manual scheduling friction with intelligent automation that adapts to an
 ## 🏗️ Technical Architecture
 
 ### Technology Stack
+
 ```typescript
 // Frontend & Backend
 Framework: Next.js 14 with App Router
@@ -62,19 +68,21 @@ Payments: Stripe
 ```
 
 ### System Architecture
+
 ```
 [Customer Calls User] → [Call Forwarding] → [Flynn.ai Twilio Number] → [User's Phone]
          ↓                       ↓                      ↓                    ↓
 [Call Connects Immediately] → [AI Processing Check] → [Dashboard Toggle ON?] → [Normal Call]
-         ↓                       ↓                      ↓                    
+         ↓                       ↓                      ↓
 [AI Listens & Transcribes] → [Business Call Detection] → [Real-time Processing]
-         ↓                       ↓                      ↓                    
+         ↓                       ↓                      ↓
 [Event Extraction] → [Calendar Event Creation] → [SMS Summary Sent]
-         ↓                       ↓                      ↓                    
+         ↓                       ↓                      ↓
 [Dashboard Update] → [Email Summary] → [User Receives Organized Info]
 ```
 
 ### Core Data Models
+
 ```typescript
 // Primary Entities
 User → Industry Configuration → Business Rules
@@ -84,7 +92,7 @@ Communication → Email/SMS → Customer Tracking
 
 // Relationships
 User (1:many) Calls
-Call (1:many) Events  
+Call (1:many) Events
 Event (1:many) Communications
 User (1:many) Calendar Integrations
 Industry (1:many) Event Types
@@ -93,6 +101,7 @@ Industry (1:many) Event Types
 ## 🎨 Industry-Adaptive Design
 
 ### Always-On Call Intelligence
+
 ```typescript
 interface AlwaysOnCallFeatures {
   setup: {
@@ -101,21 +110,26 @@ interface AlwaysOnCallFeatures {
     user_experience: 'SMS with forwarding code, done forever';
     activation_time: 'Immediate - all calls processed automatically';
   };
-  
+
   automatic_processing: {
     audio_processing: 'Every call recorded and transcribed';
     ai_extraction: 'Automatic business call detection and processing';
     user_control: 'Dashboard toggle to enable/disable processing';
     caller_experience: 'Normal call experience, zero awareness of AI';
   };
-  
+
   post_call_delivery: {
     timeline: 'Within 2 minutes of call end';
-    deliverables: ['SMS summary', 'Professional email', 'Calendar events', '.ics file'];
+    deliverables: [
+      'SMS summary',
+      'Professional email',
+      'Calendar events',
+      '.ics file',
+    ];
     accuracy: '90%+ event extraction from full conversation';
     scope: 'All business-relevant calls automatically detected';
   };
-  
+
   technical_implementation: {
     call_forwarding: 'Standard telecom forwarding via Twilio';
     always_on_transcription: 'Full conversation Whisper processing';
@@ -127,52 +141,53 @@ interface AlwaysOnCallFeatures {
 ```
 
 ### Supported Industries & Event Types
+
 ```typescript
 interface IndustryMatrix {
   plumbing: {
     events: ['service_call', 'emergency', 'quote', 'follow_up'];
-    terminology: { appointment: 'service call', customer: 'customer' };
+    terminology: { appointment: 'service call'; customer: 'customer' };
     urgency: ['emergency', 'high', 'medium', 'low'];
     defaultDuration: 90; // minutes
     businessHours: '08:00-17:00 Mon-Sat';
   };
-  
+
   real_estate: {
     events: ['showing', 'meeting', 'inspection', 'closing'];
-    terminology: { service_call: 'property showing', customer: 'client' };
+    terminology: { service_call: 'property showing'; customer: 'client' };
     urgency: ['high', 'medium', 'low']; // no emergency
     defaultDuration: 45;
     businessHours: '09:00-18:00 Mon-Sun';
   };
-  
+
   legal: {
     events: ['consultation', 'meeting', 'court', 'deposition'];
-    terminology: { service_call: 'consultation', customer: 'client' };
+    terminology: { service_call: 'consultation'; customer: 'client' };
     urgency: ['emergency', 'high', 'medium', 'low'];
     defaultDuration: 60;
     businessHours: '09:00-17:00 Mon-Fri';
   };
-  
+
   medical: {
     events: ['appointment', 'consultation', 'follow_up', 'urgent'];
-    terminology: { customer: 'patient', service_call: 'appointment' };
+    terminology: { customer: 'patient'; service_call: 'appointment' };
     urgency: ['emergency', 'high', 'medium', 'low'];
     defaultDuration: 30;
     businessHours: '08:00-17:00 Mon-Fri';
     compliance: 'HIPAA';
   };
-  
+
   sales: {
     events: ['demo', 'discovery', 'follow_up', 'proposal'];
-    terminology: { customer: 'prospect', service_call: 'sales call' };
+    terminology: { customer: 'prospect'; service_call: 'sales call' };
     urgency: ['high', 'medium', 'low'];
     defaultDuration: 45;
     businessHours: '09:00-17:00 Mon-Fri';
   };
-  
+
   consulting: {
     events: ['consultation', 'strategy_session', 'workshop', 'check_in'];
-    terminology: { service_call: 'consultation', customer: 'client' };
+    terminology: { service_call: 'consultation'; customer: 'client' };
     urgency: ['high', 'medium', 'low'];
     defaultDuration: 90;
     businessHours: '09:00-17:00 Mon-Fri';
@@ -181,13 +196,14 @@ interface IndustryMatrix {
 ```
 
 ### AI Extraction Logic
+
 ```typescript
 interface ExtractionRules {
   // Universal Detection
   emergency_keywords: ['emergency', 'urgent', 'asap', 'right now'];
   time_patterns: ['tomorrow', 'next week', '2 PM', 'morning', 'afternoon'];
   location_patterns: ['at', 'address', 'street', 'avenue', 'drive'];
-  
+
   // Industry-Specific Classification
   industry_classification: {
     plumbing: {
@@ -196,7 +212,7 @@ interface ExtractionRules {
       location_critical: true;
       pricing_expected: true;
     };
-    
+
     real_estate: {
       service_indicators: ['show', 'see property', 'tour', 'list'];
       urgency_triggers: ['pre-approved', 'cash buyer', 'closing soon'];
@@ -204,7 +220,7 @@ interface ExtractionRules {
       pricing_expected: false; // handled differently
     };
   };
-  
+
   // Confidence Scoring
   confidence_factors: {
     explicit_time: 0.9; // "tomorrow at 2 PM"
@@ -220,6 +236,7 @@ interface ExtractionRules {
 ## 💻 Development Standards
 
 ### Code Organization
+
 ```
 flynnv2/
 ├── app/                    # Next.js 14 App Router
@@ -227,7 +244,7 @@ flynnv2/
 │   │   ├── login/         # Login page with Supabase Auth
 │   │   ├── register/      # Registration with industry selection
 │   │   └── logout/        # Logout handling
-│   ├── (dashboard)/       # Protected dashboard routes  
+│   ├── (dashboard)/       # Protected dashboard routes
 │   │   ├── dashboard/     # Main dashboard - call overview
 │   │   ├── calls/         # Call history and management
 │   │   │   └── [id]/      # Individual call details
@@ -358,6 +375,7 @@ flynnv2/
 ```
 
 ### Coding Conventions
+
 ```typescript
 // File Naming
 // Components: PascalCase (UserProfile.tsx)
@@ -375,7 +393,7 @@ export default function ComponentName({ ...props }: ComponentProps) {
   // State management
   // Event handlers
   // Render logic
-  
+
   return (
     // JSX with proper TypeScript types
   );
@@ -399,38 +417,39 @@ export async function GET(request: NextRequest) {
 export async function createEvent(eventData: CreateEventInput) {
   // Input validation
   const validatedData = CreateEventSchema.parse(eventData);
-  
+
   // Business logic
   const processedEvent = await processEventData(validatedData);
-  
+
   // Database operation with error handling
   const { data, error } = await supabase
     .from('events')
     .insert(processedEvent)
     .select()
     .single();
-    
+
   if (error) throw new DatabaseError(error.message);
   return data;
 }
 ```
 
 ### Testing Standards
+
 ```typescript
 // Test File Structure
 describe('Component/Function Name', () => {
   beforeEach(() => {
     // Setup code
   });
-  
+
   describe('Feature Group', () => {
     it('should do specific behavior', async () => {
       // Arrange
       const input = createTestData();
-      
+
       // Act
       const result = await functionUnderTest(input);
-      
+
       // Assert
       expect(result).toEqual(expectedOutput);
     });
@@ -447,6 +466,7 @@ describe('Component/Function Name', () => {
 ## 🤖 AI Processing Pipeline
 
 ### Always-On Processing Workflow
+
 ```typescript
 interface ProcessingPipeline {
   1. CallForwarded: {
@@ -454,37 +474,37 @@ interface ProcessingPipeline {
     action: 'Connect caller to user immediately';
     next: 'ProcessingCheck';
   };
-  
+
   2. ProcessingCheck: {
     trigger: 'Call connected';
     action: 'Check user dashboard AI toggle setting';
     next: 'ConditionalProcessing';
   };
-  
+
   3. ConditionalProcessing: {
     condition: 'AI_PROCESSING_ENABLED';
     when_enabled: 'StartAutomaticTranscription';
     when_disabled: 'PassThroughCall';
   };
-  
+
   4. StartAutomaticTranscription: {
     trigger: 'AI processing enabled';
     action: 'Begin full-call Whisper transcription';
     next: 'ContinuousProcessing';
   };
-  
+
   5. ContinuousProcessing: {
     trigger: 'Real-time audio stream';
     action: 'Process full conversation with AI';
     next: 'CallEndDetection';
   };
-  
+
   6. CallEndDetection: {
     trigger: 'Call disconnection';
     action: 'Finalize full conversation processing';
     next: 'BusinessCallDetection';
   };
-  
+
   7. BusinessCallDetection: {
     process: [
       'Determine if call was business-related',
@@ -493,19 +513,19 @@ interface ProcessingPipeline {
     ];
     next: 'EventExtraction';
   };
-  
+
   8. EventExtraction: {
     process: [
       'Industry classification',
       'Event type detection',
-      'Time/date extraction', 
+      'Time/date extraction',
       'Location identification',
       'Customer info parsing',
       'Urgency assessment'
     ];
     next: 'ValidationAndConfidence';
   };
-  
+
   9. ValidationAndConfidence: {
     process: [
       'Confidence scoring',
@@ -515,12 +535,12 @@ interface ProcessingPipeline {
     ];
     next: 'DatabaseStorage';
   };
-  
+
   10. DatabaseStorage: {
     action: 'Store call and events';
     triggers: ['SMSGeneration', 'EmailGeneration', 'CalendarCreation'];
   };
-  
+
   11. SMSGeneration: {
     process: [
       'Create concise SMS summary',
@@ -529,7 +549,7 @@ interface ProcessingPipeline {
     ];
     next: 'SMSDelivery';
   };
-  
+
   12. SMSDelivery: {
     action: 'Send via Twilio SMS';
     success: 'NotifySuccess';
@@ -539,6 +559,7 @@ interface ProcessingPipeline {
 ```
 
 ### AI Prompt Engineering
+
 ```typescript
 // Universal Base Prompt
 const BASE_SYSTEM_PROMPT = `
@@ -546,7 +567,7 @@ You are Flynn.ai, an expert AI assistant specializing in analyzing business phon
 
 CORE RESPONSIBILITIES:
 1. Extract ALL time-sensitive events mentioned in the call
-2. Classify events appropriately for the business context  
+2. Classify events appropriately for the business context
 3. Generate professional summaries for email communication
 4. Assess urgency and follow-up requirements
 5. Structure data for calendar integration
@@ -583,7 +604,7 @@ TERMINOLOGY:
 - "take a look" or "estimate" = quote
 - "emergency" or "urgent" = emergency
   `;
-  
+
   real_estate: `
 INDUSTRY CONTEXT: Real Estate
 FOCUS AREAS:
@@ -600,65 +621,66 @@ URGENCY CLASSIFICATION:
 
 TERMINOLOGY:
 - "showing" or "tour" = meeting
-- "walk through" = inspection  
+- "walk through" = inspection
 - "look at properties" = meeting
   `;
 };
 ```
 
 ### Confidence Scoring Algorithm
+
 ```typescript
 interface ConfidenceFactors {
   // Time Information Quality
   explicit_datetime: 0.95; // "January 15th at 2 PM"
-  relative_time: 0.85;     // "tomorrow morning"
-  vague_time: 0.6;         // "sometime this week"
-  no_time: 0.3;            // "we should meet"
-  
-  // Location Information Quality  
-  full_address: 0.95;      // "123 Main St, City, State"
-  partial_address: 0.8;    // "Main Street" 
-  general_location: 0.6;   // "downtown"
-  no_location: 0.4;        // missing location
-  
+  relative_time: 0.85; // "tomorrow morning"
+  vague_time: 0.6; // "sometime this week"
+  no_time: 0.3; // "we should meet"
+
+  // Location Information Quality
+  full_address: 0.95; // "123 Main St, City, State"
+  partial_address: 0.8; // "Main Street"
+  general_location: 0.6; // "downtown"
+  no_location: 0.4; // missing location
+
   // Customer Information Quality
-  full_contact: 0.9;       // name + phone + email
-  partial_contact: 0.7;    // name + phone OR name + email  
-  name_only: 0.6;          // just name mentioned
-  no_contact: 0.3;         // anonymous caller
-  
+  full_contact: 0.9; // name + phone + email
+  partial_contact: 0.7; // name + phone OR name + email
+  name_only: 0.6; // just name mentioned
+  no_contact: 0.3; // anonymous caller
+
   // Event Description Quality
-  specific_task: 0.9;      // "fix kitchen sink leak"
-  general_task: 0.7;       // "plumbing repair"
-  vague_task: 0.5;         // "take a look"
-  
+  specific_task: 0.9; // "fix kitchen sink leak"
+  general_task: 0.7; // "plumbing repair"
+  vague_task: 0.5; // "take a look"
+
   // Industry Context Match
-  perfect_match: 0.95;     // clearly fits industry patterns
-  good_match: 0.8;         // mostly fits patterns
-  poor_match: 0.5;         // doesn't clearly fit
+  perfect_match: 0.95; // clearly fits industry patterns
+  good_match: 0.8; // mostly fits patterns
+  poor_match: 0.5; // doesn't clearly fit
 }
 
 function calculateEventConfidence(extractedEvent: ExtractedEvent): number {
   let confidence = 1.0;
-  
+
   // Apply time factor
   confidence *= getTimeFactor(extractedEvent.proposedDateTime);
-  
-  // Apply location factor  
+
+  // Apply location factor
   confidence *= getLocationFactor(extractedEvent.location);
-  
+
   // Apply customer info factor
   confidence *= getCustomerInfoFactor(extractedEvent);
-  
+
   // Apply task description factor
   confidence *= getTaskDescriptionFactor(extractedEvent.description);
-  
+
   // Apply industry context factor
   confidence *= getIndustryContextFactor(extractedEvent, industry);
-  
+
   // Apply transcription quality factor
   confidence *= extractedEvent.transcriptionConfidence || 0.8;
-  
+
   return Math.min(confidence, 1.0);
 }
 ```
@@ -666,6 +688,7 @@ function calculateEventConfidence(extractedEvent: ExtractedEvent): number {
 ## 📧 Email System Architecture
 
 ### Template Hierarchy
+
 ```typescript
 interface EmailTemplateSystem {
   BaseEmailLayout: {
@@ -674,40 +697,40 @@ interface EmailTemplateSystem {
     styling: 'Mobile-first responsive';
     branding: 'Flynn.ai + Company name';
   };
-  
+
   CallOverviewEmail: {
     // Main email template
     sections: [
-      'CallSummaryCard',  // Topic, caller info, duration
-      'ExtractedEvents',  // Event cards with actions
-      'ActionButtons',    // Dashboard + transcript links
-      'IndustryFooter'    // Industry-specific help text
+      'CallSummaryCard', // Topic, caller info, duration
+      'ExtractedEvents', // Event cards with actions
+      'ActionButtons', // Dashboard + transcript links
+      'IndustryFooter', // Industry-specific help text
     ];
     adaptations: 'Industry-specific terminology';
   };
-  
+
   EventCard: {
     // Individual event display
     elements: [
-      'EventTitle',       // AI-generated title
-      'EventMetadata',    // Type, time, location, urgency
-      'CustomerInfo',     // Contact details
-      'PriceEstimate',    // If applicable
-      'QuickActions'      // Confirm, Edit, Follow-up buttons
+      'EventTitle', // AI-generated title
+      'EventMetadata', // Type, time, location, urgency
+      'CustomerInfo', // Contact details
+      'PriceEstimate', // If applicable
+      'QuickActions', // Confirm, Edit, Follow-up buttons
     ];
     styling: 'Urgency-based color coding';
   };
-  
+
   IndustryAdaptations: {
     plumbing: {
       terminology: { appointment: 'service call' };
-      colors: { primary: '#1e40af', emergency: '#dc2626' };
+      colors: { primary: '#1e40af'; emergency: '#dc2626' };
       helpText: 'Click any service request to confirm timing...';
     };
-    
+
     real_estate: {
       terminology: { service_call: 'showing' };
-      colors: { primary: '#059669', urgent: '#f59e0b' };
+      colors: { primary: '#059669'; urgent: '#f59e0b' };
       helpText: 'Manage your showings and client meetings...';
     };
   };
@@ -715,35 +738,47 @@ interface EmailTemplateSystem {
 ```
 
 ### Email Generation Process
+
 ```typescript
-async function generateCallOverviewEmail(callData: CallRecord): Promise<EmailData> {
+async function generateCallOverviewEmail(
+  callData: CallRecord
+): Promise<EmailData> {
   // 1. Industry Detection & Configuration
-  const industry = await detectIndustry(callData.userId, callData.transcription);
+  const industry = await detectIndustry(
+    callData.userId,
+    callData.transcription
+  );
   const config = getIndustryConfiguration(industry);
-  
+
   // 2. Template Selection & Adaptation
   const templateId = selectEmailTemplate(industry, callData.events.length);
   const terminology = adaptTerminology(config.terminology);
-  
+
   // 3. Content Generation
   const emailContent = {
-    subject: generateSubjectLine(callData.mainTopic, callData.callerName, industry),
+    subject: generateSubjectLine(
+      callData.mainTopic,
+      callData.callerName,
+      industry
+    ),
     callSummary: formatCallSummary(callData, terminology),
-    events: callData.events.map(event => formatEventCard(event, config)),
+    events: callData.events.map((event) => formatEventCard(event, config)),
     industryInsights: generateIndustryInsights(callData, industry),
-    actionUrls: generateDeepLinks(callData.id, callData.events)
+    actionUrls: generateDeepLinks(callData.id, callData.events),
   };
-  
+
   // 4. Attachment Generation
   const attachments = await generateEventAttachments(callData.events);
-  
+
   // 5. Render Final Email
-  const emailHtml = render(CallOverviewEmail({
-    ...emailContent,
-    companyName: callData.user.companyName,
-    industry: industry
-  }));
-  
+  const emailHtml = render(
+    CallOverviewEmail({
+      ...emailContent,
+      companyName: callData.user.companyName,
+      industry: industry,
+    })
+  );
+
   return {
     html: emailHtml,
     attachments: attachments,
@@ -751,8 +786,8 @@ async function generateCallOverviewEmail(callData: CallRecord): Promise<EmailDat
     metadata: {
       callId: callData.id,
       industry: industry,
-      eventCount: callData.events.length
-    }
+      eventCount: callData.events.length,
+    },
   };
 }
 ```
@@ -760,32 +795,47 @@ async function generateCallOverviewEmail(callData: CallRecord): Promise<EmailDat
 ## 📅 Calendar Integration Strategy
 
 ### Universal Calendar Interface
+
 ```typescript
 interface UniversalCalendarProvider {
   // Provider Identification
   providerType: 'google' | 'outlook' | 'apple' | 'caldav';
   displayName: string;
   iconUrl: string;
-  
+
   // Authentication
   authenticate(authCode: string): Promise<CalendarIntegration>;
   refreshToken(integration: CalendarIntegration): Promise<CalendarIntegration>;
-  
+
   // Calendar Operations
   listCalendars(integration: CalendarIntegration): Promise<Calendar[]>;
-  syncEvent(integration: CalendarIntegration, event: EventData): Promise<string>;
-  updateEvent(integration: CalendarIntegration, eventId: string, event: EventData): Promise<void>;
+  syncEvent(
+    integration: CalendarIntegration,
+    event: EventData
+  ): Promise<string>;
+  updateEvent(
+    integration: CalendarIntegration,
+    eventId: string,
+    event: EventData
+  ): Promise<void>;
   deleteEvent(integration: CalendarIntegration, eventId: string): Promise<void>;
-  
+
   // Conflict Detection
-  checkConflicts(integration: CalendarIntegration, event: EventData): Promise<ConflictInfo[]>;
-  
+  checkConflicts(
+    integration: CalendarIntegration,
+    event: EventData
+  ): Promise<ConflictInfo[]>;
+
   // Event Retrieval
-  getEvents(integration: CalendarIntegration, timeRange: TimeRange): Promise<CalendarEvent[]>;
+  getEvents(
+    integration: CalendarIntegration,
+    timeRange: TimeRange
+  ): Promise<CalendarEvent[]>;
 }
 ```
 
 ### Smart Conflict Resolution
+
 ```typescript
 interface ConflictResolutionSystem {
   detection: {
@@ -794,24 +844,24 @@ interface ConflictResolutionSystem {
     adjacent: 'Back-to-back meetings without buffer';
     resource: 'Double-booked resources or staff';
   };
-  
+
   resolution_strategies: {
     suggest_alternatives: 'Offer nearby available times';
     auto_reschedule: 'Automatically move less important events';
     buffer_adjustment: 'Reduce buffer times if acceptable';
     user_confirmation: 'Ask user to manually resolve';
   };
-  
+
   industry_considerations: {
     plumbing: {
       travel_time_default: 15; // minutes between service calls
       emergency_override: true; // emergencies can override conflicts
-      location_critical: true;  // must consider service addresses
+      location_critical: true; // must consider service addresses
     };
-    
+
     real_estate: {
       travel_time_default: 20; // longer travel between properties
-      showing_buffer: 15;      // buffer between showings
+      showing_buffer: 15; // buffer between showings
       client_priority: 'qualified_buyers_first';
     };
   };
@@ -821,6 +871,7 @@ interface ConflictResolutionSystem {
 ## 🔒 Security & Compliance
 
 ### Security Framework
+
 ```typescript
 interface SecurityRequirements {
   authentication: {
@@ -829,20 +880,20 @@ interface SecurityRequirements {
     password_policy: 'Minimum 8 chars, complexity required';
     mfa_support: 'TOTP and SMS backup';
   };
-  
+
   authorization: {
     row_level_security: 'All database tables protected';
     api_permissions: 'Role-based access control';
     resource_isolation: 'Users only access own data';
   };
-  
+
   data_protection: {
     encryption_at_rest: 'Supabase native encryption';
     encryption_in_transit: 'TLS 1.3 for all connections';
     api_key_encryption: 'AES-256 for stored API keys';
     pii_handling: 'Minimal collection, secure storage';
   };
-  
+
   api_security: {
     rate_limiting: '1000 req/hour per user, 10/min for webhooks';
     webhook_verification: 'Signature validation for all webhooks';
@@ -853,6 +904,7 @@ interface SecurityRequirements {
 ```
 
 ### Industry Compliance
+
 ```typescript
 interface ComplianceFramework {
   medical_hipaa: {
@@ -861,13 +913,13 @@ interface ComplianceFramework {
     encryption_required: 'End-to-end for patient data';
     user_training: 'HIPAA awareness documentation';
   };
-  
+
   legal_privilege: {
     attorney_client: 'Mark privileged communications';
     conflict_checking: 'Basic conflict awareness';
     retention_policies: 'Configurable data retention';
   };
-  
+
   gdpr_ccpa: {
     data_portability: 'Export user data functionality';
     right_to_deletion: 'Complete data removal';
@@ -880,6 +932,7 @@ interface ComplianceFramework {
 ## 📊 Analytics & Monitoring
 
 ### Key Performance Indicators
+
 ```typescript
 interface BusinessMetrics {
   // Core Performance
@@ -888,26 +941,26 @@ interface BusinessMetrics {
     measurement: 'webhook_received → email_sent';
     alerting: '> 5 minutes triggers alert';
   };
-  
+
   ai_extraction_accuracy: {
     target: '90%+ event extraction accuracy';
     measurement: 'user_corrections / total_extractions';
     improvement: 'feedback_loop → prompt_optimization';
   };
-  
+
   conversion_rates: {
     extracted_to_confirmed: 'How many AI events become real appointments';
     email_open_rate: 'Professional email engagement';
     calendar_sync_success: 'Integration reliability';
   };
-  
+
   // Business Growth
   user_retention: {
     weekly_active: 'Users processing calls weekly';
     monthly_retention: 'Subscription retention rate';
     feature_adoption: 'Calendar sync, bulk actions usage';
   };
-  
+
   // Technical Health
   system_uptime: {
     target: '99.9% uptime';
@@ -918,6 +971,7 @@ interface BusinessMetrics {
 ```
 
 ### Real-time Monitoring
+
 ```typescript
 interface MonitoringSystem {
   application_monitoring: {
@@ -925,14 +979,14 @@ interface MonitoringSystem {
     performance: 'Vercel analytics for page load times';
     user_behavior: 'PostHog for product analytics';
   };
-  
+
   business_monitoring: {
     ai_processing: 'OpenAI API success/failure rates';
     email_delivery: 'Resend delivery and bounce rates';
     calendar_sync: 'Integration success rates by provider';
     webhook_health: 'Twilio webhook reliability';
   };
-  
+
   alerting_rules: {
     critical: 'System down, AI processing failed';
     warning: 'High error rate, slow response time';
@@ -944,6 +998,7 @@ interface MonitoringSystem {
 ## 🚀 Development Roadmap
 
 ### MVP Definition (Phase 1-2)
+
 ```typescript
 interface MVPFeatures {
   core_functionality: [
@@ -952,46 +1007,47 @@ interface MVPFeatures {
     'Professional email delivery',
     'Basic dashboard with event management',
     'Google Calendar integration',
-    'ICS file generation'
+    'ICS file generation',
   ];
-  
+
   success_criteria: [
     '< 2 minute call-to-email delivery',
     '85%+ AI extraction accuracy',
     'Mobile-responsive interface',
     'Successful payment processing',
-    '99% uptime for 30 days'
+    '99% uptime for 30 days',
   ];
-  
+
   launch_timeline: '6-8 weeks for solo developer';
 }
 ```
 
 ### Post-MVP Roadmap (Phase 3-5)
+
 ```typescript
 interface GrowthFeatures {
   quarter_1: [
     'Outlook calendar integration',
-    'SMS customer notifications', 
+    'SMS customer notifications',
     'Advanced analytics dashboard',
     'Bulk event management',
-    'API rate limiting and caching'
+    'API rate limiting and caching',
   ];
-  
+
   quarter_2: [
     'Mobile PWA optimization',
     'Team collaboration features',
     'Advanced search and filtering',
     'Custom industry configurations',
-    'Webhook API for integrations'
+    'Webhook API for integrations',
   ];
-  
+
   quarter_3: [
     'Native mobile app (React Native)',
     'Advanced AI features (sentiment, follow-up)',
     'Enterprise SSO and compliance',
     'White-label solutions',
-    'Advanced calendar conflict resolution'
+    'Advanced calendar conflict resolution',
   ];
 }
 ```
@@ -999,6 +1055,7 @@ interface GrowthFeatures {
 ## 💰 Business Considerations
 
 ### Pricing Strategy Implementation
+
 ```typescript
 interface SubscriptionTiers {
   basic: {
@@ -1008,11 +1065,11 @@ interface SubscriptionTiers {
       'Professional email delivery',
       'Basic calendar integration (ICS files)',
       '100 calls per month',
-      'Email support'
+      'Email support',
     ];
     target: 'Solo professionals, small contractors';
   };
-  
+
   professional: {
     price: 79;
     features: [
@@ -1021,11 +1078,11 @@ interface SubscriptionTiers {
       'SMS customer notifications',
       'Bulk event management',
       '500 calls per month',
-      'Priority support'
+      'Priority support',
     ];
     target: 'Growing businesses, real estate teams';
   };
-  
+
   enterprise: {
     price: 149;
     features: [
@@ -1034,7 +1091,7 @@ interface SubscriptionTiers {
       'Custom industry configurations',
       'Team collaboration',
       'API access',
-      'Dedicated support'
+      'Dedicated support',
     ];
     target: 'Large organizations, franchise operations';
   };
@@ -1042,6 +1099,7 @@ interface SubscriptionTiers {
 ```
 
 ### Go-to-Market Strategy
+
 ```typescript
 interface GTMStrategy {
   phase_1_launch: {
@@ -1050,13 +1108,13 @@ interface GTMStrategy {
     channels: ['Google Ads', 'Industry forums', 'Trade publications'];
     messaging: 'Never miss another service call appointment';
   };
-  
+
   phase_2_expansion: {
     industries: ['real_estate', 'legal', 'medical'];
     features: 'Industry-specific optimizations';
     partnerships: 'CRM integrations, trade associations';
   };
-  
+
   phase_3_scale: {
     international: 'Multi-language support';
     enterprise: 'Team features, compliance, SSO';
@@ -1064,8 +1122,10 @@ interface GTMStrategy {
   };
 }
 ```
+
 @@ -144,16 +144,129 @@ import ErrorFallback from "@/components/ErrorFallback";
-```
+
+````
 
 **ErrorBoundary Features**:
 
@@ -1077,7 +1137,7 @@ interface GTMStrategy {
 **ErrorFallback Variants**:
 
 - `default` - Full error display with actions
-- `minimal` - Compact inline error message  
+- `minimal` - Compact inline error message
 - `minimal` - Compact inline error message
 - `detailed` - Includes error stack trace in development
 
@@ -1131,7 +1191,7 @@ mcp__playwright__browser_snapshot(); // Accessibility check
 mcp__playwright__browser_wait_for(
   text / element
 ); // Ensure loading
-```
+````
 
 ### Design Compliance Checklist
 
@@ -1175,36 +1235,41 @@ When implementing UI features, verify:
 
 Requires these environment variables:
 @@ -164,9 +277,8 @@ Requires these environment variables:
+
 - Cloudinary configuration
 - Email service credentials (Resend)
 
 [byterover-mcp]
 
 # important
+
 ## Additional Context
 
 always use byterover-retrive-knowledge tool to get the related context before any tasks
 always use byterover-store-knowledge to store all the critical informations after sucessful tasks
+
 - Design review agent configuration: `/.claude/agents/design-review-agent.md`
 - Design principles checklist: `/context/design-principles.md`
 - Custom slash commands: `/context/design-review-slash-command.md`
 
-
 ## 🎯 Success Metrics & KPIs
 
 ### Technical Success Metrics
+
 - **AI Accuracy**: 90%+ event extraction accuracy across all industries
 - **System Performance**: < 2 minute call-to-email delivery, 99.9% uptime
 - **Integration Reliability**: 95%+ calendar sync success rate
 - **User Experience**: < 3 second page load times, mobile-first responsiveness
 
-### Business Success Metrics  
+### Business Success Metrics
+
 - **User Adoption**: 1,000+ paying customers within 6 months
 - **Revenue Growth**: $50K+ MRR within 12 months
 - **Customer Satisfaction**: 4.5+ star average rating, < 5% churn rate
 - **Market Validation**: 3+ industries with proven product-market fit
 
 ### Operational Success Metrics
+
 - **Support Efficiency**: < 2 hour response time, self-service success rate
 - **Development Velocity**: Weekly feature releases, < 1 day bug fix time
 - **Cost Management**: < 30% of revenue on infrastructure and AI processing
@@ -1227,6 +1292,7 @@ When working on Flynn.ai v2, always:
 9. **No Emojis**: Do not use emojis in code, UI components, or user-facing text. Keep the interface professional and clean.
 
 ### Common Tasks:
+
 - **Adding New Industry**: Update industry configurations, AI prompts, email templates
 - **API Changes**: Update API_STRUCTURE.md and ensure backward compatibility
 - **UI Updates**: Maintain mobile-first responsive design principles
@@ -1234,8 +1300,9 @@ When working on Flynn.ai v2, always:
 - **AI Improvements**: Test thoroughly across all industries before deploying
 
 ### Quick Reference:
+
 - **Database Types**: `/types/database.types.ts`
-- **API Routes**: `/app/api/`  
+- **API Routes**: `/app/api/`
 - **Industry Configs**: `/lib/industry/configurations.ts`
 - **Email Templates**: `/components/email-templates/`
 - **AI Prompts**: `/lib/ai/prompts/`

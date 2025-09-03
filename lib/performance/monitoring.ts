@@ -68,7 +68,7 @@ export class PerformanceMonitor {
       const end = process.hrtime.bigint();
       const duration = Number(end - start) / 1000000; // Convert to milliseconds
       const endCpu = process.cpuUsage(startCpu);
-      
+
       // Record performance metrics
       const metric: PerformanceMetrics = {
         timestamp: Date.now(),
@@ -89,7 +89,10 @@ export class PerformanceMonitor {
       }
 
       // Alert on high memory usage (>512MB)
-      if (metric.memoryUsage && metric.memoryUsage.heapUsed > 512 * 1024 * 1024) {
+      if (
+        metric.memoryUsage &&
+        metric.memoryUsage.heapUsed > 512 * 1024 * 1024
+      ) {
         this.alertHighMemoryUsage(metric);
       }
     }
@@ -102,7 +105,7 @@ export class PerformanceMonitor {
    */
   private recordMetric(metric: PerformanceMetrics) {
     this.metrics.push(metric);
-    
+
     // Keep only the last N metrics to prevent memory leaks
     if (this.metrics.length > this.maxMetrics) {
       this.metrics = this.metrics.slice(-this.maxMetrics);
@@ -114,13 +117,16 @@ export class PerformanceMonitor {
    */
   async getSystemHealth(): Promise<SystemHealth> {
     const now = Date.now();
-    const recentMetrics = this.metrics.filter(m => now - m.timestamp < 60000); // Last minute
-    
-    const avgResponseTime = recentMetrics.length > 0
-      ? recentMetrics.reduce((sum, m) => sum + m.duration, 0) / recentMetrics.length
-      : 0;
+    const recentMetrics = this.metrics.filter((m) => now - m.timestamp < 60000); // Last minute
 
-    const errorRate = this.requestCount > 0 ? (this.errorCount / this.requestCount) * 100 : 0;
+    const avgResponseTime =
+      recentMetrics.length > 0
+        ? recentMetrics.reduce((sum, m) => sum + m.duration, 0) /
+          recentMetrics.length
+        : 0;
+
+    const errorRate =
+      this.requestCount > 0 ? (this.errorCount / this.requestCount) * 100 : 0;
     const throughput = recentMetrics.length; // Requests per minute
     const uptime = (now - this.startTime) / 1000; // Seconds
 
@@ -136,7 +142,7 @@ export class PerformanceMonitor {
 
     const healthyChecks = Object.values(checks).filter(Boolean).length;
     const totalChecks = Object.values(checks).length;
-    
+
     let status: SystemHealth['status'] = 'healthy';
     if (healthyChecks < totalChecks) {
       status = healthyChecks < totalChecks * 0.5 ? 'unhealthy' : 'degraded';
@@ -158,9 +164,10 @@ export class PerformanceMonitor {
   /**
    * Get performance analytics
    */
-  getAnalytics(timeRange: number = 3600000) { // Default: 1 hour
+  getAnalytics(timeRange: number = 3600000) {
+    // Default: 1 hour
     const cutoff = Date.now() - timeRange;
-    const relevantMetrics = this.metrics.filter(m => m.timestamp > cutoff);
+    const relevantMetrics = this.metrics.filter((m) => m.timestamp > cutoff);
 
     if (relevantMetrics.length === 0) {
       return {
@@ -175,22 +182,30 @@ export class PerformanceMonitor {
     }
 
     // Sort by duration for percentile calculations
-    const sortedByDuration = [...relevantMetrics].sort((a, b) => a.duration - b.duration);
+    const sortedByDuration = [...relevantMetrics].sort(
+      (a, b) => a.duration - b.duration
+    );
     const p95Index = Math.floor(sortedByDuration.length * 0.95);
-    
+
     // Group by route for route analytics
-    const routeStats = relevantMetrics.reduce((acc, metric) => {
-      const key = `${metric.method} ${metric.route}`;
-      if (!acc[key]) {
-        acc[key] = { count: 0, totalDuration: 0, errors: 0 };
-      }
-      acc[key].count++;
-      acc[key].totalDuration += metric.duration;
-      if (metric.status >= 400) {
-        acc[key].errors++;
-      }
-      return acc;
-    }, {} as Record<string, { count: number; totalDuration: number; errors: number }>);
+    const routeStats = relevantMetrics.reduce(
+      (acc, metric) => {
+        const key = `${metric.method} ${metric.route}`;
+        if (!acc[key]) {
+          acc[key] = { count: 0, totalDuration: 0, errors: 0 };
+        }
+        acc[key].count++;
+        acc[key].totalDuration += metric.duration;
+        if (metric.status >= 400) {
+          acc[key].errors++;
+        }
+        return acc;
+      },
+      {} as Record<
+        string,
+        { count: number; totalDuration: number; errors: number }
+      >
+    );
 
     const slowestRoutes = Object.entries(routeStats)
       .map(([route, stats]) => ({
@@ -212,10 +227,17 @@ export class PerformanceMonitor {
 
     return {
       totalRequests: relevantMetrics.length,
-      avgResponseTime: relevantMetrics.reduce((sum, m) => sum + m.duration, 0) / relevantMetrics.length,
-      medianResponseTime: sortedByDuration[Math.floor(sortedByDuration.length / 2)]?.duration || 0,
+      avgResponseTime:
+        relevantMetrics.reduce((sum, m) => sum + m.duration, 0) /
+        relevantMetrics.length,
+      medianResponseTime:
+        sortedByDuration[Math.floor(sortedByDuration.length / 2)]?.duration ||
+        0,
       p95ResponseTime: sortedByDuration[p95Index]?.duration || 0,
-      errorRate: (relevantMetrics.filter(m => m.status >= 400).length / relevantMetrics.length) * 100,
+      errorRate:
+        (relevantMetrics.filter((m) => m.status >= 400).length /
+          relevantMetrics.length) *
+        100,
       slowestRoutes,
       mostUsedRoutes,
     };
@@ -225,7 +247,11 @@ export class PerformanceMonitor {
     try {
       const { createClient } = await import('@/utils/supabase/server');
       const supabase = createClient();
-      const { error } = await supabase.from('users').select('id').limit(1).single();
+      const { error } = await supabase
+        .from('users')
+        .select('id')
+        .limit(1)
+        .single();
       return !error || error.code === 'PGRST116'; // No rows found is OK for health check
     } catch {
       return false;
@@ -244,7 +270,8 @@ export class PerformanceMonitor {
 
   private async checkTwilio(): Promise<boolean> {
     try {
-      if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) return false;
+      if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN)
+        return false;
       return true; // Basic env var check
     } catch {
       return false;
@@ -264,7 +291,7 @@ export class PerformanceMonitor {
     try {
       const memUsage = process.memoryUsage();
       // Alert if heap usage is over 80% of 512MB (our typical container limit)
-      return memUsage.heapUsed < (512 * 1024 * 1024 * 0.8);
+      return memUsage.heapUsed < 512 * 1024 * 1024 * 0.8;
     } catch {
       return false;
     }
@@ -286,8 +313,10 @@ export class PerformanceMonitor {
   }
 
   private alertSlowRequest(metric: PerformanceMetrics) {
-    console.warn(`🐌 Slow request detected: ${metric.method} ${metric.route} took ${metric.duration.toFixed(2)}ms`);
-    
+    console.warn(
+      `🐌 Slow request detected: ${metric.method} ${metric.route} took ${metric.duration.toFixed(2)}ms`
+    );
+
     // In production, send to monitoring service
     if (process.env.NODE_ENV === 'production') {
       this.sendAlert('slow_request', {
@@ -300,9 +329,13 @@ export class PerformanceMonitor {
   }
 
   private alertHighMemoryUsage(metric: PerformanceMetrics) {
-    const memMB = metric.memoryUsage ? Math.round(metric.memoryUsage.heapUsed / 1024 / 1024) : 0;
-    console.warn(`🔥 High memory usage detected: ${memMB}MB on ${metric.method} ${metric.route}`);
-    
+    const memMB = metric.memoryUsage
+      ? Math.round(metric.memoryUsage.heapUsed / 1024 / 1024)
+      : 0;
+    console.warn(
+      `🔥 High memory usage detected: ${memMB}MB on ${metric.method} ${metric.route}`
+    );
+
     if (process.env.NODE_ENV === 'production') {
       this.sendAlert('high_memory', {
         route: metric.route,

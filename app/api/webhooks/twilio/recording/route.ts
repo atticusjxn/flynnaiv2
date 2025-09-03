@@ -14,11 +14,14 @@ export async function POST(request: NextRequest) {
       callSid,
       recordingSid,
       recordingUrl,
-      recordingDuration
+      recordingDuration,
     });
 
     if (!callSid || !recordingUrl) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
     }
 
     // Update the call record with recording information
@@ -26,12 +29,12 @@ export async function POST(request: NextRequest) {
       recording_url: recordingUrl,
       recording_sid: recordingSid,
       duration: recordingDuration ? parseInt(recordingDuration) : null,
-      status: 'recorded'
+      status: 'recorded',
     });
 
     // Trigger AI processing pipeline
     console.log('Call recording completed, starting AI processing:', callSid);
-    
+
     // Import and trigger the AI extraction pipeline
     await import('@/lib/ai/AIExtractionPipeline').then(async (module) => {
       try {
@@ -42,9 +45,11 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({ success: true });
-
   } catch (error) {
     console.error('Recording webhook error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

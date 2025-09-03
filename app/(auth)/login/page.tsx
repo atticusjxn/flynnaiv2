@@ -10,7 +10,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const { signIn, user, loading } = useAuthContext();
   const router = useRouter();
 
@@ -64,11 +64,14 @@ export default function LoginPage() {
             Transform your business calls into organized calendar events
           </p>
         </div>
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="email-address" className="block text-sm font-medium text-foreground">
+              <label
+                htmlFor="email-address"
+                className="block text-sm font-medium text-foreground"
+              >
                 Email address
               </label>
               <input
@@ -85,7 +88,10 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-foreground">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-foreground"
+              >
                 Password
               </label>
               <input

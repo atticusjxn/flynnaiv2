@@ -15,10 +15,7 @@ export async function POST(request: NextRequest) {
 
     if (!signature) {
       console.error('Missing Stripe signature');
-      return NextResponse.json(
-        { error: 'Missing signature' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
     }
 
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -37,38 +34,38 @@ export async function POST(request: NextRequest) {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err) {
       console.error('Webhook signature verification failed:', err);
-      return NextResponse.json(
-        { error: 'Invalid signature' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
     }
 
     // Handle the event
     try {
       await handleWebhookEvent(event);
-      
-      console.log(`Successfully handled webhook event: ${event.type} (${event.id})`);
-      
+
+      console.log(
+        `Successfully handled webhook event: ${event.type} (${event.id})`
+      );
+
       return NextResponse.json({
         received: true,
         event: event.type,
         id: event.id,
       });
-      
     } catch (handlerError) {
-      console.error(`Failed to handle webhook event ${event.type}:`, handlerError);
-      
+      console.error(
+        `Failed to handle webhook event ${event.type}:`,
+        handlerError
+      );
+
       // Return 500 so Stripe will retry
       return NextResponse.json(
-        { 
+        {
           error: 'Failed to process event',
           event: event.type,
-          id: event.id 
+          id: event.id,
         },
         { status: 500 }
       );
     }
-
   } catch (error) {
     console.error('Webhook processing error:', error);
     return NextResponse.json(

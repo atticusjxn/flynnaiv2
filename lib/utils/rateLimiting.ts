@@ -70,9 +70,12 @@ class MemoryStore {
 const store = new MemoryStore();
 
 // Cleanup expired entries every 5 minutes
-setInterval(() => {
-  store.cleanup();
-}, 5 * 60 * 1000);
+setInterval(
+  () => {
+    store.cleanup();
+  },
+  5 * 60 * 1000
+);
 
 export class RateLimiter {
   private config: Required<RateLimitConfig>;
@@ -117,7 +120,9 @@ export class RateLimiter {
       limit: this.config.maxRequests,
       remaining,
       resetTime,
-      retryAfter: allowed ? undefined : Math.ceil((entry.resetTime - Date.now()) / 1000),
+      retryAfter: allowed
+        ? undefined
+        : Math.ceil((entry.resetTime - Date.now()) / 1000),
     };
   }
 
@@ -222,7 +227,7 @@ export function withRateLimit(limiter: RateLimiter) {
 
     // Add rate limit headers to successful responses
     const response = await handler(request);
-    
+
     response.headers.set('X-RateLimit-Limit', result.limit.toString());
     response.headers.set('X-RateLimit-Remaining', result.remaining.toString());
     response.headers.set('X-RateLimit-Reset', result.resetTime.toISOString());
@@ -286,7 +291,9 @@ export function getRateLimiterForTier(
     maxRequests: config.maxRequests,
     keyGenerator: (req) => {
       const userId = req.headers.get('x-user-id');
-      return userId ? `user:${userId}:${tier}:${type}` : `anonymous:${tier}:${type}`;
+      return userId
+        ? `user:${userId}:${tier}:${type}`
+        : `anonymous:${tier}:${type}`;
     },
   });
 }

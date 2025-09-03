@@ -5,7 +5,12 @@ import { Card, CardBody, CardHeader } from '@nextui-org/card';
 import { Button } from '@nextui-org/button';
 import { Select, SelectItem } from '@nextui-org/select';
 import { DateRangePicker } from '@nextui-org/date-picker';
-import { ChartBarIcon, CurrencyDollarIcon, UserGroupIcon, FireIcon } from '@heroicons/react/24/outline';
+import {
+  ChartBarIcon,
+  CurrencyDollarIcon,
+  UserGroupIcon,
+  FireIcon,
+} from '@heroicons/react/24/outline';
 import MetricCard from '@/components/analytics/MetricCard';
 import RevenueChart from '@/components/analytics/RevenueChart';
 import FeatureHeatMap from '@/components/analytics/FeatureHeatMap';
@@ -44,7 +49,9 @@ export default function AnalyticsPage() {
   const [metrics, setMetrics] = useState<AnalyticsMetrics | null>(null);
   const [revenueData, setRevenueData] = useState<RevenueData[]>([]);
   const [featureData, setFeatureData] = useState<FeatureUsageData[]>([]);
-  const [heatMapData, setHeatMapData] = useState<Record<string, { intensity: number; users: number; usage: number }>>({});
+  const [heatMapData, setHeatMapData] = useState<
+    Record<string, { intensity: number; users: number; usage: number }>
+  >({});
 
   const timeRangeOptions = [
     { key: '7d', label: 'Last 7 days' },
@@ -55,9 +62,10 @@ export default function AnalyticsPage() {
 
   const getDateRange = (range: string) => {
     const now = new Date();
-    const days = range === '7d' ? 7 : range === '30d' ? 30 : range === '90d' ? 90 : 365;
+    const days =
+      range === '7d' ? 7 : range === '30d' ? 30 : range === '90d' ? 90 : 365;
     const startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
-    
+
     return {
       start_date: startDate.toISOString().split('T')[0],
       end_date: now.toISOString().split('T')[0],
@@ -68,26 +76,27 @@ export default function AnalyticsPage() {
     setLoading(true);
     try {
       const dateRange = getDateRange(range);
-      
+
       // Fetch all analytics data in parallel
-      const [metricsResponse, revenueResponse, featureResponse] = await Promise.all([
-        analytics.getMetrics({
-          ...dateRange,
-          granularity: 'daily',
-        }),
-        analytics.getRevenueAnalytics({
-          ...dateRange,
-          granularity: 'monthly',
-          breakdown: 'total',
-        }),
-        analytics.getFeatureUsage(dateRange),
-      ]);
+      const [metricsResponse, revenueResponse, featureResponse] =
+        await Promise.all([
+          analytics.getMetrics({
+            ...dateRange,
+            granularity: 'daily',
+          }),
+          analytics.getRevenueAnalytics({
+            ...dateRange,
+            granularity: 'monthly',
+            breakdown: 'total',
+          }),
+          analytics.getFeatureUsage(dateRange),
+        ]);
 
       // Process metrics data
       if (metricsResponse?.data) {
         const latest = metricsResponse.data[metricsResponse.data.length - 1];
         const previous = metricsResponse.data[metricsResponse.data.length - 2];
-        
+
         setMetrics({
           totalUsers: latest?.total_users || 0,
           activeUsers: latest?.active_users || 0,
@@ -108,7 +117,6 @@ export default function AnalyticsPage() {
         setFeatureData(featureResponse.featureBreakdown);
         setHeatMapData(featureResponse.adoptionHeatMap || {});
       }
-
     } catch (error) {
       console.error('Error fetching analytics data:', error);
     } finally {
@@ -118,7 +126,7 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     fetchAnalyticsData(timeRange);
-    
+
     // Track page view
     analytics.trackPageView('analytics-dashboard', {
       timeRange,
@@ -148,30 +156,39 @@ export default function AnalyticsPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground mb-2">Analytics Dashboard</h1>
-          <p className="text-default-600">Track business performance, user engagement, and feature adoption</p>
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            Analytics Dashboard
+          </h1>
+          <p className="text-default-600">
+            Track business performance, user engagement, and feature adoption
+          </p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <Select
             size="sm"
             placeholder="Time Range"
             selectedKeys={[timeRange]}
-            onSelectionChange={(keys) => setTimeRange(Array.from(keys)[0] as string)}
+            onSelectionChange={(keys) =>
+              setTimeRange(Array.from(keys)[0] as string)
+            }
             className="w-40 nextui-select"
             classNames={{
-              trigger: "bg-white border border-gray-200 min-h-8 pr-10 relative",
-              value: "text-sm text-left",
-              selectorIcon: "absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 z-10",
-              popoverContent: "bg-white border border-gray-200 shadow-xl rounded-lg p-0",
-              listbox: "bg-white p-1",
+              trigger: 'bg-white border border-gray-200 min-h-8 pr-10 relative',
+              value: 'text-sm text-left',
+              selectorIcon:
+                'absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 z-10',
+              popoverContent:
+                'bg-white border border-gray-200 shadow-xl rounded-lg p-0',
+              listbox: 'bg-white p-1',
             }}
             popoverProps={{
-              placement: "bottom-start",
+              placement: 'bottom-start',
               classNames: {
-                content: "bg-white border border-gray-200 shadow-xl rounded-lg p-0 min-w-0",
-                base: "bg-white shadow-xl rounded-lg",
-              }
+                content:
+                  'bg-white border border-gray-200 shadow-xl rounded-lg p-0 min-w-0',
+                base: 'bg-white shadow-xl rounded-lg',
+              },
             }}
           >
             {timeRangeOptions.map((option) => (
@@ -180,18 +197,18 @@ export default function AnalyticsPage() {
               </SelectItem>
             ))}
           </Select>
-          
-          <Button 
-            size="sm" 
-            variant="bordered" 
+
+          <Button
+            size="sm"
+            variant="bordered"
             onClick={handleRefresh}
             isLoading={loading}
           >
             Refresh
           </Button>
-          
-          <Button 
-            size="sm" 
+
+          <Button
+            size="sm"
             color="primary"
             onClick={handleExport}
             startContent={<ChartBarIcon className="h-4 w-4" />}
@@ -210,7 +227,7 @@ export default function AnalyticsPage() {
           subtitle="Registered users"
           isLoading={loading}
         />
-        
+
         <MetricCard
           title="Active Users"
           value={metrics?.activeUsers || 0}
@@ -218,7 +235,7 @@ export default function AnalyticsPage() {
           subtitle="Monthly active"
           isLoading={loading}
         />
-        
+
         <MetricCard
           title="Monthly Revenue"
           value={metrics?.monthlyRecurringRevenue || 0}
@@ -226,7 +243,7 @@ export default function AnalyticsPage() {
           subtitle="MRR"
           isLoading={loading}
         />
-        
+
         <MetricCard
           title="Churn Rate"
           value={metrics?.churnRate || 0}
@@ -234,7 +251,7 @@ export default function AnalyticsPage() {
           subtitle="Monthly churn"
           isLoading={loading}
         />
-        
+
         <MetricCard
           title="Customer LTV"
           value={metrics?.customerLifetimeValue || 0}
@@ -242,7 +259,7 @@ export default function AnalyticsPage() {
           subtitle="Lifetime value"
           isLoading={loading}
         />
-        
+
         <MetricCard
           title="Conversion Rate"
           value={metrics?.conversionRate || 0}
@@ -268,7 +285,9 @@ export default function AnalyticsPage() {
               <UserGroupIcon className="h-5 w-5 text-primary" />
               <div>
                 <h3 className="text-lg font-semibold">Industry Performance</h3>
-                <p className="text-sm text-default-600">Revenue breakdown by industry type</p>
+                <p className="text-sm text-default-600">
+                  Revenue breakdown by industry type
+                </p>
               </div>
             </div>
           </CardHeader>
@@ -285,22 +304,28 @@ export default function AnalyticsPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {['Plumbing', 'Real Estate', 'Legal', 'Medical'].map((industry, index) => (
-                  <div key={industry} className="flex items-center gap-3">
-                    <div className="w-20 text-sm text-default-600">{industry}</div>
-                    <div className="flex-1">
-                      <div className="h-6 bg-default-100 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-primary transition-all duration-300"
-                          style={{ width: `${Math.max((4 - index) * 20, 5)}%` }}
-                        />
+                {['Plumbing', 'Real Estate', 'Legal', 'Medical'].map(
+                  (industry, index) => (
+                    <div key={industry} className="flex items-center gap-3">
+                      <div className="w-20 text-sm text-default-600">
+                        {industry}
+                      </div>
+                      <div className="flex-1">
+                        <div className="h-6 bg-default-100 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-primary transition-all duration-300"
+                            style={{
+                              width: `${Math.max((4 - index) * 20, 5)}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="text-sm font-medium w-16 text-right">
+                        {(4 - index) * 20}%
                       </div>
                     </div>
-                    <div className="text-sm font-medium w-16 text-right">
-                      {((4 - index) * 20)}%
-                    </div>
-                  </div>
-                ))}
+                  )
+                )}
               </div>
             )}
           </CardBody>
@@ -321,7 +346,9 @@ export default function AnalyticsPage() {
             <FireIcon className="h-5 w-5 text-warning-500" />
             <div>
               <h3 className="text-lg font-semibold">Recent Activity</h3>
-              <p className="text-sm text-default-600">Latest user actions and system events</p>
+              <p className="text-sm text-default-600">
+                Latest user actions and system events
+              </p>
             </div>
           </div>
         </CardHeader>
@@ -342,8 +369,13 @@ export default function AnalyticsPage() {
           ) : (
             <div className="text-center py-8">
               <FireIcon className="h-12 w-12 text-default-300 mx-auto mb-4" />
-              <h4 className="text-lg font-semibold text-default-600 mb-2">Activity Feed Coming Soon</h4>
-              <p className="text-default-500">Real-time activity tracking will be available in the next update.</p>
+              <h4 className="text-lg font-semibold text-default-600 mb-2">
+                Activity Feed Coming Soon
+              </h4>
+              <p className="text-default-500">
+                Real-time activity tracking will be available in the next
+                update.
+              </p>
             </div>
           )}
         </CardBody>

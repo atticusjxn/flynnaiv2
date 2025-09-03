@@ -28,11 +28,13 @@ vercel --prod
 ### 2. Environment Variables Setup
 
 Copy production environment template:
+
 ```bash
 cp .env.production.example .env.production
 ```
 
 **Critical Production Variables:**
+
 ```bash
 # Set all environment variables in Vercel dashboard
 vercel env add NODE_ENV production
@@ -55,6 +57,7 @@ CNAME Record: www -> alias-to-vercel.vercel.app
 ### 4. Security Configuration
 
 **Security Headers** (already configured in vercel.json):
+
 - Content Security Policy
 - HSTS (Strict-Transport-Security)
 - X-Frame-Options: DENY
@@ -62,6 +65,7 @@ CNAME Record: www -> alias-to-vercel.vercel.app
 - Referrer-Policy: origin-when-cross-origin
 
 **API Security**:
+
 - Rate limiting configured per endpoint
 - Webhook signature verification
 - JWT token validation
@@ -70,12 +74,14 @@ CNAME Record: www -> alias-to-vercel.vercel.app
 ### 5. Performance Optimization
 
 **CDN Configuration**:
+
 - Static assets cached for 1 year
 - Images optimized with AVIF/WebP
 - Gzip compression enabled
 - Edge caching for API responses
 
 **Database Optimization**:
+
 ```sql
 -- Run these on production Supabase
 CREATE INDEX CONCURRENTLY idx_calls_user_id_created_at ON calls(user_id, created_at);
@@ -86,16 +92,19 @@ CREATE INDEX CONCURRENTLY idx_events_status ON events(status);
 ### 6. Monitoring Setup
 
 **Application Monitoring**:
+
 - Sentry for error tracking
 - PostHog for user analytics
 - Vercel Analytics for performance
 
 **Health Checks**:
+
 - `/api/performance/health` - Basic health status
 - `/api/performance/database` - Database connectivity
 - `/api/performance/integrations` - Third-party services
 
 **Alerts Configuration**:
+
 ```bash
 # Set up alerts for:
 # - API response time > 2 seconds
@@ -107,16 +116,19 @@ CREATE INDEX CONCURRENTLY idx_events_status ON events(status);
 ### 7. Backup & Disaster Recovery
 
 **Database Backups**:
+
 - Supabase automatic daily backups
 - Point-in-time recovery enabled
 - Cross-region backup replication
 
 **Application Backups**:
+
 - Code repository on GitHub
 - Environment variables documented
 - Infrastructure as Code (vercel.json)
 
 **Recovery Procedures**:
+
 1. **Database Recovery**: Use Supabase dashboard or CLI
 2. **Application Recovery**: Redeploy from GitHub
 3. **DNS Recovery**: Update DNS settings if needed
@@ -124,6 +136,7 @@ CREATE INDEX CONCURRENTLY idx_events_status ON events(status);
 ### 8. Load Testing
 
 Before production launch:
+
 ```bash
 # Install load testing tools
 npm install -g artillery k6
@@ -141,6 +154,7 @@ k6 run load-tests/user-journey.js
 ### 9. Security Audit
 
 **Pre-launch Security Checklist**:
+
 - [ ] All environment variables secured
 - [ ] Database RLS policies active
 - [ ] API endpoints authenticated
@@ -155,6 +169,7 @@ k6 run load-tests/user-journey.js
 ### 10. Go-Live Checklist
 
 **Technical Readiness**:
+
 - [ ] Production deploy successful
 - [ ] Health checks passing
 - [ ] SSL certificate active
@@ -166,6 +181,7 @@ k6 run load-tests/user-journey.js
 - [ ] Security audit passed
 
 **Business Readiness**:
+
 - [ ] Customer support system ready
 - [ ] Payment processing tested
 - [ ] Email templates finalized
@@ -178,6 +194,7 @@ k6 run load-tests/user-journey.js
 ### Daily Monitoring
 
 1. **Check Health Endpoints**:
+
    ```bash
    curl https://your-domain.com/health
    curl https://your-domain.com/api/performance/health
@@ -227,10 +244,11 @@ k6 run load-tests/user-journey.js
 ### System Down
 
 1. **Immediate Response**:
+
    ```bash
    # Check Vercel status
    vercel --prod status
-   
+
    # Check external services
    curl https://status.supabase.com
    curl https://status.openai.com
@@ -238,10 +256,11 @@ k6 run load-tests/user-journey.js
    ```
 
 2. **Quick Recovery**:
+
    ```bash
    # Rollback to previous deployment
    vercel rollback
-   
+
    # Force redeploy
    vercel --prod --force
    ```

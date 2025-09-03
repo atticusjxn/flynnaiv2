@@ -6,16 +6,21 @@ const RevenueQuerySchema = z.object({
   start_date: z.string().optional(),
   end_date: z.string().optional(),
   granularity: z.enum(['daily', 'weekly', 'monthly']).default('monthly'),
-  breakdown: z.enum(['total', 'by_tier', 'by_industry', 'cohort']).default('total'),
+  breakdown: z
+    .enum(['total', 'by_tier', 'by_industry', 'cohort'])
+    .default('total'),
 });
 
 export async function GET(request: NextRequest) {
   try {
     const supabase = createClient();
-    
+
     // Get current user (admin only for revenue data)
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -25,9 +30,13 @@ export async function GET(request: NextRequest) {
     const validatedParams = RevenueQuerySchema.parse(params);
 
     // Default date range (last 12 months)
-    const endDate = validatedParams.end_date || new Date().toISOString().split('T')[0];
-    const startDate = validatedParams.start_date || 
-      new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const endDate =
+      validatedParams.end_date || new Date().toISOString().split('T')[0];
+    const startDate =
+      validatedParams.start_date ||
+      new Date(Date.now() - 365 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0];
 
     // Calculate Customer Lifetime Value (CLV)
     const clvQuery = `
@@ -75,21 +84,26 @@ export async function GET(request: NextRequest) {
       ORDER BY estimated_clv DESC
     `;
 
-    const { data: clvData, error: clvError } = await supabase.rpc('execute_sql', {
-      sql: clvQuery,
-      params: [startDate, endDate]
-    });
+    const { data: clvData, error: clvError } = await supabase.rpc(
+      'execute_sql',
+      {
+        sql: clvQuery,
+        params: [startDate, endDate],
+      }
+    );
 
     // Fetch MRR trend data
     const { data: mrrData, error: mrrError } = await supabase
       .from('business_metrics')
-      .select(`
+      .select(
+        `
         metric_date,
         monthly_recurring_revenue,
         new_signups,
         churn_rate,
         total_active_users
-      `)
+      `
+      )
       .gte('metric_date', startDate)
       .lte('metric_date', endDate)
       .order('metric_date', { ascending: true });
@@ -105,31 +119,45 @@ export async function GET(request: NextRequest) {
     // Calculate revenue by subscription tier
     const { data: tierRevenue, error: tierError } = await supabase
       .from('users')
-      .select(`
+      .select(
+        `
         subscription_tier,
         user_metrics!inner(subscription_mrr, metric_date)
-      `)
+      `
+      )
       .gte('user_metrics.metric_date', startDate)
       .lte('user_metrics.metric_date', endDate);
 
     // Process tier revenue data
-    const revenueByTier = tierRevenue?.reduce((acc, user) => {
-      const tier = user.subscription_tier || 'trial';
-      if (!acc[tier]) acc[tier] = 0;
-      acc[tier] += user.user_metrics.reduce((sum, metric) => sum + (metric.subscription_mrr || 0), 0);
-      return acc;
-    }, {} as Record<string, number>) || {};
+    const revenueByTier =
+      tierRevenue?.reduce(
+        (acc, user) => {
+          const tier = user.subscription_tier || 'trial';
+          if (!acc[tier]) acc[tier] = 0;
+          acc[tier] += user.user_metrics.reduce(
+            (sum, metric) => sum + (metric.subscription_mrr || 0),
+            0
+          );
+          return acc;
+        },
+        {} as Record<string, number>
+      ) || {};
 
     // Calculate key metrics
     const latestMetrics = mrrData?.[mrrData.length - 1];
     const previousMetrics = mrrData?.[mrrData.length - 2];
-    
-    const mrrGrowth = latestMetrics && previousMetrics 
-      ? ((latestMetrics.monthly_recurring_revenue - previousMetrics.monthly_recurring_revenue) / previousMetrics.monthly_recurring_revenue) * 100
-      : 0;
 
-    const averageRevenuePerUser = latestMetrics?.total_active_users 
-      ? latestMetrics.monthly_recurring_revenue / latestMetrics.total_active_users
+    const mrrGrowth =
+      latestMetrics && previousMetrics
+        ? ((latestMetrics.monthly_recurring_revenue -
+            previousMetrics.monthly_recurring_revenue) /
+            previousMetrics.monthly_recurring_revenue) *
+          100
+        : 0;
+
+    const averageRevenuePerUser = latestMetrics?.total_active_users
+      ? latestMetrics.monthly_recurring_revenue /
+        latestMetrics.total_active_users
       : 0;
 
     return NextResponse.json({
@@ -146,7 +174,6 @@ export async function GET(request: NextRequest) {
       dateRange: { startDate, endDate },
       granularity: validatedParams.granularity,
     });
-
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -154,7 +181,7 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     console.error('Revenue analytics API error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

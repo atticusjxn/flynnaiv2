@@ -5,9 +5,9 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Card, 
-  CardBody, 
+import {
+  Card,
+  CardBody,
   CardHeader,
   Button,
   Chip,
@@ -15,9 +15,9 @@ import {
   Tabs,
   Tab,
   Spinner,
-  Divider
+  Divider,
 } from '@nextui-org/react';
-import { 
+import {
   MessageSquare,
   Mail,
   Phone,
@@ -32,7 +32,7 @@ import {
   BarChart3,
   Users,
   Calendar,
-  FileText
+  FileText,
 } from 'lucide-react';
 import { useCommunicationMetrics } from '@/hooks/useCommunications';
 import CommunicationHistory from '@/components/communications/CommunicationHistory';
@@ -46,10 +46,10 @@ const containerVariants = {
     y: 0,
     transition: {
       duration: 0.6,
-      ease: [0.23, 1, 0.32, 1], // easeOutQuart
-      staggerChildren: 0.1
-    }
-  }
+      ease: [0.23, 1, 0.32, 1] as any, // easeOutQuart
+      staggerChildren: 0.1,
+    },
+  },
 };
 
 const itemVariants = {
@@ -57,14 +57,16 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] } // easeOutQuart
-  }
+    transition: { duration: 0.5, ease: [0.23, 1, 0.32, 1] as any }, // easeOutQuart
+  },
 };
 
 export default function CommunicationsPage() {
   const [selectedTab, setSelectedTab] = useState<string>('overview');
-  const [dateFilter, setDateFilter] = useState<'24h' | '7d' | '30d' | 'all'>('24h');
-  
+  const [dateFilter, setDateFilter] = useState<'24h' | '7d' | '30d' | 'all'>(
+    '24h'
+  );
+
   const dateFrom = getDateFrom(dateFilter);
   const { metrics, loading, error, refetch } = useCommunicationMetrics(
     dateFrom?.toISOString(),
@@ -81,9 +83,15 @@ export default function CommunicationsPage() {
         <Card className="max-w-md">
           <CardBody className="text-center">
             <XCircle className="h-12 w-12 text-danger mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-2">Failed to load communications</h2>
+            <h2 className="text-xl font-semibold mb-2">
+              Failed to load communications
+            </h2>
             <p className="text-default-600 mb-4">{error}</p>
-            <Button color="primary" onPress={handleRefresh} startContent={<RefreshCw />}>
+            <Button
+              color="primary"
+              onPress={handleRefresh}
+              startContent={<RefreshCw />}
+            >
               Try Again
             </Button>
           </CardBody>
@@ -101,7 +109,7 @@ export default function CommunicationsPage() {
         animate="visible"
       >
         {/* Header */}
-        <motion.div 
+        <motion.div
           className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8"
           variants={itemVariants}
         >
@@ -120,16 +128,22 @@ export default function CommunicationsPage() {
                 <Button
                   key={period}
                   size="sm"
-                  variant={dateFilter === period ? "solid" : "light"}
-                  color={dateFilter === period ? "primary" : "default"}
+                  variant={dateFilter === period ? 'solid' : 'light'}
+                  color={dateFilter === period ? 'primary' : 'default'}
                   className={`min-w-0 ${dateFilter === period ? 'shadow-md' : ''}`}
                   onPress={() => setDateFilter(period)}
                 >
-                  {period === '24h' ? '24H' : period === '7d' ? '7D' : period === '30d' ? '30D' : 'All'}
+                  {period === '24h'
+                    ? '24H'
+                    : period === '7d'
+                      ? '7D'
+                      : period === '30d'
+                        ? '30D'
+                        : 'All'}
                 </Button>
               ))}
             </div>
-            
+
             <Button
               color="primary"
               size="sm"
@@ -148,10 +162,12 @@ export default function CommunicationsPage() {
           <div className="flex justify-center items-center h-64">
             <Spinner size="lg" color="primary" />
           </div>
-        ) : metrics && (
-          <motion.div variants={itemVariants}>
-            <MetricsOverview metrics={metrics} />
-          </motion.div>
+        ) : (
+          metrics && (
+            <motion.div variants={itemVariants}>
+              <MetricsOverview metrics={metrics} />
+            </motion.div>
+          )
         )}
 
         {/* Main Content Tabs */}
@@ -163,10 +179,11 @@ export default function CommunicationsPage() {
             color="primary"
             className="w-full"
             classNames={{
-              tabList: "bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-slate-200 dark:border-slate-700",
-              tab: "data-[selected=true]:bg-primary data-[selected=true]:text-white",
-              tabContent: "font-semibold",
-              panel: "mt-6"
+              tabList:
+                'bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-slate-200 dark:border-slate-700',
+              tab: 'data-[selected=true]:bg-primary data-[selected=true]:text-white',
+              tabContent: 'font-semibold',
+              panel: 'mt-6',
             }}
           >
             <Tab
@@ -180,7 +197,7 @@ export default function CommunicationsPage() {
             >
               <OverviewPanel metrics={metrics} />
             </Tab>
-            
+
             <Tab
               key="history"
               title={
@@ -192,7 +209,7 @@ export default function CommunicationsPage() {
             >
               <CommunicationHistory />
             </Tab>
-            
+
             <Tab
               key="compose"
               title={
@@ -232,7 +249,7 @@ function MetricsOverview({ metrics }: { metrics: any }) {
       icon: MessageSquare,
       color: 'primary' as const,
       trend: '+12.5%',
-      subtitle: 'This period'
+      subtitle: 'This period',
     },
     {
       title: 'Success Rate',
@@ -240,15 +257,16 @@ function MetricsOverview({ metrics }: { metrics: any }) {
       icon: CheckCircle2,
       color: 'success' as const,
       trend: '+3.2%',
-      subtitle: 'Delivery success'
+      subtitle: 'Delivery success',
     },
     {
       title: 'Failed Communications',
       value: metrics.overview.failed_count.toString(),
       icon: AlertTriangle,
-      color: metrics.overview.failed_count > 0 ? 'danger' : 'default' as const,
+      color:
+        metrics.overview.failed_count > 0 ? 'danger' : ('default' as const),
       trend: metrics.overview.failed_count > 0 ? 'Need attention' : 'All clear',
-      subtitle: 'Last 24 hours'
+      subtitle: 'Last 24 hours',
     },
     {
       title: 'Email Performance',
@@ -256,8 +274,8 @@ function MetricsOverview({ metrics }: { metrics: any }) {
       icon: Mail,
       color: 'secondary' as const,
       trend: '+5.7%',
-      subtitle: 'Open rate'
-    }
+      subtitle: 'Open rate',
+    },
   ];
 
   return (
@@ -273,34 +291,52 @@ function MetricsOverview({ metrics }: { metrics: any }) {
             <CardBody className="p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">{metric.title}</p>
-                  <p className="text-2xl font-bold text-slate-900 dark:text-white">{metric.value}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">
+                    {metric.title}
+                  </p>
+                  <p className="text-2xl font-bold text-slate-900 dark:text-white">
+                    {metric.value}
+                  </p>
                   <div className="flex items-center gap-2 mt-2">
                     <Chip
                       size="sm"
                       variant="flat"
-                      color={metric.color}
+                      color={metric.color as "primary" | "secondary" | "success" | "warning" | "danger" | "default"}
                       className="text-xs font-medium"
                     >
                       {metric.trend}
                     </Chip>
-                    <span className="text-xs text-slate-500 dark:text-slate-400">{metric.subtitle}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">
+                      {metric.subtitle}
+                    </span>
                   </div>
                 </div>
-                <div className={`p-3 rounded-xl bg-gradient-to-br ${
-                  metric.color === 'primary' ? 'from-blue-100 to-blue-200 dark:from-blue-900/40 dark:to-blue-800/40' :
-                  metric.color === 'success' ? 'from-green-100 to-green-200 dark:from-green-900/40 dark:to-green-800/40' :
-                  metric.color === 'danger' ? 'from-red-100 to-red-200 dark:from-red-900/40 dark:to-red-800/40' :
-                  metric.color === 'secondary' ? 'from-purple-100 to-purple-200 dark:from-purple-900/40 dark:to-purple-800/40' :
-                  'from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600'
-                }`}>
-                  <metric.icon className={`h-6 w-6 ${
-                    metric.color === 'primary' ? 'text-blue-600 dark:text-blue-400' :
-                    metric.color === 'success' ? 'text-green-600 dark:text-green-400' :
-                    metric.color === 'danger' ? 'text-red-600 dark:text-red-400' :
-                    metric.color === 'secondary' ? 'text-purple-600 dark:text-purple-400' :
-                    'text-slate-600 dark:text-slate-400'
-                  }`} />
+                <div
+                  className={`p-3 rounded-xl bg-gradient-to-br ${
+                    metric.color === 'primary'
+                      ? 'from-blue-100 to-blue-200 dark:from-blue-900/40 dark:to-blue-800/40'
+                      : metric.color === 'success'
+                        ? 'from-green-100 to-green-200 dark:from-green-900/40 dark:to-green-800/40'
+                        : metric.color === 'danger'
+                          ? 'from-red-100 to-red-200 dark:from-red-900/40 dark:to-red-800/40'
+                          : metric.color === 'secondary'
+                            ? 'from-purple-100 to-purple-200 dark:from-purple-900/40 dark:to-purple-800/40'
+                            : 'from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-600'
+                  }`}
+                >
+                  <metric.icon
+                    className={`h-6 w-6 ${
+                      metric.color === 'primary'
+                        ? 'text-blue-600 dark:text-blue-400'
+                        : metric.color === 'success'
+                          ? 'text-green-600 dark:text-green-400'
+                          : metric.color === 'danger'
+                            ? 'text-red-600 dark:text-red-400'
+                            : metric.color === 'secondary'
+                              ? 'text-purple-600 dark:text-purple-400'
+                              : 'text-slate-600 dark:text-slate-400'
+                    }`}
+                  />
                 </div>
               </div>
             </CardBody>
@@ -432,21 +468,21 @@ function OverviewPanel({ metrics }: { metrics: any }) {
 }
 
 // Communication Type Bar Component
-function CommunicationTypeBar({ 
-  type, 
-  count, 
-  total, 
-  color, 
-  icon: Icon 
-}: { 
-  type: string; 
-  count: number; 
-  total: number; 
-  color: 'primary' | 'success' | 'secondary'; 
+function CommunicationTypeBar({
+  type,
+  count,
+  total,
+  color,
+  icon: Icon,
+}: {
+  type: string;
+  count: number;
+  total: number;
+  color: 'primary' | 'success' | 'secondary';
   icon: any;
 }) {
   const percentage = total > 0 ? (count / total) * 100 : 0;
-  
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -454,12 +490,7 @@ function CommunicationTypeBar({
         <span className="text-sm font-medium truncate">{type}</span>
       </div>
       <div className="flex items-center gap-3">
-        <Progress
-          value={percentage}
-          color={color}
-          size="sm"
-          className="w-20"
-        />
+        <Progress value={percentage} color={color} size="sm" className="w-20" />
         <span className="text-sm text-slate-600 dark:text-slate-400 min-w-0 w-12 text-right">
           {count}
         </span>
@@ -490,12 +521,16 @@ function RecentActivityList({ activities }: { activities: any[] }) {
           className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
         >
           <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg ${getActivityIconBg(activity.communication_type)}`}>
+            <div
+              className={`p-2 rounded-lg ${getActivityIconBg(activity.communication_type)}`}
+            >
               {getActivityIcon(activity.communication_type)}
             </div>
             <div>
               <p className="text-sm font-medium">
-                {activity.communication_type.charAt(0).toUpperCase() + activity.communication_type.slice(1)} to {activity.recipient}
+                {activity.communication_type.charAt(0).toUpperCase() +
+                  activity.communication_type.slice(1)}{' '}
+                to {activity.recipient}
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 {formatRelativeTime(activity.created_at)}
@@ -536,11 +571,15 @@ function getActivityIcon(type: string) {
     case 'email':
       return <Mail className="h-4 w-4 text-blue-600 dark:text-blue-400" />;
     case 'sms':
-      return <MessageSquare className="h-4 w-4 text-green-600 dark:text-green-400" />;
+      return (
+        <MessageSquare className="h-4 w-4 text-green-600 dark:text-green-400" />
+      );
     case 'call':
       return <Phone className="h-4 w-4 text-purple-600 dark:text-purple-400" />;
     default:
-      return <MessageSquare className="h-4 w-4 text-slate-600 dark:text-slate-400" />;
+      return (
+        <MessageSquare className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+      );
   }
 }
 
@@ -557,7 +596,9 @@ function getActivityIconBg(type: string) {
   }
 }
 
-function getStatusColor(status: string): 'success' | 'warning' | 'danger' | 'primary' | 'default' {
+function getStatusColor(
+  status: string
+): 'success' | 'warning' | 'danger' | 'primary' | 'default' {
   switch (status) {
     case 'delivered':
     case 'sent':
@@ -576,7 +617,7 @@ function formatRelativeTime(dateString: string): string {
   const date = new Date(dateString);
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-  
+
   if (diffInSeconds < 60) {
     return 'Just now';
   } else if (diffInSeconds < 3600) {

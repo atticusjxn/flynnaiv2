@@ -15,7 +15,7 @@ import {
   Link,
   Hr,
   Img,
-  Preview
+  Preview,
 } from '@react-email/components';
 
 export interface CustomerConfirmationEmailProps {
@@ -38,34 +38,37 @@ export interface CustomerConfirmationEmailProps {
 }
 
 export default function CustomerConfirmationEmail({
-  customerName = "Valued Customer",
-  companyName = "Your Service Provider",
-  eventType = "appointment",
-  eventTitle = "Service Appointment",
+  customerName = 'Valued Customer',
+  companyName = 'Your Service Provider',
+  eventType = 'appointment',
+  eventTitle = 'Service Appointment',
   eventDescription,
-  confirmedDateTime = "Date and time to be confirmed",
-  location = "Location to be determined",
+  confirmedDateTime = 'Date and time to be confirmed',
+  location = 'Location to be determined',
   duration,
   priceEstimate,
-  currency = "USD",
+  currency = 'USD',
   businessPhone,
   businessEmail,
   confirmationUrl,
   rescheduleUrl,
   cancelUrl,
-  notes
+  notes,
 }: CustomerConfirmationEmailProps) {
-  const formattedDateTime = new Date(confirmedDateTime).toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true
-  });
+  const formattedDateTime = new Date(confirmedDateTime).toLocaleDateString(
+    'en-US',
+    {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    }
+  );
 
-  const formattedPrice = priceEstimate 
+  const formattedPrice = priceEstimate
     ? new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: currency,
@@ -97,7 +100,7 @@ export default function CustomerConfirmationEmail({
             {/* Event Details Card */}
             <div style={eventCard}>
               <Heading style={eventTitle}>{eventTitle}</Heading>
-              
+
               {eventDescription && (
                 <Text style={eventDescription}>{eventDescription}</Text>
               )}
@@ -160,7 +163,7 @@ export default function CustomerConfirmationEmail({
                     </Button>
                   </Column>
                 )}
-                
+
                 {rescheduleUrl && (
                   <Column style={buttonColumn}>
                     <Button href={rescheduleUrl} style={secondaryButton}>
@@ -168,7 +171,7 @@ export default function CustomerConfirmationEmail({
                     </Button>
                   </Column>
                 )}
-                
+
                 {cancelUrl && (
                   <Column style={buttonColumn}>
                     <Button href={cancelUrl} style={cancelButton}>
@@ -182,7 +185,7 @@ export default function CustomerConfirmationEmail({
             {/* Contact Information */}
             <Section style={contactSection}>
               <Heading style={contactTitle}>Questions? Contact Us</Heading>
-              
+
               <div style={contactInfo}>
                 {businessPhone && (
                   <div style={contactRow}>
@@ -192,7 +195,7 @@ export default function CustomerConfirmationEmail({
                     </Link>
                   </div>
                 )}
-                
+
                 {businessEmail && (
                   <div style={contactRow}>
                     <Text style={contactLabel}>Email:</Text>
@@ -209,11 +212,15 @@ export default function CustomerConfirmationEmail({
           <Hr style={hr} />
           <Section style={footer}>
             <Text style={footerText}>
-              This appointment was automatically scheduled based on your phone call with {companyName}.
+              This appointment was automatically scheduled based on your phone
+              call with {companyName}.
             </Text>
             <Text style={footerText}>
-              Powered by <Link href="https://flynn.ai" style={linkStyle}>Flynn.ai</Link> - 
-              Smart call-to-calendar automation
+              Powered by{' '}
+              <Link href="https://flynn.ai" style={linkStyle}>
+                Flynn.ai
+              </Link>{' '}
+              - Smart call-to-calendar automation
             </Text>
           </Section>
         </Container>
@@ -225,7 +232,8 @@ export default function CustomerConfirmationEmail({
 // Styles
 const main = {
   backgroundColor: '#f8fafc',
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  fontFamily:
+    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   margin: '0',
   padding: '0',
 };

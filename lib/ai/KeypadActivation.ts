@@ -34,7 +34,7 @@ export class KeypadActivationManager {
     to: string
   ): Promise<ActivationEvent> {
     const timestamp = new Date().toISOString();
-    
+
     console.log(`Processing keypad input for call ${callSid}: ${digits}`);
 
     // Create DTMF event
@@ -43,7 +43,7 @@ export class KeypadActivationManager {
       digits,
       from,
       to,
-      timestamp
+      timestamp,
     };
 
     // Process with DTMF handler
@@ -55,7 +55,7 @@ export class KeypadActivationManager {
       from,
       to,
       activated: result.activated,
-      timestamp
+      timestamp,
     };
 
     // Log the activation event
@@ -78,26 +78,32 @@ export class KeypadActivationManager {
     timestamp: string
   ): Promise<void> {
     try {
-      console.log(`Initializing AI processing for call ${callSid} after keypad sequence: ${sequence}`);
+      console.log(
+        `Initializing AI processing for call ${callSid} after keypad sequence: ${sequence}`
+      );
 
       // Update call record with activation info
       await updateCallWithKeypadActivation(callSid, {
         ai_processing_activated: true,
         ai_activation_time: timestamp,
-        keypad_sequence: sequence
+        keypad_sequence: sequence,
       });
 
       // Start real-time audio processing
       const processingStarted = await startRealTimeProcessing(callSid);
 
       if (processingStarted) {
-        console.log(`AI processing successfully initialized for call: ${callSid}`);
+        console.log(
+          `AI processing successfully initialized for call: ${callSid}`
+        );
       } else {
         console.error(`Failed to start AI processing for call: ${callSid}`);
       }
-
     } catch (error) {
-      console.error(`Error initializing AI processing for call ${callSid}:`, error);
+      console.error(
+        `Error initializing AI processing for call ${callSid}:`,
+        error
+      );
     }
   }
 
@@ -129,7 +135,9 @@ export class KeypadActivationManager {
    * Get all active AI processing calls
    */
   public getActiveCalls(): ActivationEvent[] {
-    return Array.from(this.activationLog.values()).filter(event => event.activated);
+    return Array.from(this.activationLog.values()).filter(
+      (event) => event.activated
+    );
   }
 
   /**
@@ -150,21 +158,23 @@ export class KeypadActivationManager {
   public async handleEmergencyActivation(callSid: string): Promise<void> {
     try {
       console.log(`Handling emergency activation for call: ${callSid}`);
-      
+
       // In emergency scenarios, we might want to:
       // 1. Prioritize processing
       // 2. Send immediate notifications
       // 3. Escalate to human operators
-      
+
       // For now, just ensure processing is active
       const isActive = this.isAIActive(callSid);
       if (!isActive) {
         // Auto-activate AI for emergency calls
         await this.processKeypadInput(callSid, '*7', '', '');
       }
-
     } catch (error) {
-      console.error(`Error handling emergency activation for call ${callSid}:`, error);
+      console.error(
+        `Error handling emergency activation for call ${callSid}:`,
+        error
+      );
     }
   }
 }
@@ -181,7 +191,12 @@ export async function handleKeypadActivation(
   from: string,
   to: string
 ): Promise<ActivationEvent> {
-  return await keypadActivationManager.processKeypadInput(callSid, digits, from, to);
+  return await keypadActivationManager.processKeypadInput(
+    callSid,
+    digits,
+    from,
+    to
+  );
 }
 
 /**

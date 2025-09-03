@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  Section,
-  Button,
-  Hr,
-} from '@react-email/components';
+import { Text, Section, Button, Hr } from '@react-email/components';
 import BaseEmailLayout from './BaseEmailLayout';
 
 interface SetupCompleteEmailProps {
@@ -25,7 +20,7 @@ export default function SetupCompleteEmail({
   supportUrl = 'https://flynn.ai/support',
 }: SetupCompleteEmailProps) {
   const industryConfig = getIndustryConfig(industry);
-  
+
   return (
     <BaseEmailLayout
       preview={`${companyName} is now ready! Start using Flynn.ai today.`}
@@ -33,19 +28,20 @@ export default function SetupCompleteEmail({
       industry={industry}
       primaryColor={industryConfig.primaryColor}
     >
-      <Text style={greeting}>
-        🎉 You're all set, {userName}!
-      </Text>
-      
+      <Text style={greeting}>🎉 You're all set, {userName}!</Text>
+
       <Text style={bodyText}>
-        Congratulations! Flynn.ai is now fully configured for {companyName} and ready to transform your business calls into organized calendar events.
+        Congratulations! Flynn.ai is now fully configured for {companyName} and
+        ready to transform your business calls into organized calendar events.
       </Text>
 
       <Section style={setupSummary}>
         <Text style={sectionTitle}>Setup Complete</Text>
         <div style={summaryItem}>
           <Text style={summaryLabel}>Business:</Text>
-          <Text style={summaryValue}>{companyName} ({industryConfig.label})</Text>
+          <Text style={summaryValue}>
+            {companyName} ({industryConfig.label})
+          </Text>
         </div>
         <div style={summaryItem}>
           <Text style={summaryLabel}>Phone Number:</Text>
@@ -53,20 +49,23 @@ export default function SetupCompleteEmail({
         </div>
         <div style={summaryItem}>
           <Text style={summaryLabel}>AI Processing:</Text>
-          <Text style={summaryValue}>Active - Automatically processes all business calls</Text>
+          <Text style={summaryValue}>
+            Active - Automatically processes all business calls
+          </Text>
         </div>
       </Section>
 
       <Section style={instructionsSection}>
         <Text style={sectionTitle}>How Flynn.ai Works</Text>
-        
+
         <div style={instructionStep}>
           <div style={stepHeader}>
             <Text style={stepNumber}>1</Text>
             <Text style={stepTitle}>All Calls Forwarded</Text>
           </div>
           <Text style={stepDescription}>
-            All calls to your Flynn.ai number are automatically forwarded to your phone. You answer normally and have your conversation.
+            All calls to your Flynn.ai number are automatically forwarded to
+            your phone. You answer normally and have your conversation.
           </Text>
         </div>
 
@@ -76,7 +75,9 @@ export default function SetupCompleteEmail({
             <Text style={stepTitle}>AI Processes Business Calls</Text>
           </div>
           <Text style={stepDescription}>
-            Flynn.ai automatically detects and processes business calls, listening for {industryConfig.eventTypes.join(', ')} while filtering out personal conversations.
+            Flynn.ai automatically detects and processes business calls,
+            listening for {industryConfig.eventTypes.join(', ')} while filtering
+            out personal conversations.
           </Text>
         </div>
 
@@ -86,7 +87,9 @@ export default function SetupCompleteEmail({
             <Text style={stepTitle}>Receive Professional Summary</Text>
           </div>
           <Text style={stepDescription}>
-            Within 2 minutes of ending a business call, you'll receive a professional email with extracted appointments and calendar files ready to import.
+            Within 2 minutes of ending a business call, you'll receive a
+            professional email with extracted appointments and calendar files
+            ready to import.
           </Text>
         </div>
       </Section>
@@ -102,17 +105,26 @@ export default function SetupCompleteEmail({
       <Section style={tipsSection}>
         <Text style={tipsTitle}>Pro Tips for Best Results</Text>
         <div style={tipsList}>
-          <Text style={tipItem}>• Speak clearly when discussing dates, times, and addresses</Text>
-          <Text style={tipItem}>• Confirm appointment details at the end of calls</Text>
-          <Text style={tipItem}>• Review and edit AI-generated appointments in your dashboard</Text>
-          <Text style={tipItem}>• Use the dashboard toggle to pause AI processing if needed</Text>
+          <Text style={tipItem}>
+            • Speak clearly when discussing dates, times, and addresses
+          </Text>
+          <Text style={tipItem}>
+            • Confirm appointment details at the end of calls
+          </Text>
+          <Text style={tipItem}>
+            • Review and edit AI-generated appointments in your dashboard
+          </Text>
+          <Text style={tipItem}>
+            • Use the dashboard toggle to pause AI processing if needed
+          </Text>
         </div>
       </Section>
 
       <Section style={supportSection}>
         <Text style={supportTitle}>Questions or Need Help?</Text>
         <Text style={supportText}>
-          Our team is here to help you get the most out of Flynn.ai. We've processed millions of calls across all industries.
+          Our team is here to help you get the most out of Flynn.ai. We've
+          processed millions of calls across all industries.
         </Text>
         <Button href={supportUrl} style={supportButton}>
           Contact Support
@@ -121,7 +133,8 @@ export default function SetupCompleteEmail({
 
       <Section style={trialSection}>
         <Text style={trialText}>
-          Your free trial includes 50 call processings. Upgrade anytime for unlimited processing and advanced features.
+          Your free trial includes 50 call processings. Upgrade anytime for
+          unlimited processing and advanced features.
         </Text>
       </Section>
     </BaseEmailLayout>
@@ -164,7 +177,7 @@ function getIndustryConfig(industry: string) {
       label: 'Professional Services',
       primaryColor: '#4f46e5',
       eventTypes: ['appointments', 'meetings', 'consultations'],
-    }
+    },
   };
 
   return configs[industry as keyof typeof configs] || configs.default;

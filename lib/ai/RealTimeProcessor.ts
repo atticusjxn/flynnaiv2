@@ -48,7 +48,7 @@ export class RealTimeAudioProcessor {
         callSid,
         sampleRate: 8000, // Twilio standard
         encoding: 'mulaw',
-        language: 'en'
+        language: 'en',
       };
 
       this.activeProcessors.set(callSid, config);
@@ -56,10 +56,13 @@ export class RealTimeAudioProcessor {
       this.audioBuffers.set(callSid, []);
 
       await updateCallProcessingStatus(callSid, 'real_time_processing_started');
-      
+
       return true;
     } catch (error) {
-      console.error(`Failed to start real-time processing for ${callSid}:`, error);
+      console.error(
+        `Failed to start real-time processing for ${callSid}:`,
+        error
+      );
       return false;
     }
   }
@@ -85,12 +88,16 @@ export class RealTimeAudioProcessor {
       this.audioBuffers.set(callSid, buffers);
 
       // Process audio in 2-second chunks for real-time transcription
-      if (buffers.length >= 16) { // ~2 seconds at 8kHz
-        await this.transcribeAudioChunk(callSid, Buffer.concat(buffers), timestamp);
+      if (buffers.length >= 16) {
+        // ~2 seconds at 8kHz
+        await this.transcribeAudioChunk(
+          callSid,
+          Buffer.concat(buffers),
+          timestamp
+        );
         // Keep only the last 8 buffers for overlap
         this.audioBuffers.set(callSid, buffers.slice(-8));
       }
-
     } catch (error) {
       console.error(`Error processing audio chunk for ${callSid}:`, error);
     }
@@ -109,11 +116,11 @@ export class RealTimeAudioProcessor {
 
       // Convert mulaw to wav format for Whisper
       const wavBuffer = this.convertMulawToWav(audioBuffer);
-      
+
       // Create a temporary file for Whisper API
       const audioBlob = new Blob([wavBuffer as any], { type: 'audio/wav' });
-      const audioFile = new File([audioBlob], `${callSid}-${timestamp}.wav`, { 
-        type: 'audio/wav' 
+      const audioFile = new File([audioBlob], `${callSid}-${timestamp}.wav`, {
+        type: 'audio/wav',
       });
 
       // Transcribe with Whisper
@@ -121,7 +128,7 @@ export class RealTimeAudioProcessor {
         file: audioFile,
         model: 'whisper-1',
         language: 'en',
-        response_format: 'verbose_json'
+        response_format: 'verbose_json',
       });
 
       if (transcription.text && transcription.text.trim().length > 0) {
@@ -129,7 +136,7 @@ export class RealTimeAudioProcessor {
           text: transcription.text,
           confidence: 0.8, // Whisper doesn't provide confidence scores
           timestamp,
-          duration: transcription.duration || 2.0
+          duration: transcription.duration || 2.0,
         };
 
         // Add to transcription buffer
@@ -137,14 +144,16 @@ export class RealTimeAudioProcessor {
         chunks.push(chunk);
         this.transcriptionBuffers.set(callSid, chunks);
 
-        console.log(`Transcribed: "${transcription.text}" for call: ${callSid}`);
+        console.log(
+          `Transcribed: "${transcription.text}" for call: ${callSid}`
+        );
 
         // Process for event extraction if we have enough content
-        if (chunks.length >= 3) { // ~6 seconds of transcription
+        if (chunks.length >= 3) {
+          // ~6 seconds of transcription
           await this.extractEventsFromTranscription(callSid, chunks.slice(-5));
         }
       }
-
     } catch (error) {
       console.error(`Transcription error for call ${callSid}:`, error);
     }
@@ -158,8 +167,10 @@ export class RealTimeAudioProcessor {
     chunks: TranscriptionChunk[]
   ): Promise<void> {
     try {
-      const combinedText = chunks.map(chunk => chunk.text).join(' ');
-      const avgConfidence = chunks.reduce((sum, chunk) => sum + chunk.confidence, 0) / chunks.length;
+      const combinedText = chunks.map((chunk) => chunk.text).join(' ');
+      const avgConfidence =
+        chunks.reduce((sum, chunk) => sum + chunk.confidence, 0) /
+        chunks.length;
 
       console.log(`Extracting events from transcription for call: ${callSid}`);
       console.log(`Combined text: "${combinedText}"`);
@@ -176,12 +187,13 @@ export class RealTimeAudioProcessor {
       );
 
       if (extractionResult.events.length > 0) {
-        console.log(`Extracted ${extractionResult.events.length} events from live call: ${callSid}`);
-        
+        console.log(
+          `Extracted ${extractionResult.events.length} events from live call: ${callSid}`
+        );
+
         // Update processing status
         await updateCallProcessingStatus(callSid, 'live_events_extracted');
       }
-
     } catch (error) {
       console.error(`Event extraction error for call ${callSid}:`, error);
     }
@@ -193,7 +205,7 @@ export class RealTimeAudioProcessor {
   private async getCallIndustryContext(callSid: string): Promise<string> {
     try {
       const supabase = createAdminClient();
-      
+
       const { data: call } = await supabase
         .from('calls')
         .select('users(industry)')
@@ -202,11 +214,13 @@ export class RealTimeAudioProcessor {
 
       return (call as any)?.users?.industry || 'general';
     } catch (error) {
-      console.error(`Error getting industry context for call ${callSid}:`, error);
+      console.error(
+        `Error getting industry context for call ${callSid}:`,
+        error
+      );
       return 'general';
     }
   }
-
 
   /**
    * Stop real-time processing for a call
@@ -226,10 +240,15 @@ export class RealTimeAudioProcessor {
       this.transcriptionBuffers.delete(callSid);
       this.audioBuffers.delete(callSid);
 
-      await updateCallProcessingStatus(callSid, 'real_time_processing_completed');
-
+      await updateCallProcessingStatus(
+        callSid,
+        'real_time_processing_completed'
+      );
     } catch (error) {
-      console.error(`Error stopping real-time processing for call ${callSid}:`, error);
+      console.error(
+        `Error stopping real-time processing for call ${callSid}:`,
+        error
+      );
     }
   }
 
@@ -239,7 +258,7 @@ export class RealTimeAudioProcessor {
   private convertMulawToWav(mulawBuffer: Buffer): Buffer {
     // Simplified mulaw to PCM conversion
     // In production, you'd use a proper audio library like 'wav' or 'node-ffmpeg'
-    
+
     // For now, return the buffer as-is (this would need proper implementation)
     return mulawBuffer;
   }
@@ -270,10 +289,16 @@ export async function processRealTimeAudio(
   audioPayload: string,
   timestamp: number
 ): Promise<void> {
-  return await realTimeAudioProcessor.processAudioChunk(callSid, audioPayload, timestamp);
+  return await realTimeAudioProcessor.processAudioChunk(
+    callSid,
+    audioPayload,
+    timestamp
+  );
 }
 
-export async function startRealTimeProcessing(callSid: string): Promise<boolean> {
+export async function startRealTimeProcessing(
+  callSid: string
+): Promise<boolean> {
   return await realTimeAudioProcessor.startProcessing(callSid);
 }
 

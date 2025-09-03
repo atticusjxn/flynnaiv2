@@ -26,7 +26,6 @@ export async function GET(request: NextRequest) {
       user_id: userId,
       timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Google Calendar auth initiation error:', error);
     return NextResponse.json(
@@ -65,7 +64,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('Initiating Google Calendar auth for authenticated user:', user.id);
+    console.log(
+      'Initiating Google Calendar auth for authenticated user:',
+      user.id
+    );
 
     // Generate authorization URL
     const authUrl = googleCalendarAuth.generateAuthUrl(user.id);
@@ -76,7 +78,6 @@ export async function POST(request: NextRequest) {
       user_id: user.id,
       timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Google Calendar auth initiation error:', error);
     return NextResponse.json(

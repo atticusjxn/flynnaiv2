@@ -4,15 +4,15 @@ import { createClient } from '@/utils/supabase/server';
 export async function POST(request: NextRequest) {
   try {
     const supabase = createClient();
-    
+
     // Get the authenticated user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Remove phone number from user profile
@@ -23,9 +23,9 @@ export async function POST(request: NextRequest) {
         settings: {
           phone_verified: false,
           phone_number_pending: null,
-          verification_timestamp: null
+          verification_timestamp: null,
         },
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq('id', user.id);
 
@@ -44,9 +44,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Phone number removed successfully'
+      message: 'Phone number removed successfully',
     });
-
   } catch (error) {
     console.error('Remove phone error:', error);
     return NextResponse.json(

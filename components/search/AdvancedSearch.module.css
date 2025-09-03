@@ -75,7 +75,12 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.05), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(59, 130, 246, 0.05),
+    transparent
+  );
   opacity: 0;
   transition: opacity 0.2s ease;
   border-radius: 8px;
@@ -133,11 +138,21 @@
   animation-fill-mode: both;
 }
 
-.searchResult:nth-child(1) { animation-delay: 0.05s; }
-.searchResult:nth-child(2) { animation-delay: 0.1s; }
-.searchResult:nth-child(3) { animation-delay: 0.15s; }
-.searchResult:nth-child(4) { animation-delay: 0.2s; }
-.searchResult:nth-child(5) { animation-delay: 0.25s; }
+.searchResult:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.searchResult:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.searchResult:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.searchResult:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.searchResult:nth-child(5) {
+  animation-delay: 0.25s;
+}
 
 @keyframes fadeInUp {
   from {
@@ -156,7 +171,7 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 
+  box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
@@ -164,7 +179,7 @@
 .glassCard:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(59, 130, 246, 0.3);
-  box-shadow: 
+  box-shadow:
     0 12px 48px rgba(0, 0, 0, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     0 0 0 1px rgba(59, 130, 246, 0.1);
@@ -184,7 +199,11 @@
   left: 50%;
   width: 0;
   height: 0;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.2) 0%,
+    transparent 70%
+  );
   transition: all 0.5s ease;
   transform: translate(-50%, -50%);
 }
@@ -217,25 +236,33 @@
 .urgencyEmergency {
   background: linear-gradient(135deg, #fee2e2, #fecaca);
   color: #dc2626;
-  box-shadow: 0 0 0 1px #fee2e2, 0 0 16px rgba(220, 38, 38, 0.2);
+  box-shadow:
+    0 0 0 1px #fee2e2,
+    0 0 16px rgba(220, 38, 38, 0.2);
 }
 
 .urgencyHigh {
   background: linear-gradient(135deg, #fed7aa, #fdba74);
   color: #ea580c;
-  box-shadow: 0 0 0 1px #fed7aa, 0 0 16px rgba(234, 88, 12, 0.2);
+  box-shadow:
+    0 0 0 1px #fed7aa,
+    0 0 16px rgba(234, 88, 12, 0.2);
 }
 
 .urgencyMedium {
   background: linear-gradient(135deg, #fef3c7, #fde68a);
   color: #d97706;
-  box-shadow: 0 0 0 1px #fef3c7, 0 0 16px rgba(217, 119, 6, 0.2);
+  box-shadow:
+    0 0 0 1px #fef3c7,
+    0 0 16px rgba(217, 119, 6, 0.2);
 }
 
 .urgencyLow {
   background: linear-gradient(135deg, #dcfce7, #bbf7d0);
   color: #16a34a;
-  box-shadow: 0 0 0 1px #dcfce7, 0 0 16px rgba(22, 163, 74, 0.2);
+  box-shadow:
+    0 0 0 1px #dcfce7,
+    0 0 16px rgba(22, 163, 74, 0.2);
 }
 
 /* Export Modal Animation */
@@ -259,11 +286,11 @@
   .searchContainer {
     padding: 1rem;
   }
-  
+
   .suggestionItem {
     padding: 0.75rem;
   }
-  
+
   .filterBadge {
     font-size: 0.75rem;
     padding: 0.25rem 0.5rem;
@@ -275,16 +302,16 @@
   .glassCard {
     background: rgba(0, 0, 0, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 
+    box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
-  
+
   .glassCard:hover {
     background: rgba(0, 0, 0, 0.6);
     border-color: rgba(59, 130, 246, 0.4);
   }
-  
+
   .shimmer {
     background: linear-gradient(
       90deg,
@@ -300,11 +327,11 @@
   .suggestionItem:hover {
     outline: 2px solid;
   }
-  
+
   .filterBadge {
     border: 1px solid;
   }
-  
+
   .premiumButton {
     border: 2px solid;
   }
@@ -318,14 +345,14 @@
   .exportModal {
     animation: none;
   }
-  
+
   .suggestionItem,
   .filterBadge,
   .premiumButton,
   .glassCard {
     transition: none;
   }
-  
+
   .slider::-webkit-slider-thumb,
   .slider::-moz-range-thumb {
     transition: none;

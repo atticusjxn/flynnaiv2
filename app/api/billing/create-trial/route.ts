@@ -9,13 +9,13 @@ export async function POST(request: NextRequest) {
   try {
     // Get user from session
     const supabase = createClient();
-    const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user: authUser },
+      error: authError,
+    } = await supabase.auth.getUser();
 
     if (authError || !authUser) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Get user details from database
@@ -26,10 +26,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (userError || !user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Check if user already has a trial or subscription
@@ -41,14 +38,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Start free trial
-    const trialUser = await subscriptionService.startFreeTrial(authUser.id, user.email);
+    const trialUser = await subscriptionService.startFreeTrial(
+      authUser.id,
+      user.email
+    );
 
     return NextResponse.json({
       success: true,
       trial: trialUser,
       message: 'Free trial started successfully',
     });
-
   } catch (error) {
     console.error('Failed to create trial:', error);
     return NextResponse.json(

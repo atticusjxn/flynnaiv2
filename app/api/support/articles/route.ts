@@ -5,8 +5,29 @@ import type { Database } from '@/types/database.types';
 
 const SearchSchema = z.object({
   query: z.string().optional(),
-  category: z.enum(['getting-started', 'setup', 'troubleshooting', 'billing', 'api', 'industry-specific', 'features']).optional(),
-  industry_type: z.enum(['plumbing', 'real_estate', 'legal', 'medical', 'sales', 'consulting', 'general_services', 'all']).optional(),
+  category: z
+    .enum([
+      'getting-started',
+      'setup',
+      'troubleshooting',
+      'billing',
+      'api',
+      'industry-specific',
+      'features',
+    ])
+    .optional(),
+  industry_type: z
+    .enum([
+      'plumbing',
+      'real_estate',
+      'legal',
+      'medical',
+      'sales',
+      'consulting',
+      'general_services',
+      'all',
+    ])
+    .optional(),
   limit: z.number().min(1).max(50).default(20),
   offset: z.number().min(0).default(0),
 });
@@ -16,31 +37,39 @@ export async function GET(request: NextRequest) {
     const supabase = createClient();
     const url = new URL(request.url);
     const searchParams = Object.fromEntries(url.searchParams.entries());
-    
+
     // Convert string numbers to actual numbers
     if (searchParams.limit) searchParams.limit = parseInt(searchParams.limit);
-    if (searchParams.offset) searchParams.offset = parseInt(searchParams.offset);
-    
+    if (searchParams.offset)
+      searchParams.offset = parseInt(searchParams.offset);
+
     const validatedParams = SearchSchema.parse(searchParams);
-    
+
     let query = supabase
       .from('support_articles')
       .select('*')
       .eq('is_published', true)
       .order('created_at', { ascending: false })
-      .range(validatedParams.offset, validatedParams.offset + validatedParams.limit - 1);
+      .range(
+        validatedParams.offset,
+        validatedParams.offset + validatedParams.limit - 1
+      );
 
     // Apply filters
     if (validatedParams.query) {
-      query = query.or(`title.ilike.%${validatedParams.query}%,content.ilike.%${validatedParams.query}%,search_keywords.ilike.%${validatedParams.query}%`);
+      query = query.or(
+        `title.ilike.%${validatedParams.query}%,content.ilike.%${validatedParams.query}%,search_keywords.ilike.%${validatedParams.query}%`
+      );
     }
-    
+
     if (validatedParams.category) {
       query = query.eq('category', validatedParams.category);
     }
-    
+
     if (validatedParams.industry_type) {
-      query = query.or(`industry_type.eq.${validatedParams.industry_type},industry_type.eq.all`);
+      query = query.or(
+        `industry_type.eq.${validatedParams.industry_type},industry_type.eq.all`
+      );
     }
 
     const { data: articles, error } = await query;
@@ -66,27 +95,49 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const supabase = createClient();
-    
+
     // Get current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await request.json();
-    
+
     const CreateArticleSchema = z.object({
       title: z.string().min(1).max(255),
       content: z.string().min(1),
-      category: z.enum(['getting-started', 'setup', 'troubleshooting', 'billing', 'api', 'industry-specific', 'features']),
-      industry_type: z.enum(['plumbing', 'real_estate', 'legal', 'medical', 'sales', 'consulting', 'general_services', 'all']).optional(),
+      category: z.enum([
+        'getting-started',
+        'setup',
+        'troubleshooting',
+        'billing',
+        'api',
+        'industry-specific',
+        'features',
+      ]),
+      industry_type: z
+        .enum([
+          'plumbing',
+          'real_estate',
+          'legal',
+          'medical',
+          'sales',
+          'consulting',
+          'general_services',
+          'all',
+        ])
+        .optional(),
       tags: z.array(z.string()).optional(),
       search_keywords: z.string().optional(),
     });
-    
+
     const validatedData = CreateArticleSchema.parse(body);
-    
+
     // Generate slug from title
     const slug = validatedData.title
       .toLowerCase()
@@ -124,7 +175,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     console.error('Support article creation error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

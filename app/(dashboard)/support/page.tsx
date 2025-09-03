@@ -2,11 +2,11 @@ import { Suspense } from 'react';
 import { Card, CardBody, CardHeader } from '@nextui-org/card';
 import { Button } from '@nextui-org/button';
 import { Link } from '@nextui-org/link';
-import { 
-  QuestionMarkCircleIcon, 
-  ChatBubbleLeftRightIcon, 
+import {
+  QuestionMarkCircleIcon,
+  ChatBubbleLeftRightIcon,
   BookOpenIcon,
-  LifebuoyIcon 
+  LifebuoyIcon,
 } from '@heroicons/react/24/outline';
 import SupportSearch from '@/components/support/SupportSearch';
 
@@ -39,9 +39,9 @@ export default async function SupportPage() {
 
       {/* Quick Actions */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-        <Card 
-          isPressable 
-          as={Link} 
+        <Card
+          isPressable
+          as={Link}
           href="/support/tickets/new"
           className="hover:shadow-lg transition-shadow"
         >
@@ -54,9 +54,9 @@ export default async function SupportPage() {
           </CardBody>
         </Card>
 
-        <Card 
-          isPressable 
-          as={Link} 
+        <Card
+          isPressable
+          as={Link}
           href="/support/tickets"
           className="hover:shadow-lg transition-shadow"
         >
@@ -69,9 +69,9 @@ export default async function SupportPage() {
           </CardBody>
         </Card>
 
-        <Card 
-          isPressable 
-          as={Link} 
+        <Card
+          isPressable
+          as={Link}
           href="/support/articles?category=getting-started"
           className="hover:shadow-lg transition-shadow"
         >
@@ -84,18 +84,16 @@ export default async function SupportPage() {
           </CardBody>
         </Card>
 
-        <Card 
-          isPressable 
-          as={Link} 
+        <Card
+          isPressable
+          as={Link}
           href="/support/articles?category=troubleshooting"
           className="hover:shadow-lg transition-shadow"
         >
           <CardBody className="text-center p-6">
             <QuestionMarkCircleIcon className="h-8 w-8 text-warning mx-auto mb-3" />
             <h3 className="font-semibold mb-2">Troubleshooting</h3>
-            <p className="text-sm text-default-600">
-              Solve common issues
-            </p>
+            <p className="text-sm text-default-600">Solve common issues</p>
           </CardBody>
         </Card>
       </div>
@@ -107,47 +105,63 @@ export default async function SupportPage() {
         </CardHeader>
         <CardBody>
           <div className="grid gap-3">
-            <Link 
+            <Link
               href="/support/articles/what-is-flynn-ai"
               className="flex items-center p-3 hover:bg-default-50 rounded-lg transition-colors"
             >
               <BookOpenIcon className="h-5 w-5 text-default-400 mr-3" />
               <div>
-                <h3 className="font-medium">What is Flynn.ai and how does it work?</h3>
-                <p className="text-sm text-default-600">Learn about Flynn.ai's core features and benefits</p>
+                <h3 className="font-medium">
+                  What is Flynn.ai and how does it work?
+                </h3>
+                <p className="text-sm text-default-600">
+                  Learn about Flynn.ai's core features and benefits
+                </p>
               </div>
             </Link>
-            
-            <Link 
+
+            <Link
               href="/support/articles/setup-call-forwarding"
               className="flex items-center p-3 hover:bg-default-50 rounded-lg transition-colors"
             >
               <BookOpenIcon className="h-5 w-5 text-default-400 mr-3" />
               <div>
-                <h3 className="font-medium">How to set up call forwarding in 10 seconds</h3>
-                <p className="text-sm text-default-600">Quick setup guide for call forwarding</p>
+                <h3 className="font-medium">
+                  How to set up call forwarding in 10 seconds
+                </h3>
+                <p className="text-sm text-default-600">
+                  Quick setup guide for call forwarding
+                </p>
               </div>
             </Link>
-            
-            <Link 
+
+            <Link
               href="/support/articles/no-email-summaries"
               className="flex items-center p-3 hover:bg-default-50 rounded-lg transition-colors"
             >
               <BookOpenIcon className="h-5 w-5 text-default-400 mr-3" />
               <div>
-                <h3 className="font-medium">Why am I not receiving email summaries after calls?</h3>
-                <p className="text-sm text-default-600">Troubleshoot email delivery issues</p>
+                <h3 className="font-medium">
+                  Why am I not receiving email summaries after calls?
+                </h3>
+                <p className="text-sm text-default-600">
+                  Troubleshoot email delivery issues
+                </p>
               </div>
             </Link>
-            
-            <Link 
+
+            <Link
               href="/support/articles/pricing-plans"
               className="flex items-center p-3 hover:bg-default-50 rounded-lg transition-colors"
             >
               <BookOpenIcon className="h-5 w-5 text-default-400 mr-3" />
               <div>
-                <h3 className="font-medium">Flynn.ai Pricing Plans and Features</h3>
-                <p className="text-sm text-default-600">Compare subscription tiers and features</p>
+                <h3 className="font-medium">
+                  Flynn.ai Pricing Plans and Features
+                </h3>
+                <p className="text-sm text-default-600">
+                  Compare subscription tiers and features
+                </p>
               </div>
             </Link>
           </div>
@@ -160,12 +174,14 @@ export default async function SupportPage() {
           <h2 className="text-xl font-semibold">Search Help Articles</h2>
         </CardHeader>
         <CardBody>
-          <Suspense fallback={
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-              <p className="text-default-600 mt-2">Loading articles...</p>
-            </div>
-          }>
+          <Suspense
+            fallback={
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                <p className="text-default-600 mt-2">Loading articles...</p>
+              </div>
+            }
+          >
             <SupportSearch initialArticles={initialArticles} />
           </Suspense>
         </CardBody>
@@ -179,18 +195,10 @@ export default async function SupportPage() {
             Our support team typically responds within 24 hours
           </p>
           <div className="flex gap-3 justify-center">
-            <Button 
-              as={Link} 
-              href="/support/tickets/new" 
-              color="primary"
-            >
+            <Button as={Link} href="/support/tickets/new" color="primary">
               Submit Support Ticket
             </Button>
-            <Button 
-              as={Link} 
-              href="mailto:support@flynn.ai" 
-              variant="bordered"
-            >
+            <Button as={Link} href="mailto:support@flynn.ai" variant="bordered">
               Email Support
             </Button>
           </div>

@@ -39,26 +39,56 @@ export default function SearchResults({
   isLoading = false,
   searchTime,
   onResultClick,
-  className = ""
+  className = '',
 }: SearchResultsProps) {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'call':
         return (
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"
+            />
           </svg>
         );
       case 'event':
         return (
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5a2.25 2.25 0 002.25-2.25m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5a2.25 2.25 0 012.25 2.25v7.5" />
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5a2.25 2.25 0 002.25-2.25m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5a2.25 2.25 0 012.25 2.25v7.5"
+            />
           </svg>
         );
       default:
         return (
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+            />
           </svg>
         );
     }
@@ -141,12 +171,26 @@ export default function SearchResults({
       <div className={`text-center py-12 ${className}`}>
         <div className="max-w-md mx-auto">
           <div className="p-4 rounded-full bg-gradient-to-br from-gray-100 to-gray-50 text-gray-400 inline-block mb-4">
-            <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            <svg
+              className="w-12 h-12"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+              />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
-          <p className="text-gray-500">Try adjusting your search terms or filters</p>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No results found
+          </h3>
+          <p className="text-gray-500">
+            Try adjusting your search terms or filters
+          </p>
         </div>
       </div>
     );
@@ -165,9 +209,7 @@ export default function SearchResults({
           </Badge>
         </div>
         {searchTime && (
-          <p className="text-sm text-gray-500">
-            Found in {searchTime}ms
-          </p>
+          <p className="text-sm text-gray-500">Found in {searchTime}ms</p>
         )}
       </div>
 
@@ -185,72 +227,122 @@ export default function SearchResults({
             `}
             style={{
               animationDelay: `${index * 50}ms`,
-              animation: 'fadeInUp 0.4s ease-out forwards'
+              animation: 'fadeInUp 0.4s ease-out forwards',
             }}
           >
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between w-full">
                 <div className="flex items-start gap-3 flex-1">
                   {/* Type Icon */}
-                  <div className={`
+                  <div
+                    className={`
                     p-2 rounded-lg border flex-shrink-0 transition-colors duration-200
                     ${getTypeColor(result.type)}
                     group-hover:scale-105
-                  `}>
+                  `}
+                  >
                     {getTypeIcon(result.type)}
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     {/* Title */}
                     <h3 className="text-lg font-semibold text-gray-900 group-hover:text-primary transition-colors line-clamp-1 mb-1">
                       {result.title}
                     </h3>
-                    
+
                     {/* Description */}
                     <p className="text-gray-600 line-clamp-2 mb-3">
                       {result.description}
                     </p>
-                    
+
                     {/* Metadata */}
                     <div className="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
                       {result.metadata.customerName && (
                         <div className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"
+                            />
                           </svg>
-                          <span className="font-medium">{result.metadata.customerName}</span>
+                          <span className="font-medium">
+                            {result.metadata.customerName}
+                          </span>
                         </div>
                       )}
-                      
+
                       {result.metadata.phoneNumber && (
                         <div className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"
+                            />
                           </svg>
                           <span>{result.metadata.phoneNumber}</span>
                         </div>
                       )}
-                      
+
                       {result.metadata.location && (
                         <div className="flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                            />
                           </svg>
-                          <span className="truncate max-w-xs">{result.metadata.location}</span>
+                          <span className="truncate max-w-xs">
+                            {result.metadata.location}
+                          </span>
                         </div>
                       )}
-                      
+
                       <div className="flex items-center gap-1">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
                         <span>{formatDate(result.metadata.date)}</span>
                       </div>
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Status and Score */}
                 <div className="flex flex-col items-end gap-2 ml-4">
                   {result.metadata.urgency && (
@@ -261,20 +353,25 @@ export default function SearchResults({
                       {result.metadata.urgency}
                     </Chip>
                   )}
-                  
+
                   <div className="flex items-center gap-2 text-xs text-gray-500">
                     {result.metadata.confidence && (
                       <Badge size="sm" color="success" variant="flat">
                         AI: {result.metadata.confidence}%
                       </Badge>
                     )}
-                    
+
                     <Badge size="sm" color="primary" variant="dot">
                       {Math.round(result.relevanceScore * 100)}% match
                     </Badge>
                   </div>
-                  
-                  <Chip size="sm" variant="flat" color="primary" className="capitalize">
+
+                  <Chip
+                    size="sm"
+                    variant="flat"
+                    color="primary"
+                    className="capitalize"
+                  >
                     {result.type}
                   </Chip>
                 </div>

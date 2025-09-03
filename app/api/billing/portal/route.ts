@@ -14,13 +14,13 @@ export async function POST(request: NextRequest) {
   try {
     // Get user from session
     const supabase = createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Parse and validate request body
@@ -31,16 +31,18 @@ export async function POST(request: NextRequest) {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     const returnUrl = validatedData.returnUrl || `${baseUrl}/billing`;
 
-    const session = await subscriptionService.createPortalSession(user.id, returnUrl);
+    const session = await subscriptionService.createPortalSession(
+      user.id,
+      returnUrl
+    );
 
     return NextResponse.json({
       success: true,
       url: session.url,
     });
-
   } catch (error) {
     console.error('Portal creation error:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid request data', details: error.errors },

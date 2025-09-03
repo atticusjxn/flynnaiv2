@@ -10,7 +10,7 @@ import { AnalyticsService } from './analytics';
 export async function testDatabaseConnection() {
   try {
     const supabase = createClient();
-    
+
     // Test basic connection
     const { data, error } = await supabase
       .from('users')
@@ -33,7 +33,7 @@ export async function testDatabaseConnection() {
 export async function testUserOperations() {
   try {
     const userService = new UserService();
-    
+
     // Test getting current user (will be null without auth)
     const currentUser = await userService.getCurrentUser();
     console.log('Current user:', currentUser ? 'Found' : 'Not authenticated');
@@ -49,7 +49,7 @@ export async function testUserOperations() {
 export async function testCallOperations() {
   try {
     const callService = new CallService();
-    
+
     // Test getting processing calls (should return empty array)
     const processingCalls = await callService.getProcessingCalls();
     console.log('Processing calls found:', processingCalls.length);
@@ -65,7 +65,7 @@ export async function testCallOperations() {
 export async function testEventOperations() {
   try {
     const eventService = new EventService();
-    
+
     // Test event stats function (requires a user ID)
     // This will fail without a valid user ID, but tests the function exists
     try {
@@ -106,8 +106,10 @@ export async function runAllTests() {
     console.log(`${passed ? '✅' : '❌'} ${name}`);
   });
 
-  const allPassed = results.every(r => r.passed);
-  console.log(`\n${allPassed ? '🎉' : '⚠️'} Overall: ${allPassed ? 'All tests passed!' : 'Some tests failed'}`);
+  const allPassed = results.every((r) => r.passed);
+  console.log(
+    `\n${allPassed ? '🎉' : '⚠️'} Overall: ${allPassed ? 'All tests passed!' : 'Some tests failed'}`
+  );
 
   return allPassed;
 }

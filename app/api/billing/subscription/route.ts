@@ -15,17 +15,19 @@ export async function GET(request: NextRequest) {
   try {
     // Get user from session
     const supabase = createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Get subscription information
-    const subscriptionInfo = await subscriptionService.getUserSubscriptionInfo(user.id);
+    const subscriptionInfo = await subscriptionService.getUserSubscriptionInfo(
+      user.id
+    );
     const trialStatus = await subscriptionService.getTrialStatus(user.id);
     const needsPayment = await subscriptionService.needsPaymentMethod(user.id);
 
@@ -35,7 +37,6 @@ export async function GET(request: NextRequest) {
       trial: trialStatus,
       needsPaymentMethod: needsPayment,
     });
-
   } catch (error) {
     console.error('Subscription info error:', error);
     return NextResponse.json(
@@ -50,13 +51,13 @@ export async function PUT(request: NextRequest) {
   try {
     // Get user from session
     const supabase = createClient();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
 
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Parse and validate request body
@@ -64,16 +65,18 @@ export async function PUT(request: NextRequest) {
     const validatedData = updateSubscriptionSchema.parse(body);
 
     // Change subscription tier
-    const result = await subscriptionService.changeSubscriptionTier(user.id, validatedData.tier);
+    const result = await subscriptionService.changeSubscriptionTier(
+      user.id,
+      validatedData.tier
+    );
 
     return NextResponse.json({
       success: true,
       newTier: result.newTier,
     });
-
   } catch (error) {
     console.error('Subscription update error:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid request data', details: error.errors },

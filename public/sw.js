@@ -8,15 +8,16 @@ const urlsToCache = [
   '/calls',
   '/events',
   '/calendar',
-  '/settings'
+  '/settings',
 ];
 
 // Install event - cache critical resources
 self.addEventListener('install', (event) => {
   console.log('[SW] Install event');
-  
+
   event.waitUntil(
-    caches.open(CACHE_NAME)
+    caches
+      .open(CACHE_NAME)
       .then((cache) => {
         console.log('[SW] Caching critical resources');
         return cache.addAll(urlsToCache);
@@ -25,14 +26,14 @@ self.addEventListener('install', (event) => {
         console.error('[SW] Failed to cache resources:', error);
       })
   );
-  
+
   self.skipWaiting();
 });
 
 // Activate event - cleanup old caches
 self.addEventListener('activate', (event) => {
   console.log('[SW] Activate event');
-  
+
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -45,50 +46,58 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  
+
   self.clients.claim();
 });
 
 // Fetch event - serve from cache when offline
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET' || event.request.url.startsWith('chrome-extension://')) {
+  if (
+    event.request.method !== 'GET' ||
+    event.request.url.startsWith('chrome-extension://')
+  ) {
     return;
   }
-  
+
   if (event.request.url.includes('/api/')) {
     return;
   }
-  
+
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        if (response) {
-          return response;
-        }
-        
-        return fetch(event.request)
-          .then((response) => {
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-            
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
-            
+    caches.match(event.request).then((response) => {
+      if (response) {
+        return response;
+      }
+
+      return fetch(event.request)
+        .then((response) => {
+          if (
+            !response ||
+            response.status !== 200 ||
+            response.type !== 'basic'
+          ) {
             return response;
-          })
-          .catch((error) => {
-            if (event.request.mode === 'navigate') {
-              return new Response('Flynn.ai is offline. Please check your connection.', {
-                headers: { 'Content-Type': 'text/html' }
-              });
-            }
-            throw error;
+          }
+
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
           });
-      })
+
+          return response;
+        })
+        .catch((error) => {
+          if (event.request.mode === 'navigate') {
+            return new Response(
+              'Flynn.ai is offline. Please check your connection.',
+              {
+                headers: { 'Content-Type': 'text/html' },
+              }
+            );
+          }
+          throw error;
+        });
+    })
   );
 });
 

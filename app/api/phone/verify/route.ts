@@ -22,8 +22,11 @@ export async function POST(request: NextRequest) {
     const supabase = createClient();
 
     // Get authenticated user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -47,7 +50,7 @@ export async function POST(request: NextRequest) {
           twilio_phone_sid: verificationResult.phoneSid,
           twilio_webhook_configured: true,
           phone_setup_method: setupMethod,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', user.id);
 
@@ -60,21 +63,18 @@ export async function POST(request: NextRequest) {
       }
 
       // Log successful phone setup
-      await supabase
-        .from('user_events')
-        .insert({
-          user_id: user.id,
-          event_type: 'phone_verified',
-          event_data: {
-            phone_number: verificationResult.phoneNumber,
-            setup_method: setupMethod
-          },
-          created_at: new Date().toISOString()
-        });
+      await supabase.from('user_events').insert({
+        user_id: user.id,
+        event_type: 'phone_verified',
+        event_data: {
+          phone_number: verificationResult.phoneNumber,
+          setup_method: setupMethod,
+        },
+        created_at: new Date().toISOString(),
+      });
     }
 
     return NextResponse.json(verificationResult);
-
   } catch (error) {
     console.error('Phone verification error:', error);
     return NextResponse.json(
@@ -87,15 +87,17 @@ export async function POST(request: NextRequest) {
 async function setupNewPhoneNumber(areaCode: string, webhookUrl: string) {
   try {
     // Search for available phone numbers in the specified area code
-    const availableNumbers = await client.availablePhoneNumbers('US').local.list({
-      areaCode: areaCode || undefined,
-      limit: 1
-    });
+    const availableNumbers = await client
+      .availablePhoneNumbers('US')
+      .local.list({
+        areaCode: areaCode || undefined,
+        limit: 1,
+      });
 
     if (availableNumbers.length === 0) {
       return {
         success: false,
-        error: 'No phone numbers available in the requested area code'
+        error: 'No phone numbers available in the requested area code',
       };
     }
 
@@ -109,21 +111,20 @@ async function setupNewPhoneNumber(areaCode: string, webhookUrl: string) {
       voiceFallbackUrl: `${webhookUrl}/fallback`,
       voiceFallbackMethod: 'POST',
       statusCallback: `${webhookUrl}/status`,
-      statusCallbackMethod: 'POST'
+      statusCallbackMethod: 'POST',
     });
 
     return {
       success: true,
       phoneNumber: purchasedNumber.phoneNumber,
       phoneSid: purchasedNumber.sid,
-      message: 'Phone number configured successfully'
+      message: 'Phone number configured successfully',
     };
-
   } catch (error) {
     console.error('Failed to setup new phone number:', error);
     return {
       success: false,
-      error: 'Failed to configure new phone number'
+      error: 'Failed to configure new phone number',
     };
   }
 }
@@ -135,13 +136,13 @@ async function verifyExistingPhone(phoneNumber: string, webhookUrl: string) {
 
     // Find the phone number in Twilio account
     const existingNumbers = await client.incomingPhoneNumbers.list({
-      phoneNumber: formattedNumber
+      phoneNumber: formattedNumber,
     });
 
     if (existingNumbers.length === 0) {
       return {
         success: false,
-        error: 'Phone number not found in your Twilio account'
+        error: 'Phone number not found in your Twilio account',
       };
     }
 
@@ -154,16 +155,17 @@ async function verifyExistingPhone(phoneNumber: string, webhookUrl: string) {
       voiceFallbackUrl: `${webhookUrl}/fallback`,
       voiceFallbackMethod: 'POST',
       statusCallback: `${webhookUrl}/status`,
-      statusCallbackMethod: 'POST'
+      statusCallbackMethod: 'POST',
     });
 
     // Test webhook connectivity
     const webhookTest = await testWebhookConnectivity(webhookUrl);
-    
+
     if (!webhookTest.success) {
       return {
         success: false,
-        error: 'Webhook URL is not accessible. Please check your configuration.'
+        error:
+          'Webhook URL is not accessible. Please check your configuration.',
       };
     }
 
@@ -171,27 +173,28 @@ async function verifyExistingPhone(phoneNumber: string, webhookUrl: string) {
       success: true,
       phoneNumber: phoneConfig.phoneNumber,
       phoneSid: phoneConfig.sid,
-      message: 'Phone configuration verified successfully'
+      message: 'Phone configuration verified successfully',
     };
-
   } catch (error) {
     console.error('Failed to verify existing phone:', error);
     return {
       success: false,
-      error: 'Failed to verify phone configuration'
+      error: 'Failed to verify phone configuration',
     };
   }
 }
 
-async function testWebhookConnectivity(webhookUrl: string): Promise<{ success: boolean }> {
+async function testWebhookConnectivity(
+  webhookUrl: string
+): Promise<{ success: boolean }> {
   try {
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': 'TwilioProxy/1.1'
+        'User-Agent': 'TwilioProxy/1.1',
       },
-      body: 'CallSid=test&From=%2B15551234567&To=%2B15559876543&CallStatus=test'
+      body: 'CallSid=test&From=%2B15551234567&To=%2B15559876543&CallStatus=test',
     });
 
     return { success: response.status === 200 || response.status === 405 };

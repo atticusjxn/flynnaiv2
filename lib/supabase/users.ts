@@ -11,7 +11,9 @@ export class UserService {
   private supabase = createClient();
 
   async getCurrentUser(): Promise<User | null> {
-    const { data: { user } } = await this.supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await this.supabase.auth.getUser();
     if (!user) return null;
 
     const { data, error } = await this.supabase
@@ -106,12 +108,15 @@ export class UserService {
     return data.settings as UserSettings;
   }
 
-  async updateUserSettings(userId: string, settings: UserSettings): Promise<boolean> {
+  async updateUserSettings(
+    userId: string,
+    settings: UserSettings
+  ): Promise<boolean> {
     const { error } = await this.supabase
       .from('users')
-      .update({ 
+      .update({
         settings: settings,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq('id', userId);
 
@@ -124,8 +129,8 @@ export class UserService {
   }
 
   async updatePartialSettings<T extends keyof UserSettings>(
-    userId: string, 
-    section: T, 
+    userId: string,
+    section: T,
     updates: Partial<UserSettings[T]>
   ): Promise<boolean> {
     // First, get current settings
@@ -139,14 +144,17 @@ export class UserService {
       ...currentSettings,
       [section]: {
         ...currentSettings[section],
-        ...updates
-      }
+        ...updates,
+      },
     };
 
     return this.updateUserSettings(userId, newSettings);
   }
 
-  async resetUserSettings(userId: string, defaultSettings: UserSettings): Promise<boolean> {
+  async resetUserSettings(
+    userId: string,
+    defaultSettings: UserSettings
+  ): Promise<boolean> {
     return this.updateUserSettings(userId, defaultSettings);
   }
 }

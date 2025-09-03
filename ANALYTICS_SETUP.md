@@ -5,12 +5,14 @@
 The analytics dashboard has been implemented but requires database tables to function. Run the following migration to set up the analytics system:
 
 ### Option 1: Supabase Dashboard (Recommended)
+
 1. Go to your Supabase project dashboard
 2. Navigate to SQL Editor
 3. Copy and paste the contents of `/sql/analytics_migration.sql`
 4. Click "Run" to execute the migration
 
 ### Option 2: Command Line (if you have psql access)
+
 ```bash
 psql -d your_database_url -f sql/analytics_migration.sql
 ```
@@ -18,7 +20,7 @@ psql -d your_database_url -f sql/analytics_migration.sql
 ## What This Migration Creates
 
 1. **analytics_events** - Tracks all user interactions and events
-2. **user_metrics** - Aggregated per-user analytics data  
+2. **user_metrics** - Aggregated per-user analytics data
 3. **business_metrics** - Daily business KPIs and metrics
 4. **Sample Data** - 6 months of demonstration data for immediate testing
 5. **RLS Policies** - Row-level security for data protection
@@ -48,7 +50,7 @@ After running the migration:
 ## Analytics Features Implemented
 
 - **Real-time Event Tracking** - Page views, feature usage, conversions
-- **Revenue Analytics** - MRR, churn rate, customer lifetime value  
+- **Revenue Analytics** - MRR, churn rate, customer lifetime value
 - **Feature Usage Heat Map** - Visual adoption patterns
 - **Industry Performance** - Revenue breakdown by business type
 - **User Metrics** - Individual user engagement and behavior

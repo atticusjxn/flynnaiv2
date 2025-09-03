@@ -1,5 +1,12 @@
 // Universal Calendar Service for Flynn.ai v2
-import { CalendarProvider, CalendarEvent, CalendarEventResult, CalendarConflict, FlynnEvent, EventConversionOptions } from '@/types/calendar.types';
+import {
+  CalendarProvider,
+  CalendarEvent,
+  CalendarEventResult,
+  CalendarConflict,
+  FlynnEvent,
+  EventConversionOptions,
+} from '@/types/calendar.types';
 
 export class CalendarService {
   private providers: Map<string, CalendarProvider> = new Map();
@@ -30,7 +37,7 @@ export class CalendarService {
    * Convert Flynn.ai event to calendar event
    */
   convertFlynnEventToCalendar(
-    flynnEvent: FlynnEvent, 
+    flynnEvent: FlynnEvent,
     options: EventConversionOptions = {}
   ): CalendarEvent {
     const {
@@ -42,7 +49,7 @@ export class CalendarService {
     } = options;
 
     // Calculate event timing
-    const startTime = flynnEvent.proposed_datetime 
+    const startTime = flynnEvent.proposed_datetime
       ? new Date(flynnEvent.proposed_datetime)
       : new Date(); // Fallback to current time
 
@@ -51,7 +58,7 @@ export class CalendarService {
 
     // Build description
     let description = flynnEvent.description || '';
-    
+
     if (includeCustomerInfo && flynnEvent.customer_name) {
       description += `\n\nCustomer: ${flynnEvent.customer_name}`;
       if (flynnEvent.customer_phone) {
@@ -115,7 +122,7 @@ export class CalendarService {
       transparency: eventProps.transparency,
       reminders: {
         useDefault: false,
-        overrides: reminderMinutes.map(minutes => ({
+        overrides: reminderMinutes.map((minutes) => ({
           method: 'popup' as const,
           minutes,
         })),
@@ -154,7 +161,7 @@ export class CalendarService {
       }
 
       // Proceed with creation if no high-severity conflicts
-      const hasBlockingConflicts = conflicts.some(c => c.severity === 'high');
+      const hasBlockingConflicts = conflicts.some((c) => c.severity === 'high');
       if (hasBlockingConflicts) {
         return {
           success: false,
@@ -165,7 +172,7 @@ export class CalendarService {
 
       // Create the event
       const result = await provider.createEvent(calendarId, event);
-      
+
       if (result.success) {
         console.log(`Successfully created calendar event: ${result.eventId}`);
       }
@@ -175,12 +182,14 @@ export class CalendarService {
         ...result,
         conflicts: conflicts.length > 0 ? conflicts : undefined,
       };
-
     } catch (error) {
       console.error('Error creating calendar event:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create calendar event',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to create calendar event',
       };
     }
   }
@@ -196,7 +205,10 @@ export class CalendarService {
   ): Promise<CalendarEventResult> {
     try {
       // Convert Flynn event to calendar format
-      const calendarEvent = this.convertFlynnEventToCalendar(flynnEvent, options);
+      const calendarEvent = this.convertFlynnEventToCalendar(
+        flynnEvent,
+        options
+      );
 
       // Create event with conflict detection
       const result = await this.createEventWithConflictDetection(
@@ -206,16 +218,20 @@ export class CalendarService {
       );
 
       if (result.success) {
-        console.log(`Successfully synced Flynn event ${flynnEvent.id} to ${providerId} calendar`);
+        console.log(
+          `Successfully synced Flynn event ${flynnEvent.id} to ${providerId} calendar`
+        );
       }
 
       return result;
-
     } catch (error) {
       console.error('Error syncing Flynn event to calendar:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to sync event to calendar',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to sync event to calendar',
       };
     }
   }
@@ -238,7 +254,9 @@ export class CalendarService {
       conflicts: number;
     };
   }> {
-    console.log(`Batch syncing ${flynnEvents.length} events to ${providerId} calendar`);
+    console.log(
+      `Batch syncing ${flynnEvents.length} events to ${providerId} calendar`
+    );
 
     const results: CalendarEventResult[] = [];
     let successful = 0;
@@ -267,7 +285,7 @@ export class CalendarService {
       }
 
       // Brief delay to respect API rate limits
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
     const summary = {
@@ -295,7 +313,7 @@ export class CalendarService {
     error?: string;
   }> {
     const provider = this.getProvider(providerId);
-    
+
     if (!provider) {
       return {
         isAuthenticated: false,
@@ -314,7 +332,10 @@ export class CalendarService {
       return {
         isAuthenticated: false,
         provider,
-        error: error instanceof Error ? error.message : 'Authentication check failed',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Authentication check failed',
       };
     }
   }

@@ -13,17 +13,20 @@ const MetricsQuerySchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     const supabase = createClient();
-    
+
     // Get current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const url = new URL(request.url);
     const params = Object.fromEntries(url.searchParams.entries());
-    
+
     // Parse metrics parameter if it exists
     if (params.metrics) {
       try {
@@ -32,13 +35,17 @@ export async function GET(request: NextRequest) {
         params.metrics = params.metrics.split(',');
       }
     }
-    
+
     const validatedParams = MetricsQuerySchema.parse(params);
 
     // Default date range (last 30 days)
-    const endDate = validatedParams.end_date || new Date().toISOString().split('T')[0];
-    const startDate = validatedParams.start_date || 
-      new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const endDate =
+      validatedParams.end_date || new Date().toISOString().split('T')[0];
+    const startDate =
+      validatedParams.start_date ||
+      new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split('T')[0];
 
     // Fetch business metrics
     const { data: businessMetrics, error: businessError } = await supabase
@@ -79,7 +86,8 @@ export async function GET(request: NextRequest) {
       monthlyRecurringRevenue: latestBusiness?.monthly_recurring_revenue || 0,
       churnRate: latestBusiness?.churn_rate || 0,
       aiAccuracyRate: latestBusiness?.ai_accuracy_rate || 0,
-      averageCallProcessingTime: latestBusiness?.average_call_processing_time || 0,
+      averageCallProcessingTime:
+        latestBusiness?.average_call_processing_time || 0,
       userCallsProcessed: latestUser?.total_calls_processed || 0,
       userEventsExtracted: latestUser?.total_events_extracted || 0,
       userAiAccuracy: latestUser?.ai_accuracy_score || 0,
@@ -99,7 +107,7 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     console.error('Analytics metrics API error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

@@ -26,24 +26,28 @@ export class TranscriptionService {
     filename?: string
   ): Promise<TranscriptionResult> {
     const startTime = Date.now();
-    
+
     try {
       console.log('Starting audio transcription with Whisper API');
-      
+
       // Prepare the file for OpenAI API
-      const file = audioFile instanceof Buffer 
-        ? new File([audioFile], filename || 'audio.mp3', { type: 'audio/mpeg' })
-        : audioFile;
+      const file =
+        audioFile instanceof Buffer
+          ? new File([audioFile], filename || 'audio.mp3', {
+              type: 'audio/mpeg',
+            })
+          : audioFile;
 
       // Call Whisper API with retry logic
       const transcription = await retry(
-        () => openai.audio.transcriptions.create({
-          file,
-          model: OPENAI_CONFIG.transcription.model,
-          response_format: OPENAI_CONFIG.transcription.response_format,
-          language: OPENAI_CONFIG.transcription.language,
-          temperature: OPENAI_CONFIG.transcription.temperature,
-        }),
+        () =>
+          openai.audio.transcriptions.create({
+            file,
+            model: OPENAI_CONFIG.transcription.model,
+            response_format: OPENAI_CONFIG.transcription.response_format,
+            language: OPENAI_CONFIG.transcription.language,
+            temperature: OPENAI_CONFIG.transcription.temperature,
+          }),
         {
           maxRetries: OPENAI_CONFIG.rateLimit.maxRetries,
           delay: OPENAI_CONFIG.rateLimit.retryDelay,
@@ -52,9 +56,11 @@ export class TranscriptionService {
       );
 
       const processingTime = Date.now() - startTime;
-      
+
       console.log(`Transcription completed in ${processingTime}ms`);
-      console.log(`Transcribed text length: ${transcription.text.length} characters`);
+      console.log(
+        `Transcribed text length: ${transcription.text.length} characters`
+      );
 
       return {
         text: transcription.text,
@@ -62,7 +68,6 @@ export class TranscriptionService {
         model_used: OPENAI_CONFIG.transcription.model,
         language: 'en',
       };
-
     } catch (error) {
       console.error('Transcription error:', error);
       throw this.handleTranscriptionError(error);
@@ -74,22 +79,27 @@ export class TranscriptionService {
    */
   async transcribeFromUrl(recordingUrl: string): Promise<TranscriptionResult> {
     try {
-      console.log('Downloading audio from URL for transcription:', recordingUrl);
-      
+      console.log(
+        'Downloading audio from URL for transcription:',
+        recordingUrl
+      );
+
       // Download the audio file from Twilio
       const response = await fetch(recordingUrl);
       if (!response.ok) {
-        throw new Error(`Failed to download audio: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Failed to download audio: ${response.status} ${response.statusText}`
+        );
       }
 
       const audioBuffer = await response.arrayBuffer();
       const audioFile = Buffer.from(audioBuffer);
-      
-      // Extract filename from URL or use default
-      const filename = recordingUrl.split('/').pop()?.split('?')[0] || 'recording.mp3';
-      
-      return await this.transcribeAudio(audioFile, filename);
 
+      // Extract filename from URL or use default
+      const filename =
+        recordingUrl.split('/').pop()?.split('?')[0] || 'recording.mp3';
+
+      return await this.transcribeAudio(audioFile, filename);
     } catch (error) {
       console.error('URL transcription error:', error);
       throw this.handleTranscriptionError(error);
@@ -102,8 +112,13 @@ export class TranscriptionService {
   private validateAudioFile(file: File): boolean {
     const maxSize = 25 * 1024 * 1024; // 25MB limit for Whisper API
     const supportedTypes = [
-      'audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/m4a', 
-      'audio/mp4', 'audio/webm', 'audio/flac'
+      'audio/mpeg',
+      'audio/mp3',
+      'audio/wav',
+      'audio/m4a',
+      'audio/mp4',
+      'audio/webm',
+      'audio/flac',
     ];
 
     if (file.size > maxSize) {
@@ -111,7 +126,9 @@ export class TranscriptionService {
     }
 
     if (!supportedTypes.includes(file.type)) {
-      console.warn(`Unsupported file type: ${file.type}. Attempting transcription anyway.`);
+      console.warn(
+        `Unsupported file type: ${file.type}. Attempting transcription anyway.`
+      );
     }
 
     return true;
@@ -166,22 +183,29 @@ export class TranscriptionService {
   private estimateConfidence(text: string): number {
     // Simple heuristic based on text characteristics
     let confidence = 0.8; // Base confidence
-    
+
     // Longer texts typically have better context
     if (text.length > 500) confidence += 0.1;
-    
+
     // Presence of common business words
-    const businessWords = ['appointment', 'service', 'meeting', 'schedule', 'time', 'address'];
-    const businessWordCount = businessWords.filter(word => 
+    const businessWords = [
+      'appointment',
+      'service',
+      'meeting',
+      'schedule',
+      'time',
+      'address',
+    ];
+    const businessWordCount = businessWords.filter((word) =>
       text.toLowerCase().includes(word)
     ).length;
     confidence += businessWordCount * 0.02;
-    
+
     // Penalize for excessive repetition or unclear markers
     if (text.includes('[unclear]') || text.includes('[inaudible]')) {
       confidence -= 0.2;
     }
-    
+
     return Math.min(confidence, 1.0);
   }
 }
@@ -190,12 +214,14 @@ export class TranscriptionService {
 export const transcriptionService = new TranscriptionService();
 
 // Convenience functions
-export async function transcribeRecording(recordingUrl: string): Promise<TranscriptionResult> {
+export async function transcribeRecording(
+  recordingUrl: string
+): Promise<TranscriptionResult> {
   return transcriptionService.transcribeFromUrl(recordingUrl);
 }
 
 export async function transcribeAudioFile(
-  audioFile: File | Buffer, 
+  audioFile: File | Buffer,
   filename?: string
 ): Promise<TranscriptionResult> {
   return transcriptionService.transcribeAudio(audioFile, filename);

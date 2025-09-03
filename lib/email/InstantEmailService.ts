@@ -55,21 +55,28 @@ export class InstantEmailService {
   /**
    * Queue email for instant delivery
    */
-  public async queueEmailDelivery(request: EmailDeliveryRequest): Promise<void> {
+  public async queueEmailDelivery(
+    request: EmailDeliveryRequest
+  ): Promise<void> {
     console.log(`Queueing instant email delivery for call: ${request.callSid}`);
-    
+
     this.deliveryQueue.set(request.callSid, request);
 
     // Start delivery immediately (don't wait)
-    this.processEmailDelivery(request).catch(error => {
-      console.error(`Error in email delivery for call ${request.callSid}:`, error);
+    this.processEmailDelivery(request).catch((error) => {
+      console.error(
+        `Error in email delivery for call ${request.callSid}:`,
+        error
+      );
     });
   }
 
   /**
    * Process email delivery with 2-minute guarantee
    */
-  private async processEmailDelivery(request: EmailDeliveryRequest): Promise<EmailDeliveryResult> {
+  private async processEmailDelivery(
+    request: EmailDeliveryRequest
+  ): Promise<EmailDeliveryResult> {
     const startTime = Date.now();
     let attempts = 0;
 
@@ -78,13 +85,13 @@ export class InstantEmailService {
     while (attempts < this.RETRY_ATTEMPTS) {
       try {
         attempts++;
-        
+
         // Generate email content
         const emailContent = await this.generateEmailContent(request);
-        
+
         // Generate attachments
         const attachments = await this.generateAttachments(request);
-        
+
         // Send email via Resend
         const emailResult = await getResendClient().emails.send({
           from: 'Flynn.ai <onboarding@resend.dev>',
@@ -95,17 +102,24 @@ export class InstantEmailService {
           headers: {
             'X-Flynn-CallSid': request.callSid,
             'X-Flynn-Industry': request.industry,
-            'X-Flynn-Events': request.extractedEvents.length.toString()
-          }
+            'X-Flynn-Events': request.extractedEvents.length.toString(),
+          },
         });
 
         const deliveryTime = Date.now() - startTime;
-        
-        console.log(`Email delivered successfully for call ${request.callSid} in ${deliveryTime}ms`);
+
+        console.log(
+          `Email delivered successfully for call ${request.callSid} in ${deliveryTime}ms`
+        );
 
         // Update database
-        await this.updateEmailDeliveryStatus(request.callSid, true, emailResult.data?.id, deliveryTime);
-        
+        await this.updateEmailDeliveryStatus(
+          request.callSid,
+          true,
+          emailResult.data?.id,
+          deliveryTime
+        );
+
         // Remove from queue
         this.deliveryQueue.delete(request.callSid);
 
@@ -113,27 +127,37 @@ export class InstantEmailService {
           success: true,
           emailId: emailResult.data?.id,
           deliveryTime,
-          attachments: attachments.length
+          attachments: attachments.length,
         };
-
       } catch (error) {
-        console.error(`Email delivery attempt ${attempts} failed for call ${request.callSid}:`, error);
-        
+        console.error(
+          `Email delivery attempt ${attempts} failed for call ${request.callSid}:`,
+          error
+        );
+
         // If this is our last attempt or we're close to the 2-minute limit, fail
         const elapsedTime = Date.now() - startTime;
-        if (attempts >= this.RETRY_ATTEMPTS || elapsedTime > this.MAX_DELIVERY_TIME - 30000) {
-          
-          await this.updateEmailDeliveryStatus(request.callSid, false, undefined, elapsedTime, error instanceof Error ? error.message : 'Unknown error');
+        if (
+          attempts >= this.RETRY_ATTEMPTS ||
+          elapsedTime > this.MAX_DELIVERY_TIME - 30000
+        ) {
+          await this.updateEmailDeliveryStatus(
+            request.callSid,
+            false,
+            undefined,
+            elapsedTime,
+            error instanceof Error ? error.message : 'Unknown error'
+          );
           this.deliveryQueue.delete(request.callSid);
-          
+
           return {
             success: false,
             deliveryTime: elapsedTime,
             error: error instanceof Error ? error.message : 'Unknown error',
-            attachments: 0
+            attachments: 0,
           };
         }
-        
+
         // Wait before retry (exponential backoff)
         await this.delay(Math.min(1000 * Math.pow(2, attempts - 1), 10000));
       }
@@ -144,7 +168,7 @@ export class InstantEmailService {
       success: false,
       deliveryTime: Date.now() - startTime,
       error: 'Max attempts exceeded',
-      attachments: 0
+      attachments: 0,
     };
   }
 
@@ -158,7 +182,7 @@ export class InstantEmailService {
     try {
       // Get call details from database
       const callDetails = await this.getCallDetails(request.callSid);
-      
+
       // Generate email using template
       const emailData = {
         companyName: request.companyName || 'Your Business',
@@ -166,20 +190,23 @@ export class InstantEmailService {
         callSummary: {
           callerPhone: request.callerPhone,
           duration: request.callDuration || 0,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         },
         extractedEvents: request.extractedEvents,
-        transcriptionSnippet: request.transcriptionText?.substring(0, 200) || '',
-        callId: request.callSid
+        transcriptionSnippet:
+          request.transcriptionText?.substring(0, 200) || '',
+        callId: request.callSid,
       };
 
       const subject = this.generateEmailSubject(request);
       const html = await generateAppointmentSummaryEmail(emailData);
 
       return { subject, html };
-
     } catch (error) {
-      console.error(`Error generating email content for call ${request.callSid}:`, error);
+      console.error(
+        `Error generating email content for call ${request.callSid}:`,
+        error
+      );
       throw error;
     }
   }
@@ -189,10 +216,12 @@ export class InstantEmailService {
    */
   private generateEmailSubject(request: EmailDeliveryRequest): string {
     const eventCount = request.extractedEvents.length;
-    const hasUrgent = request.extractedEvents.some(e => e.urgency === 'emergency' || e.urgency === 'high');
-    
+    const hasUrgent = request.extractedEvents.some(
+      (e) => e.urgency === 'emergency' || e.urgency === 'high'
+    );
+
     let subject = '';
-    
+
     if (hasUrgent) {
       subject = '🔴 URGENT: ';
     } else {
@@ -219,7 +248,9 @@ export class InstantEmailService {
   /**
    * Generate email attachments (ICS files)
    */
-  private async generateAttachments(request: EmailDeliveryRequest): Promise<any[]> {
+  private async generateAttachments(
+    request: EmailDeliveryRequest
+  ): Promise<any[]> {
     const attachments = [];
 
     try {
@@ -234,13 +265,13 @@ export class InstantEmailService {
             startTime: event.proposed_datetime,
             duration: 60, // Default 1 hour
             organizer: request.userEmail,
-            attendee: event.customer_email || event.customer_phone
+            attendee: event.customer_email || event.customer_phone,
           });
 
           attachments.push({
             filename: `appointment-${index + 1}.ics`,
             content: icsContent,
-            contentType: 'text/calendar'
+            contentType: 'text/calendar',
           });
         }
       }
@@ -251,12 +282,14 @@ export class InstantEmailService {
         attachments.push({
           filename: 'call-appointments.ics',
           content: summaryIcs,
-          contentType: 'text/calendar'
+          contentType: 'text/calendar',
         });
       }
-
     } catch (error) {
-      console.error(`Error generating attachments for call ${request.callSid}:`, error);
+      console.error(
+        `Error generating attachments for call ${request.callSid}:`,
+        error
+      );
       // Don't fail the email send if attachments fail
     }
 
@@ -266,10 +299,12 @@ export class InstantEmailService {
   /**
    * Generate summary ICS file for multiple events
    */
-  private async generateSummaryICSFile(request: EmailDeliveryRequest): Promise<string> {
+  private async generateSummaryICSFile(
+    request: EmailDeliveryRequest
+  ): Promise<string> {
     // Create a summary calendar with all events
-    const events = request.extractedEvents.filter(e => e.proposed_datetime);
-    
+    const events = request.extractedEvents.filter((e) => e.proposed_datetime);
+
     let icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Flynn.ai//Appointment Summary//EN
@@ -291,7 +326,7 @@ END:VEVENT\n`;
     }
 
     icsContent += `END:VCALENDAR`;
-    
+
     return icsContent;
   }
 
@@ -301,17 +336,19 @@ END:VEVENT\n`;
   private async getCallDetails(callSid: string): Promise<any> {
     try {
       const supabase = createAdminClient();
-      
+
       const { data: call } = await supabase
         .from('calls')
-        .select(`
+        .select(
+          `
           *,
           users (
             email,
             company_name,
             industry
           )
-        `)
+        `
+        )
         .eq('twilio_call_sid', callSid)
         .single();
 
@@ -343,14 +380,18 @@ END:VEVENT\n`;
           email_delivery_time: deliveryTime,
           email_error: error || null,
           email_id: emailId || null,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('twilio_call_sid', callSid);
 
-      console.log(`Updated email delivery status for call ${callSid}: ${success ? 'success' : 'failed'}`);
-
+      console.log(
+        `Updated email delivery status for call ${callSid}: ${success ? 'success' : 'failed'}`
+      );
     } catch (error) {
-      console.error(`Error updating email delivery status for call ${callSid}:`, error);
+      console.error(
+        `Error updating email delivery status for call ${callSid}:`,
+        error
+      );
     }
   }
 
@@ -358,7 +399,7 @@ END:VEVENT\n`;
    * Utility delay function
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -370,17 +411,22 @@ END:VEVENT\n`;
   } {
     return {
       queueSize: this.deliveryQueue.size,
-      oldestRequest: this.deliveryQueue.size > 0 ? {
-        callSid: Array.from(this.deliveryQueue.keys())[0],
-        queueTime: Date.now() // Simplified - would need to track actual queue time
-      } : undefined
+      oldestRequest:
+        this.deliveryQueue.size > 0
+          ? {
+              callSid: Array.from(this.deliveryQueue.keys())[0],
+              queueTime: Date.now(), // Simplified - would need to track actual queue time
+            }
+          : undefined,
     };
   }
 
   /**
    * Force delivery of queued email (for testing/debugging)
    */
-  public async forceDelivery(callSid: string): Promise<EmailDeliveryResult | null> {
+  public async forceDelivery(
+    callSid: string
+  ): Promise<EmailDeliveryResult | null> {
     const request = this.deliveryQueue.get(callSid);
     if (!request) {
       return null;
@@ -396,6 +442,8 @@ export const instantEmailService = InstantEmailService.getInstance();
 /**
  * Queue email for instant delivery (main export function)
  */
-export async function sendInstantAppointmentEmail(request: EmailDeliveryRequest): Promise<void> {
+export async function sendInstantAppointmentEmail(
+  request: EmailDeliveryRequest
+): Promise<void> {
   return await instantEmailService.queueEmailDelivery(request);
 }

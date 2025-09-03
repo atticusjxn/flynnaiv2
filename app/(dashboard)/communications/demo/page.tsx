@@ -4,8 +4,27 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardBody, CardHeader, Button, Chip, Input, Textarea, Select, SelectItem } from '@nextui-org/react';
-import { MessageSquare, Mail, Phone, Send, CheckCircle2, Clock, AlertTriangle, RefreshCw } from 'lucide-react';
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Button,
+  Chip,
+  Input,
+  Textarea,
+  Select,
+  SelectItem,
+} from '@nextui-org/react';
+import {
+  MessageSquare,
+  Mail,
+  Phone,
+  Send,
+  CheckCircle2,
+  Clock,
+  AlertTriangle,
+  RefreshCw,
+} from 'lucide-react';
 
 export default function CommunicationsDemo() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -16,13 +35,31 @@ export default function CommunicationsDemo() {
       successRate: 94.5,
       emailsSent: 156,
       smsSent: 78,
-      failedCount: 2
+      failedCount: 2,
     },
     recentActivity: [
-      { id: 1, type: 'email', recipient: 'john@company.com', status: 'delivered', time: '30m ago' },
-      { id: 2, type: 'sms', recipient: '+1234567890', status: 'sent', time: '1h ago' },
-      { id: 3, type: 'email', recipient: 'mary@client.com', status: 'pending', time: '2h ago' }
-    ]
+      {
+        id: 1,
+        type: 'email',
+        recipient: 'john@company.com',
+        status: 'delivered',
+        time: '30m ago',
+      },
+      {
+        id: 2,
+        type: 'sms',
+        recipient: '+1234567890',
+        status: 'sent',
+        time: '1h ago',
+      },
+      {
+        id: 3,
+        type: 'email',
+        recipient: 'mary@client.com',
+        status: 'pending',
+        time: '2h ago',
+      },
+    ],
   };
 
   return (
@@ -38,8 +75,8 @@ export default function CommunicationsDemo() {
               Task 25: Customer Communication System Demo
             </p>
           </div>
-          <Button 
-            color="primary" 
+          <Button
+            color="primary"
             startContent={<RefreshCw className="h-4 w-4" />}
             className="bg-gradient-to-r from-blue-600 to-purple-600"
           >
@@ -74,8 +111,10 @@ export default function CommunicationsDemo() {
             title="Failed Communications"
             value={mockData.metrics.failedCount.toString()}
             icon={AlertTriangle}
-            color={mockData.metrics.failedCount > 0 ? "danger" : "default"}
-            trend={mockData.metrics.failedCount > 0 ? "Needs attention" : "All clear"}
+            color={mockData.metrics.failedCount > 0 ? 'danger' : 'default'}
+            trend={
+              mockData.metrics.failedCount > 0 ? 'Needs attention' : 'All clear'
+            }
           />
         </div>
 
@@ -85,12 +124,12 @@ export default function CommunicationsDemo() {
             { key: 'overview', label: 'Overview', icon: MessageSquare },
             { key: 'compose', label: 'Compose', icon: Send },
             { key: 'history', label: 'History', icon: Clock },
-            { key: 'templates', label: 'Templates', icon: Mail }
+            { key: 'templates', label: 'Templates', icon: Mail },
           ].map((tab) => (
             <Button
               key={tab.key}
-              variant={activeTab === tab.key ? "solid" : "light"}
-              color={activeTab === tab.key ? "primary" : "default"}
+              variant={activeTab === tab.key ? 'solid' : 'light'}
+              color={activeTab === tab.key ? 'primary' : 'default'}
               startContent={<tab.icon className="h-4 w-4" />}
               onPress={() => setActiveTab(tab.key)}
               className={`flex-1 ${activeTab === tab.key ? 'shadow-md' : ''}`}
@@ -103,7 +142,9 @@ export default function CommunicationsDemo() {
         {/* Tab Content */}
         {activeTab === 'overview' && <OverviewTab data={mockData} />}
         {activeTab === 'compose' && <ComposeTab />}
-        {activeTab === 'history' && <HistoryTab data={mockData.recentActivity} />}
+        {activeTab === 'history' && (
+          <HistoryTab data={mockData.recentActivity} />
+        )}
         {activeTab === 'templates' && <TemplatesTab />}
       </div>
     </div>
@@ -116,8 +157,12 @@ function MetricCard({ title, value, icon: Icon, color, trend }: any) {
       <CardBody className="p-6">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">{title}</p>
-            <p className="text-2xl font-bold text-slate-900 dark:text-white">{value}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">
+              {title}
+            </p>
+            <p className="text-2xl font-bold text-slate-900 dark:text-white">
+              {value}
+            </p>
             <Chip size="sm" variant="flat" color={color} className="mt-2">
               {trend}
             </Chip>
@@ -141,22 +186,34 @@ function OverviewTab({ data }: any) {
         <CardBody>
           <div className="space-y-3">
             {data.recentActivity.map((activity: any) => (
-              <div key={activity.id} className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+              <div
+                key={activity.id}
+                className="flex items-center justify-between p-3 rounded-lg border border-slate-200 dark:border-slate-700"
+              >
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/40">
-                    {activity.type === 'email' ? 
-                      <Mail className="h-4 w-4 text-blue-600" /> : 
+                    {activity.type === 'email' ? (
+                      <Mail className="h-4 w-4 text-blue-600" />
+                    ) : (
                       <MessageSquare className="h-4 w-4 text-green-600" />
-                    }
+                    )}
                   </div>
                   <div>
-                    <p className="font-medium">{activity.type.toUpperCase()} to {activity.recipient}</p>
+                    <p className="font-medium">
+                      {activity.type.toUpperCase()} to {activity.recipient}
+                    </p>
                     <p className="text-sm text-slate-500">{activity.time}</p>
                   </div>
                 </div>
-                <Chip 
-                  size="sm" 
-                  color={activity.status === 'delivered' ? 'success' : activity.status === 'pending' ? 'warning' : 'default'}
+                <Chip
+                  size="sm"
+                  color={
+                    activity.status === 'delivered'
+                      ? 'success'
+                      : activity.status === 'pending'
+                        ? 'warning'
+                        : 'default'
+                  }
                   variant="flat"
                 >
                   {activity.status}
@@ -183,9 +240,9 @@ function ComposeTab() {
         </Select>
         <Input label="Recipient" placeholder="Enter recipient..." />
         <Input label="Subject" placeholder="Enter subject..." />
-        <Textarea 
-          label="Message" 
-          placeholder="Enter your message..." 
+        <Textarea
+          label="Message"
+          placeholder="Enter your message..."
           minRows={6}
         />
         <div className="flex justify-end gap-3">
@@ -208,7 +265,9 @@ function HistoryTab({ data }: any) {
       <CardBody>
         <div className="text-center py-8">
           <MessageSquare className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500">Full history with advanced filtering would be displayed here</p>
+          <p className="text-slate-500">
+            Full history with advanced filtering would be displayed here
+          </p>
         </div>
       </CardBody>
     </Card>
@@ -224,7 +283,9 @@ function TemplatesTab() {
       <CardBody>
         <div className="text-center py-8">
           <Mail className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500">Template management interface would be displayed here</p>
+          <p className="text-slate-500">
+            Template management interface would be displayed here
+          </p>
         </div>
       </CardBody>
     </Card>

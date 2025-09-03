@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     'appointment scheduling',
     'CRM integration',
     'voice transcription',
-    'event extraction'
+    'event extraction',
   ],
   authors: [{ name: 'Flynn.ai Team' }],
   creator: 'Flynn.ai',
@@ -29,11 +29,12 @@ export const metadata: Metadata = {
   referrer: 'origin-when-cross-origin',
   category: 'business',
   classification: 'Business Software',
-  
+
   // Open Graph
   openGraph: {
     title: 'Flynn.ai v2 - AI-Powered Call to Calendar',
-    description: 'Transform business phone calls into organized calendar events within 2 minutes',
+    description:
+      'Transform business phone calls into organized calendar events within 2 minutes',
     url: 'https://flynn.ai',
     siteName: 'Flynn.ai',
     type: 'website',
@@ -47,19 +48,20 @@ export const metadata: Metadata = {
       },
     ],
   },
-  
+
   // Twitter
   twitter: {
     card: 'summary_large_image',
     title: 'Flynn.ai v2 - AI-Powered Call to Calendar',
-    description: 'Transform business phone calls into organized calendar events within 2 minutes',
+    description:
+      'Transform business phone calls into organized calendar events within 2 minutes',
     creator: '@flynnai',
     images: ['/icons/og-image.png'],
   },
-  
+
   // PWA
   manifest: '/manifest.json',
-  
+
   // iOS
   appleWebApp: {
     capable: true,
@@ -68,19 +70,22 @@ export const metadata: Metadata = {
     startupImage: [
       {
         url: '/icons/apple-startup-828x1792.png',
-        media: '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)',
+        media:
+          '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)',
       },
       {
         url: '/icons/apple-startup-1125x2436.png',
-        media: '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)',
+        media:
+          '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)',
       },
       {
         url: '/icons/apple-startup-1242x2688.png',
-        media: '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)',
+        media:
+          '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)',
       },
     ],
   },
-  
+
   // Other
   robots: {
     index: true,
@@ -116,15 +121,29 @@ export default function RootLayout({
     <html lang="en" className="w-full">
       <head>
         {/* PWA iOS Icons */}
-        <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-192x192.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-192x192.png" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/icons/icon-192x192.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/icons/icon-192x192.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/icons/icon-192x192.png"
+        />
         <link rel="mask-icon" href="/icons/icon-192x192.png" color="#4880ff" />
-        
+
         {/* Microsoft */}
         <meta name="msapplication-TileColor" content="#4880ff" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
-        
+
         {/* Preload critical resources */}
         <link rel="preload" href="/sw.js" as="script" />
       </head>

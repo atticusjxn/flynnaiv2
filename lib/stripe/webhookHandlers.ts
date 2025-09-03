@@ -7,10 +7,12 @@ const subscriptionService = new SubscriptionService();
 /**
  * Handle customer.subscription.created event
  */
-export async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
+export async function handleSubscriptionCreated(
+  subscription: Stripe.Subscription
+) {
   try {
     const customerId = subscription.customer as string;
-    
+
     await subscriptionService.updateSubscriptionStatus(
       customerId,
       'active',
@@ -27,13 +29,15 @@ export async function handleSubscriptionCreated(subscription: Stripe.Subscriptio
 /**
  * Handle customer.subscription.updated event
  */
-export async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
+export async function handleSubscriptionUpdated(
+  subscription: Stripe.Subscription
+) {
   try {
     const customerId = subscription.customer as string;
-    
+
     // Map Stripe status to our internal status
     let status: 'active' | 'past_due' | 'cancelled' | 'incomplete';
-    
+
     switch (subscription.status) {
       case 'active':
         status = 'active';
@@ -58,7 +62,9 @@ export async function handleSubscriptionUpdated(subscription: Stripe.Subscriptio
       subscription.id
     );
 
-    console.log(`Subscription updated for customer: ${customerId}, status: ${status}`);
+    console.log(
+      `Subscription updated for customer: ${customerId}, status: ${status}`
+    );
   } catch (error) {
     console.error('Error handling subscription updated:', error);
     throw error;
@@ -68,14 +74,13 @@ export async function handleSubscriptionUpdated(subscription: Stripe.Subscriptio
 /**
  * Handle customer.subscription.deleted event
  */
-export async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
+export async function handleSubscriptionDeleted(
+  subscription: Stripe.Subscription
+) {
   try {
     const customerId = subscription.customer as string;
-    
-    await subscriptionService.updateSubscriptionStatus(
-      customerId,
-      'cancelled'
-    );
+
+    await subscriptionService.updateSubscriptionStatus(customerId, 'cancelled');
 
     console.log(`Subscription cancelled for customer: ${customerId}`);
   } catch (error) {
@@ -94,10 +99,11 @@ export async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
     }
 
     const customerId = invoice.customer as string;
-    const subscriptionId = typeof invoice.subscription === 'string' 
-      ? invoice.subscription 
-      : invoice.subscription.id;
-    
+    const subscriptionId =
+      typeof invoice.subscription === 'string'
+        ? invoice.subscription
+        : invoice.subscription.id;
+
     // Ensure customer status is active after successful payment
     await subscriptionService.updateSubscriptionStatus(
       customerId,
@@ -122,10 +128,11 @@ export async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
     }
 
     const customerId = invoice.customer as string;
-    const subscriptionId = typeof invoice.subscription === 'string' 
-      ? invoice.subscription 
-      : invoice.subscription.id;
-    
+    const subscriptionId =
+      typeof invoice.subscription === 'string'
+        ? invoice.subscription
+        : invoice.subscription.id;
+
     // Mark as past due after failed payment
     await subscriptionService.updateSubscriptionStatus(
       customerId,
@@ -134,7 +141,7 @@ export async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
     );
 
     console.log(`Payment failed for customer: ${customerId}`);
-    
+
     // TODO: Send email notification about failed payment
     // await sendPaymentFailedEmail(customerId);
   } catch (error) {
@@ -146,7 +153,9 @@ export async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
 /**
  * Handle checkout.session.completed event
  */
-export async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
+export async function handleCheckoutSessionCompleted(
+  session: Stripe.Checkout.Session
+) {
   try {
     const customerId = session.customer as string;
     const subscriptionId = session.subscription as string;
@@ -159,7 +168,7 @@ export async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Se
       );
 
       console.log(`Checkout completed for customer: ${customerId}`);
-      
+
       // TODO: Send welcome email for successful subscription
       // await sendWelcomeEmail(customerId);
     }
@@ -176,29 +185,39 @@ export async function handleWebhookEvent(event: Stripe.Event) {
   try {
     switch (event.type) {
       case 'customer.subscription.created':
-        await handleSubscriptionCreated(event.data.object as Stripe.Subscription);
+        await handleSubscriptionCreated(
+          event.data.object as Stripe.Subscription
+        );
         break;
-        
+
       case 'customer.subscription.updated':
-        await handleSubscriptionUpdated(event.data.object as Stripe.Subscription);
+        await handleSubscriptionUpdated(
+          event.data.object as Stripe.Subscription
+        );
         break;
-        
+
       case 'customer.subscription.deleted':
-        await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
+        await handleSubscriptionDeleted(
+          event.data.object as Stripe.Subscription
+        );
         break;
-        
+
       case 'invoice.payment_succeeded':
-        await handleInvoicePaymentSucceeded(event.data.object as Stripe.Invoice);
+        await handleInvoicePaymentSucceeded(
+          event.data.object as Stripe.Invoice
+        );
         break;
-        
+
       case 'invoice.payment_failed':
         await handleInvoicePaymentFailed(event.data.object as Stripe.Invoice);
         break;
-        
+
       case 'checkout.session.completed':
-        await handleCheckoutSessionCompleted(event.data.object as Stripe.Checkout.Session);
+        await handleCheckoutSessionCompleted(
+          event.data.object as Stripe.Checkout.Session
+        );
         break;
-        
+
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }

@@ -25,18 +25,18 @@ export interface DeletionJob {
  */
 export class DataRetentionManager {
   private static instance: DataRetentionManager;
-  
+
   private readonly retentionPolicies: RetentionPolicy[] = [
     {
       recordType: 'call_recordings',
       retentionDays: 90,
       industryOverrides: {
-        medical: 30,     // HIPAA requires minimal retention
-        legal: 2555,     // 7 years for legal records
-        financial: 2555  // 7 years for financial records
+        medical: 30, // HIPAA requires minimal retention
+        legal: 2555, // 7 years for legal records
+        financial: 2555, // 7 years for financial records
       },
       complianceRequirements: ['GDPR', 'CCPA', 'HIPAA'],
-      deletionMethod: 'hard_delete'
+      deletionMethod: 'hard_delete',
     },
     {
       recordType: 'transcriptions',
@@ -44,21 +44,21 @@ export class DataRetentionManager {
       industryOverrides: {
         medical: 30,
         legal: 2555,
-        financial: 2555
+        financial: 2555,
       },
       complianceRequirements: ['GDPR', 'CCPA', 'HIPAA'],
-      deletionMethod: 'hard_delete'
+      deletionMethod: 'hard_delete',
     },
     {
       recordType: 'ai_extractions',
       retentionDays: 365, // Business data kept longer
       industryOverrides: {
-        medical: 90,     // Shorter for medical
-        legal: 2555,     // Legal requirement
-        financial: 2555  // Financial requirement
+        medical: 90, // Shorter for medical
+        legal: 2555, // Legal requirement
+        financial: 2555, // Financial requirement
       },
       complianceRequirements: ['GDPR', 'CCPA'],
-      deletionMethod: 'anonymize'
+      deletionMethod: 'anonymize',
     },
     {
       recordType: 'personal_data',
@@ -66,17 +66,17 @@ export class DataRetentionManager {
       industryOverrides: {
         medical: 30,
         legal: 365,
-        financial: 365
+        financial: 365,
       },
       complianceRequirements: ['GDPR', 'CCPA', 'HIPAA'],
-      deletionMethod: 'hard_delete'
+      deletionMethod: 'hard_delete',
     },
     {
       recordType: 'compliance_logs',
       retentionDays: 2555, // 7 years - always kept for audit
       complianceRequirements: ['ALL'],
-      deletionMethod: 'archive'
-    }
+      deletionMethod: 'archive',
+    },
   ];
 
   public static getInstance(): DataRetentionManager {
@@ -95,10 +95,15 @@ export class DataRetentionManager {
     industry: string = 'general'
   ): Promise<void> {
     try {
-      console.log(`Scheduling data deletion for call: ${callSid} (Industry: ${industry})`);
+      console.log(
+        `Scheduling data deletion for call: ${callSid} (Industry: ${industry})`
+      );
 
       for (const policy of this.retentionPolicies) {
-        const retentionDays = this.getRetentionDaysForIndustry(policy, industry);
+        const retentionDays = this.getRetentionDaysForIndustry(
+          policy,
+          industry
+        );
         const deletionDate = new Date();
         deletionDate.setDate(deletionDate.getDate() + retentionDays);
 
@@ -109,16 +114,18 @@ export class DataRetentionManager {
           scheduledDate: deletionDate.toISOString(),
           status: 'pending',
           deletionMethod: policy.deletionMethod,
-          reason: `Retention policy: ${retentionDays} days for ${industry} industry`
+          reason: `Retention policy: ${retentionDays} days for ${industry} industry`,
         };
 
         await this.storeDeletionJob(deletionJob);
       }
 
       console.log(`Data deletion scheduled for call ${callSid}`);
-
     } catch (error) {
-      console.error(`Error scheduling data deletion for call ${callSid}:`, error);
+      console.error(
+        `Error scheduling data deletion for call ${callSid}:`,
+        error
+      );
     }
   }
 
@@ -137,7 +144,7 @@ export class DataRetentionManager {
       processed: 0,
       successful: 0,
       failed: 0,
-      errors: []
+      errors: [],
     };
 
     try {
@@ -147,20 +154,23 @@ export class DataRetentionManager {
       for (const job of pendingJobs) {
         try {
           stats.processed++;
-          
+
           const success = await this.executeDeletionJob(job);
-          
+
           if (success) {
             stats.successful++;
             await this.markDeletionJobCompleted(job.id);
           } else {
             stats.failed++;
-            await this.markDeletionJobFailed(job.id, 'Deletion execution failed');
+            await this.markDeletionJobFailed(
+              job.id,
+              'Deletion execution failed'
+            );
           }
-
         } catch (error) {
           stats.failed++;
-          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          const errorMessage =
+            error instanceof Error ? error.message : 'Unknown error';
           (stats.errors as string[]).push(`Job ${job.id}: ${errorMessage}`);
           await this.markDeletionJobFailed(job.id, errorMessage);
         }
@@ -168,10 +178,11 @@ export class DataRetentionManager {
 
       console.log(`Deletion processing complete:`, stats);
       return stats;
-
     } catch (error) {
       console.error('Error processing pending deletions:', error);
-      (stats.errors as string[]).push(error instanceof Error ? error.message : 'Unknown error');
+      (stats.errors as string[]).push(
+        error instanceof Error ? error.message : 'Unknown error'
+      );
       return stats;
     }
   }
@@ -209,7 +220,6 @@ export class DataRetentionManager {
           console.warn(`Unknown record type for deletion: ${job.recordType}`);
           return false;
       }
-
     } catch (error) {
       console.error(`Error executing deletion job ${job.id}:`, error);
       return false;
@@ -219,7 +229,10 @@ export class DataRetentionManager {
   /**
    * Delete call recordings from storage
    */
-  private async deleteCallRecordings(supabase: any, callSid: string): Promise<boolean> {
+  private async deleteCallRecordings(
+    supabase: any,
+    callSid: string
+  ): Promise<boolean> {
     try {
       // Delete recording files from storage
       const { data: call } = await supabase
@@ -230,7 +243,9 @@ export class DataRetentionManager {
 
       if (call?.recording_url) {
         // Delete from cloud storage (implementation depends on storage provider)
-        console.log(`Deleting recording file for call ${callSid}: ${call.recording_url}`);
+        console.log(
+          `Deleting recording file for call ${callSid}: ${call.recording_url}`
+        );
         // await deleteFromCloudStorage(call.recording_url);
       }
 
@@ -240,13 +255,12 @@ export class DataRetentionManager {
         .update({
           recording_url: null,
           recording_deleted_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('twilio_call_sid', callSid);
 
       console.log(`Call recording deleted for: ${callSid}`);
       return true;
-
     } catch (error) {
       console.error(`Error deleting call recording for ${callSid}:`, error);
       return false;
@@ -256,20 +270,22 @@ export class DataRetentionManager {
   /**
    * Delete transcriptions
    */
-  private async deleteTranscriptions(supabase: any, callSid: string): Promise<boolean> {
+  private async deleteTranscriptions(
+    supabase: any,
+    callSid: string
+  ): Promise<boolean> {
     try {
       await supabase
         .from('calls')
         .update({
           transcription: null,
           transcription_deleted_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('twilio_call_sid', callSid);
 
       console.log(`Transcription deleted for call: ${callSid}`);
       return true;
-
     } catch (error) {
       console.error(`Error deleting transcription for ${callSid}:`, error);
       return false;
@@ -279,7 +295,10 @@ export class DataRetentionManager {
   /**
    * Anonymize AI extractions (remove personal info but keep business data)
    */
-  private async anonymizeAIExtractions(supabase: any, callSid: string): Promise<boolean> {
+  private async anonymizeAIExtractions(
+    supabase: any,
+    callSid: string
+  ): Promise<boolean> {
     try {
       // Get all events for this call
       const { data: events } = await supabase
@@ -299,10 +318,11 @@ export class DataRetentionManager {
           customer_phone: '[ANONYMIZED]',
           customer_email: '[ANONYMIZED]',
           location: event.location ? '[ANONYMIZED ADDRESS]' : null,
-          description: event.description?.replace(/\b[\w.-]+@[\w.-]+\.\w+\b/g, '[EMAIL]')
-                                      ?.replace(/\b\d{3}-?\d{3}-?\d{4}\b/g, '[PHONE]'),
+          description: event.description
+            ?.replace(/\b[\w.-]+@[\w.-]+\.\w+\b/g, '[EMAIL]')
+            ?.replace(/\b\d{3}-?\d{3}-?\d{4}\b/g, '[PHONE]'),
           anonymized_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         };
 
         await supabase
@@ -313,7 +333,6 @@ export class DataRetentionManager {
 
       console.log(`AI extractions anonymized for call: ${callSid}`);
       return true;
-
     } catch (error) {
       console.error(`Error anonymizing AI extractions for ${callSid}:`, error);
       return false;
@@ -323,16 +342,15 @@ export class DataRetentionManager {
   /**
    * Delete AI extractions completely
    */
-  private async deleteAIExtractions(supabase: any, callSid: string): Promise<boolean> {
+  private async deleteAIExtractions(
+    supabase: any,
+    callSid: string
+  ): Promise<boolean> {
     try {
-      await supabase
-        .from('events')
-        .delete()
-        .eq('call_id', callSid);
+      await supabase.from('events').delete().eq('call_id', callSid);
 
       console.log(`AI extractions deleted for call: ${callSid}`);
       return true;
-
     } catch (error) {
       console.error(`Error deleting AI extractions for ${callSid}:`, error);
       return false;
@@ -342,7 +360,10 @@ export class DataRetentionManager {
   /**
    * Delete personal data from calls
    */
-  private async deletePersonalData(supabase: any, callSid: string): Promise<boolean> {
+  private async deletePersonalData(
+    supabase: any,
+    callSid: string
+  ): Promise<boolean> {
     try {
       await supabase
         .from('calls')
@@ -350,13 +371,12 @@ export class DataRetentionManager {
           caller_number: '[DELETED]',
           caller_name: '[DELETED]',
           personal_data_deleted_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('twilio_call_sid', callSid);
 
       console.log(`Personal data deleted for call: ${callSid}`);
       return true;
-
     } catch (error) {
       console.error(`Error deleting personal data for ${callSid}:`, error);
       return false;
@@ -366,13 +386,15 @@ export class DataRetentionManager {
   /**
    * Archive compliance logs
    */
-  private async archiveComplianceLogs(supabase: any, callSid: string): Promise<boolean> {
+  private async archiveComplianceLogs(
+    supabase: any,
+    callSid: string
+  ): Promise<boolean> {
     try {
       // Move compliance logs to archive table
       console.log(`Archiving compliance logs for call: ${callSid}`);
       // Implementation would move records to compliance_logs_archive table
       return true;
-
     } catch (error) {
       console.error(`Error archiving compliance logs for ${callSid}:`, error);
       return false;
@@ -382,7 +404,10 @@ export class DataRetentionManager {
   /**
    * Get retention days for specific industry
    */
-  private getRetentionDaysForIndustry(policy: RetentionPolicy, industry: string): number {
+  private getRetentionDaysForIndustry(
+    policy: RetentionPolicy,
+    industry: string
+  ): number {
     return policy.industryOverrides?.[industry] || policy.retentionDays;
   }
 
@@ -392,11 +417,12 @@ export class DataRetentionManager {
   private async storeDeletionJob(job: DeletionJob): Promise<void> {
     try {
       // This would store in a deletion_jobs table
-      console.log(`Storing deletion job: ${job.id} for ${job.recordType} on ${job.scheduledDate}`);
-      
+      console.log(
+        `Storing deletion job: ${job.id} for ${job.recordType} on ${job.scheduledDate}`
+      );
+
       // In real implementation:
       // await supabase.from('deletion_jobs').insert(job);
-
     } catch (error) {
       console.error(`Error storing deletion job ${job.id}:`, error);
       throw error;
@@ -409,15 +435,14 @@ export class DataRetentionManager {
   private async getPendingDeletionJobs(): Promise<DeletionJob[]> {
     try {
       const now = new Date().toISOString();
-      
+
       // This would query the deletion_jobs table
       // Return jobs that are due for processing
-      
+
       // Mock data for now
       const mockJobs: DeletionJob[] = [];
-      
-      return mockJobs;
 
+      return mockJobs;
     } catch (error) {
       console.error('Error fetching pending deletion jobs:', error);
       return [];
@@ -435,7 +460,10 @@ export class DataRetentionManager {
   /**
    * Mark deletion job as failed
    */
-  private async markDeletionJobFailed(jobId: string, error: string): Promise<void> {
+  private async markDeletionJobFailed(
+    jobId: string,
+    error: string
+  ): Promise<void> {
     console.log(`Marking deletion job failed: ${jobId} - ${error}`);
     // await supabase.from('deletion_jobs').update({ status: 'failed', error }).eq('id', jobId);
   }
@@ -469,24 +497,22 @@ export class DataRetentionManager {
       }
 
       // Delete user record
-      await supabase
-        .from('users')
-        .delete()
-        .eq('id', userId);
+      await supabase.from('users').delete().eq('id', userId);
 
-      console.log(`User data deletion completed for ${userId}: ${deletedRecords} calls deleted`);
+      console.log(
+        `User data deletion completed for ${userId}: ${deletedRecords} calls deleted`
+      );
 
       return {
         success: true,
-        deletedRecords: deletedRecords
+        deletedRecords: deletedRecords,
       };
-
     } catch (error) {
       console.error(`Error in user data deletion for ${userId}:`, error);
       return {
         success: false,
         deletedRecords: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -504,10 +530,7 @@ export class DataRetentionManager {
     await this.deletePersonalData(supabase, callSid);
 
     // Delete call record completely
-    await supabase
-      .from('calls')
-      .delete()
-      .eq('twilio_call_sid', callSid);
+    await supabase.from('calls').delete().eq('twilio_call_sid', callSid);
   }
 }
 
@@ -520,7 +543,11 @@ export async function scheduleCallDataDeletion(
   userId: string,
   industry: string = 'general'
 ): Promise<void> {
-  return await dataRetentionManager.scheduleCallDataDeletion(callSid, userId, industry);
+  return await dataRetentionManager.scheduleCallDataDeletion(
+    callSid,
+    userId,
+    industry
+  );
 }
 
 export async function processPendingDeletions() {

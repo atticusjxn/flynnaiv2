@@ -12,10 +12,7 @@ export async function POST(request: NextRequest) {
     const expectedToken = process.env.ADMIN_API_TOKEN;
 
     if (!expectedToken || authHeader !== `Bearer ${expectedToken}`) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     console.log('Starting scheduled data retention cleanup...');
@@ -30,24 +27,23 @@ export async function POST(request: NextRequest) {
         processed: results.processed,
         successful: results.successful,
         failed: results.failed,
-        errors: results.errors
+        errors: results.errors,
       },
-      message: `Processed ${results.processed} deletion jobs: ${results.successful} successful, ${results.failed} failed`
+      message: `Processed ${results.processed} deletion jobs: ${results.successful} successful, ${results.failed} failed`,
     };
 
     console.log('Data retention cleanup completed:', response.message);
 
     return NextResponse.json(response);
-
   } catch (error) {
     console.error('Data retention cleanup error:', error);
-    
+
     return NextResponse.json(
       {
         success: false,
         error: 'Internal server error',
         timestamp: new Date().toISOString(),
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );
@@ -65,10 +61,7 @@ export async function GET(request: NextRequest) {
     const expectedToken = process.env.ADMIN_API_TOKEN;
 
     if (!expectedToken || authHeader !== `Bearer ${expectedToken}`) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Return current data retention status
@@ -76,26 +69,25 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString(),
       policies: {
         call_recordings: '90 days (30 days for medical)',
-        transcriptions: '90 days (30 days for medical)', 
+        transcriptions: '90 days (30 days for medical)',
         ai_extractions: '365 days (90 days for medical)',
         personal_data: '90 days',
-        compliance_logs: '7 years (archived)'
+        compliance_logs: '7 years (archived)',
       },
       compliance: {
         gdpr_enabled: true,
         ccpa_enabled: true,
         hipaa_enabled: true,
-        automated_deletion: true
+        automated_deletion: true,
       },
       next_cleanup: 'Runs daily at midnight UTC',
-      last_run: 'Not implemented - would track last execution'
+      last_run: 'Not implemented - would track last execution',
     };
 
     return NextResponse.json(status);
-
   } catch (error) {
     console.error('Error fetching data retention status:', error);
-    
+
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

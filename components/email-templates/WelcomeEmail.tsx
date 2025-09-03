@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Text,
-  Section,
-  Button,
-  Hr,
-} from '@react-email/components';
+import { Text, Section, Button, Hr } from '@react-email/components';
 import BaseEmailLayout from './BaseEmailLayout';
 
 interface WelcomeEmailProps {
@@ -23,7 +18,7 @@ export default function WelcomeEmail({
   supportUrl = 'https://flynn.ai/support',
 }: WelcomeEmailProps) {
   const industryConfig = getIndustryConfig(industry);
-  
+
   return (
     <BaseEmailLayout
       preview={`Welcome to Flynn.ai, ${userName}! Let's get your ${industryConfig.label} business set up.`}
@@ -31,20 +26,19 @@ export default function WelcomeEmail({
       industry={industry}
       primaryColor={industryConfig.primaryColor}
     >
-      <Text style={greeting}>
-        Welcome to Flynn.ai, {userName}!
-      </Text>
-      
+      <Text style={greeting}>Welcome to Flynn.ai, {userName}!</Text>
+
       <Text style={bodyText}>
-        Thank you for joining Flynn.ai. We're excited to help transform your business calls into organized calendar events automatically.
+        Thank you for joining Flynn.ai. We're excited to help transform your
+        business calls into organized calendar events automatically.
       </Text>
 
       <Section style={industrySection}>
-        <Text style={sectionTitle}>
-          Optimized for {industryConfig.label}
-        </Text>
+        <Text style={sectionTitle}>Optimized for {industryConfig.label}</Text>
         <Text style={bodyText}>
-          We've configured Flynn.ai specifically for your {industryConfig.label} business. Our AI understands your industry terminology and will extract {industryConfig.eventTypes.join(', ')} with precision.
+          We've configured Flynn.ai specifically for your {industryConfig.label}{' '}
+          business. Our AI understands your industry terminology and will
+          extract {industryConfig.eventTypes.join(', ')} with precision.
         </Text>
       </Section>
 
@@ -54,19 +48,22 @@ export default function WelcomeEmail({
           <div style={benefitItem}>
             <Text style={benefitNumber}>1</Text>
             <Text style={benefitText}>
-              <strong>Get your Flynn.ai number</strong> - We'll provide you with a dedicated forwarding number
+              <strong>Get your Flynn.ai number</strong> - We'll provide you with
+              a dedicated forwarding number
             </Text>
           </div>
           <div style={benefitItem}>
             <Text style={benefitNumber}>2</Text>
             <Text style={benefitText}>
-              <strong>Setup call forwarding</strong> - Simple 10-second setup forwards all calls to your phone
+              <strong>Setup call forwarding</strong> - Simple 10-second setup
+              forwards all calls to your phone
             </Text>
           </div>
           <div style={benefitItem}>
             <Text style={benefitNumber}>3</Text>
             <Text style={benefitText}>
-              <strong>AI processes automatically</strong> - Every business call gets organized and summarized within 2 minutes
+              <strong>AI processes automatically</strong> - Every business call
+              gets organized and summarized within 2 minutes
             </Text>
           </div>
         </div>
@@ -83,7 +80,9 @@ export default function WelcomeEmail({
       <Section style={helpSection}>
         <Text style={helpTitle}>Need help getting started?</Text>
         <Text style={helpText}>
-          Our {industryConfig.label} setup guide covers everything you need to know, from setting up call forwarding to understanding your first AI-generated appointment summary.
+          Our {industryConfig.label} setup guide covers everything you need to
+          know, from setting up call forwarding to understanding your first
+          AI-generated appointment summary.
         </Text>
         <Button href={supportUrl} style={helpButton}>
           View Setup Guide
@@ -92,7 +91,8 @@ export default function WelcomeEmail({
 
       <Section style={trialSection}>
         <Text style={trialText}>
-          Your free trial includes 50 call processings and all premium features. No credit card required.
+          Your free trial includes 50 call processings and all premium features.
+          No credit card required.
         </Text>
       </Section>
     </BaseEmailLayout>
@@ -135,7 +135,7 @@ function getIndustryConfig(industry: string) {
       label: 'Professional Services',
       primaryColor: '#4f46e5',
       eventTypes: ['appointments', 'meetings', 'consultations'],
-    }
+    },
   };
 
   return configs[industry as keyof typeof configs] || configs.default;

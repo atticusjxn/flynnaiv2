@@ -4,7 +4,7 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({
     message: 'Twilio Webhook Test Endpoint',
     timestamp: new Date().toISOString(),
-    status: 'active'
+    status: 'active',
   });
 }
 
@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
   try {
     // Parse form data as Twilio sends
     const formData = await request.formData();
-    
+
     const data: Record<string, string> = {};
     for (const [key, value] of formData.entries()) {
       data[key] = value.toString();
@@ -23,9 +23,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       message: 'Test webhook processed successfully',
       receivedData: data,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Test webhook error:', error);
     return NextResponse.json(

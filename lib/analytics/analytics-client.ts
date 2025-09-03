@@ -1,7 +1,8 @@
 // Analytics client for tracking events and fetching metrics
 import { Database } from '@/types/database.types';
 
-type AnalyticsEvent = Database['public']['Tables']['analytics_events']['Insert'];
+type AnalyticsEvent =
+  Database['public']['Tables']['analytics_events']['Insert'];
 
 class AnalyticsClient {
   private sessionId: string;
@@ -54,14 +55,23 @@ class AnalyticsClient {
     return this.track('feature_usage', feature, properties);
   }
 
-  async trackConversion(event: string, value?: number, properties?: Record<string, any>) {
+  async trackConversion(
+    event: string,
+    value?: number,
+    properties?: Record<string, any>
+  ) {
     return this.track('conversion', event, {
       ...properties,
       value,
     });
   }
 
-  async trackApiCall(endpoint: string, method: string, status: number, duration: number) {
+  async trackApiCall(
+    endpoint: string,
+    method: string,
+    status: number,
+    duration: number
+  ) {
     return this.track('api_call', `${method} ${endpoint}`, {
       method,
       status,
@@ -81,7 +91,10 @@ class AnalyticsClient {
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value) {
-          searchParams.append(key, Array.isArray(value) ? JSON.stringify(value) : value);
+          searchParams.append(
+            key,
+            Array.isArray(value) ? JSON.stringify(value) : value
+          );
         }
       });
     }
@@ -130,7 +143,9 @@ class AnalyticsClient {
       });
     }
 
-    const response = await fetch(`/api/analytics/feature-usage?${searchParams}`);
+    const response = await fetch(
+      `/api/analytics/feature-usage?${searchParams}`
+    );
     if (!response.ok) {
       throw new Error('Failed to fetch feature usage data');
     }

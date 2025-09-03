@@ -5,12 +5,16 @@ import type { Database } from '@/types/database.types';
 
 const CreateMessageSchema = z.object({
   message: z.string().min(1).max(5000),
-  attachments: z.array(z.object({
-    name: z.string(),
-    url: z.string(),
-    type: z.string(),
-    size: z.number(),
-  })).optional(),
+  attachments: z
+    .array(
+      z.object({
+        name: z.string(),
+        url: z.string(),
+        type: z.string(),
+        size: z.number(),
+      })
+    )
+    .optional(),
 });
 
 export async function POST(
@@ -19,10 +23,13 @@ export async function POST(
 ) {
   try {
     const supabase = createClient();
-    
+
     // Get current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -36,10 +43,7 @@ export async function POST(
       .single();
 
     if (ticketError || !ticket) {
-      return NextResponse.json(
-        { error: 'Ticket not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Ticket not found' }, { status: 404 });
     }
 
     const body = await request.json();
@@ -68,9 +72,9 @@ export async function POST(
     // Update ticket status to waiting for response if it was resolved
     await supabase
       .from('support_tickets')
-      .update({ 
+      .update({
         status: 'waiting_for_user',
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq('id', params.id)
       .eq('status', 'resolved');
@@ -83,7 +87,7 @@ export async function POST(
         { status: 400 }
       );
     }
-    
+
     console.error('Support message creation error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

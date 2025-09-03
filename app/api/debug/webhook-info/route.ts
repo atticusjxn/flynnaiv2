@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     },
   };
 
-  return NextResponse.json(debugInfo, { 
+  return NextResponse.json(debugInfo, {
     status: 200,
     headers: {
       'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  
+
   console.log('🔍 Debug webhook received:', {
     timestamp: new Date().toISOString(),
     method: request.method,
@@ -56,9 +56,9 @@ export async function POST(request: NextRequest) {
     body: body,
   });
 
-  return NextResponse.json({ 
-    received: true, 
+  return NextResponse.json({
+    received: true,
     timestamp: new Date().toISOString(),
-    echo: body 
+    echo: body,
   });
 }

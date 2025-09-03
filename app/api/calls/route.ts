@@ -6,44 +6,56 @@ import { withPerformanceMonitoring } from '@/lib/performance/monitoring';
 async function getCallsHandler(request: NextRequest) {
   try {
     const supabase = createClient();
-    
+
     // Get authenticated user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get('page') || '1');
-    const limit = Math.min(parseInt(url.searchParams.get('limit') || '20'), 100); // Max 100
-    
+    const limit = Math.min(
+      parseInt(url.searchParams.get('limit') || '20'),
+      100
+    ); // Max 100
+
     // Parse filters
     const filters = {
       status: url.searchParams.get('status')?.split(',').filter(Boolean),
       urgency: url.searchParams.get('urgency')?.split(',').filter(Boolean),
       aiStatus: url.searchParams.get('aiStatus')?.split(',').filter(Boolean),
       search: url.searchParams.get('search') || undefined,
-      dateRange: url.searchParams.get('startDate') && url.searchParams.get('endDate') 
-        ? {
-            start: new Date(url.searchParams.get('startDate')!),
-            end: new Date(url.searchParams.get('endDate')!)
-          }
-        : undefined
+      dateRange:
+        url.searchParams.get('startDate') && url.searchParams.get('endDate')
+          ? {
+              start: new Date(url.searchParams.get('startDate')!),
+              end: new Date(url.searchParams.get('endDate')!),
+            }
+          : undefined,
     };
 
     // Use optimized database queries
     const optimizer = new DatabaseOptimizer();
-    const result = await optimizer.getOptimizedCalls(user.id, page, limit, filters);
-    
+    const result = await optimizer.getOptimizedCalls(
+      user.id,
+      page,
+      limit,
+      filters
+    );
+
     // Get statistics if requested
     const includeStats = url.searchParams.get('includeStats') === 'true';
     let statistics;
-    
+
     if (includeStats) {
-      statistics = await optimizer.getCallStatistics(user.id, filters.dateRange);
+      statistics = await optimizer.getCallStatistics(
+        user.id,
+        filters.dateRange
+      );
     }
 
     const response = {
@@ -62,16 +74,15 @@ async function getCallsHandler(request: NextRequest) {
     return NextResponse.json(response, {
       headers: {
         'Cache-Control': 'private, max-age=60, stale-while-revalidate=300',
-        'ETag': `"calls-${user.id}-${page}-${JSON.stringify(filters).slice(0, 50)}"`
-      }
+        ETag: `"calls-${user.id}-${page}-${JSON.stringify(filters).slice(0, 50)}"`,
+      },
     });
-
   } catch (error) {
     console.error('Calls API error:', error);
     return NextResponse.json(
-      { 
+      {
         error: error instanceof Error ? error.message : 'Failed to fetch calls',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
@@ -82,13 +93,13 @@ async function getCallsHandler(request: NextRequest) {
 async function postCallsHandler(request: NextRequest) {
   try {
     const supabase = createClient();
-    
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await request.json();
@@ -127,9 +138,9 @@ async function postCallsHandler(request: NextRequest) {
         // Soft delete calls (set deleted_at timestamp)
         const { data: deleteData, error: deleteError } = await supabase
           .from('calls')
-          .update({ 
+          .update({
             deleted_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
           })
           .in('id', callIds)
           .eq('user_id', user.id)
@@ -150,15 +161,14 @@ async function postCallsHandler(request: NextRequest) {
       success: true,
       action,
       affectedCalls: result?.length || 0,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Bulk calls operation error:', error);
     return NextResponse.json(
-      { 
+      {
         error: error instanceof Error ? error.message : 'Bulk operation failed',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );

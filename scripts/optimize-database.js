@@ -21,47 +21,47 @@ async function optimizeDatabase() {
       {
         name: 'idx_calls_user_created',
         sql: 'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_calls_user_created ON calls(user_id, created_at DESC);',
-        description: 'Optimize calls listing by user and date'
+        description: 'Optimize calls listing by user and date',
       },
       {
         name: 'idx_calls_status_filter',
         sql: 'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_calls_status_filter ON calls(call_status) WHERE call_status IS NOT NULL;',
-        description: 'Optimize status filtering'
+        description: 'Optimize status filtering',
       },
       {
         name: 'idx_calls_urgency_filter',
         sql: 'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_calls_urgency_filter ON calls(urgency_level) WHERE urgency_level IS NOT NULL;',
-        description: 'Optimize urgency filtering'
+        description: 'Optimize urgency filtering',
       },
       {
         name: 'idx_calls_ai_status',
         sql: 'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_calls_ai_status ON calls(ai_processing_status) WHERE ai_processing_status IS NOT NULL;',
-        description: 'Optimize AI status filtering'
+        description: 'Optimize AI status filtering',
       },
-      
+
       // Events table indexes
       {
         name: 'idx_events_call_id',
         sql: 'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_events_call_id ON events(call_id);',
-        description: 'Optimize event-call relationships'
+        description: 'Optimize event-call relationships',
       },
       {
         name: 'idx_events_user_date',
         sql: 'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_events_user_date ON events(user_id, event_date DESC) WHERE event_date IS NOT NULL;',
-        description: 'Optimize event listing by user and date'
+        description: 'Optimize event listing by user and date',
       },
-      
+
       // Communications table indexes
       {
         name: 'idx_communications_event',
         sql: 'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_communications_event ON communications(event_id);',
-        description: 'Optimize communication-event relationships'
+        description: 'Optimize communication-event relationships',
       },
       {
         name: 'idx_communications_status',
         sql: 'CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_communications_status ON communications(status) WHERE status IS NOT NULL;',
-        description: 'Optimize communication status queries'
-      }
+        description: 'Optimize communication status queries',
+      },
     ];
 
     // Create indexes
@@ -73,9 +73,9 @@ async function optimizeDatabase() {
       try {
         console.log(`Creating index: ${index.name}`);
         console.log(`  Description: ${index.description}`);
-        
+
         const { error } = await supabase.rpc('exec', {
-          sql: index.sql
+          sql: index.sql,
         });
 
         if (error) {
@@ -90,7 +90,10 @@ async function optimizeDatabase() {
           successCount++;
         }
       } catch (error) {
-        console.error(`  ❌ Failed to create index ${index.name}:`, error.message);
+        console.error(
+          `  ❌ Failed to create index ${index.name}:`,
+          error.message
+        );
         console.log('  📝 SQL:', index.sql);
         console.log('');
         errorCount++;
@@ -137,15 +140,21 @@ async function optimizeDatabase() {
 
     // Check table statistics
     console.log('📈 Gathering table statistics...\n');
-    
-    const tables = ['calls', 'events', 'communications', 'users', 'phone_numbers'];
-    
+
+    const tables = [
+      'calls',
+      'events',
+      'communications',
+      'users',
+      'phone_numbers',
+    ];
+
     for (const table of tables) {
       try {
         const { count, error } = await supabase
           .from(table)
           .select('*', { count: 'exact', head: true });
-          
+
         if (error) throw error;
         console.log(`  ${table}: ${count || 0} rows`);
       } catch (error) {
@@ -158,12 +167,13 @@ async function optimizeDatabase() {
     console.log(`✅ Indexes created: ${successCount}`);
     console.log(`⏭️  Indexes skipped: ${skipCount}`);
     console.log(`❌ Errors: ${errorCount}`);
-    
+
     if (errorCount > 0) {
       console.log('\n⚠️  Some optimizations failed. Check the errors above.');
-      console.log('This is normal if you don\'t have sufficient database permissions.');
+      console.log(
+        "This is normal if you don't have sufficient database permissions."
+      );
     }
-
   } catch (error) {
     console.error('❌ Database optimization failed:', error);
     process.exit(1);

@@ -1,31 +1,37 @@
 # Flynn.ai v2 AI Extraction System
 
 ## Overview
+
 Industry-aware AI system using OpenAI GPT-4 for extracting events, topics, and metadata from business call transcriptions. The system adapts prompts and extraction logic based on detected industry context.
 
 ## Core AI Components
 
 ### 1. Call Topic Extraction
+
 Generates email subject lines and call summaries.
 
 ### 2. Industry Classification
+
 Identifies business type from call content and user profile.
 
 ### 3. Event Extraction
+
 Finds time-sensitive commitments, appointments, and tasks.
 
 ### 4. Sentiment Analysis
+
 Assesses urgency, customer satisfaction, and follow-up needs.
 
 ## Industry-Aware Prompt Engineering
 
 ### Base System Prompt
+
 ```
 You are Flynn.ai, an expert AI assistant specializing in analyzing business phone calls across various industries. Your task is to extract actionable events, appointments, and commitments from call transcriptions.
 
 Key Responsibilities:
 1. Extract ALL time-sensitive events mentioned in the call
-2. Classify events appropriately for the business context  
+2. Classify events appropriately for the business context
 3. Generate professional summaries for email communication
 4. Assess urgency and follow-up requirements
 5. Structure data for calendar integration
@@ -36,13 +42,14 @@ Always prioritize accuracy over quantity. If information is unclear, mark confid
 ### Industry-Specific Prompt Modifiers
 
 #### Plumbing/HVAC Services
+
 ```
 INDUSTRY CONTEXT: Plumbing/HVAC Services
 Common Event Types: service_call, quote, emergency, follow_up, inspection
 
 TERMINOLOGY:
 - "come out" or "come by" = service_call
-- "take a look" = quote/inspection  
+- "take a look" = quote/inspection
 - "emergency" or "urgent" = emergency
 - "estimate" or "quote" = quote
 - "follow up" or "check back" = follow_up
@@ -63,6 +70,7 @@ URGENCY INDICATORS:
 ```
 
 #### Real Estate
+
 ```
 INDUSTRY CONTEXT: Real Estate
 Common Event Types: meeting, inspection, appointment, follow_up
@@ -90,6 +98,7 @@ URGENCY INDICATORS:
 ```
 
 #### Legal Services
+
 ```
 INDUSTRY CONTEXT: Legal Services
 Common Event Types: consultation, meeting, appointment
@@ -117,6 +126,7 @@ URGENCY INDICATORS:
 ```
 
 #### Medical/Healthcare
+
 ```
 INDUSTRY CONTEXT: Medical/Healthcare
 Common Event Types: appointment, consultation, follow_up, emergency
@@ -149,6 +159,7 @@ COMPLIANCE NOTES:
 ```
 
 #### Sales/Business Development
+
 ```
 INDUSTRY CONTEXT: Sales/Business Development
 Common Event Types: demo, meeting, follow_up, consultation
@@ -176,6 +187,7 @@ URGENCY INDICATORS:
 ```
 
 #### Consulting Services
+
 ```
 INDUSTRY CONTEXT: Consulting Services
 Common Event Types: consultation, meeting, follow_up
@@ -204,7 +216,7 @@ URGENCY INDICATORS:
 
 ## Main Extraction Prompt Template
 
-```
+````
 CALL TRANSCRIPTION ANALYSIS
 
 USER PROFILE:
@@ -253,7 +265,7 @@ PLEASE EXTRACT:
      "follow_up_required": true,
      "follow_up_reason": "Need to confirm materials availability"
    }
-   ```
+````
 
 4. SENTIMENT ANALYSIS:
    - customer_satisfaction: "positive|neutral|negative"
@@ -274,7 +286,8 @@ Always include confidence scores for uncertain extractions.
 Flag complex or unclear situations for human review.
 
 OUTPUT FORMAT: Valid JSON only, no additional text.
-```
+
+````
 
 ## Event Classification Logic
 
@@ -285,46 +298,46 @@ def classify_event_type(transcript, industry, keywords):
     """
     Classify event type based on transcript content, industry, and keywords.
     """
-    
+
     # Emergency indicators (highest priority)
     emergency_keywords = ['emergency', 'urgent', 'asap', 'right away', 'water damage', 'no heat', 'broken']
     if any(keyword in transcript.lower() for keyword in emergency_keywords):
         return 'emergency'
-    
+
     # Industry-specific classification
     if industry == 'plumbing':
         if any(word in transcript.lower() for word in ['quote', 'estimate', 'price']):
             return 'quote'
         if any(word in transcript.lower() for word in ['fix', 'repair', 'install']):
             return 'service_call'
-            
+
     elif industry == 'real_estate':
         if any(word in transcript.lower() for word in ['showing', 'show property', 'tour']):
             return 'meeting'
         if any(word in transcript.lower() for word in ['inspection', 'walk through']):
             return 'inspection'
-            
+
     elif industry == 'legal':
         if any(word in transcript.lower() for word in ['consult', 'consultation', 'legal advice']):
             return 'consultation'
         if any(word in transcript.lower() for word in ['court', 'hearing', 'deposition']):
             return 'appointment'
-            
+
     elif industry == 'medical':
         if any(word in transcript.lower() for word in ['appointment', 'visit', 'checkup']):
             return 'appointment'
         if any(word in transcript.lower() for word in ['follow up', 'results', 'check back']):
             return 'follow_up'
-            
+
     elif industry == 'sales':
         if any(word in transcript.lower() for word in ['demo', 'demonstration', 'show you']):
             return 'demo'
         if any(word in transcript.lower() for word in ['meeting', 'discuss', 'go over']):
             return 'meeting'
-    
+
     # Default fallback
     return 'meeting'
-```
+````
 
 ## Confidence Scoring System
 
@@ -336,30 +349,30 @@ def calculate_confidence_score(extraction_data):
     Calculate confidence score based on multiple factors.
     """
     confidence = 1.0
-    
+
     # Date/time clarity
     if extraction_data.get('proposed_datetime'):
         confidence *= 0.9  # High confidence for explicit dates
     else:
         confidence *= 0.6  # Lower for vague timing
-    
+
     # Location specificity
     location_type = extraction_data.get('location_type')
     if location_type == 'address' and len(extraction_data.get('location', '')) > 20:
         confidence *= 0.95  # High confidence for full addresses
     elif location_type == 'tbd':
         confidence *= 0.7   # Lower for unclear locations
-    
+
     # Customer information completeness
     if extraction_data.get('customer_name') and extraction_data.get('customer_phone'):
         confidence *= 0.95
     elif not extraction_data.get('customer_name'):
         confidence *= 0.8
-    
+
     # Transcription quality
     transcription_confidence = extraction_data.get('transcription_confidence', 0.8)
     confidence *= transcription_confidence
-    
+
     return min(confidence, 1.0)
 ```
 
@@ -373,28 +386,28 @@ def validate_extraction(extraction_result):
     Validate extracted events for completeness and accuracy.
     """
     validation_errors = []
-    
+
     for event in extraction_result.get('events', []):
         # Required fields check
         if not event.get('title'):
             validation_errors.append(f"Event missing title: {event.get('id')}")
-        
+
         # Date format validation
         if event.get('proposed_datetime'):
             try:
                 datetime.fromisoformat(event['proposed_datetime'].replace('Z', '+00:00'))
             except ValueError:
                 validation_errors.append(f"Invalid datetime format: {event.get('proposed_datetime')}")
-        
+
         # Phone number format
         if event.get('customer_phone'):
             if not re.match(r'^\+?1?[0-9]{10,}$', event['customer_phone'].replace('-', '').replace(' ', '')):
                 validation_errors.append(f"Invalid phone format: {event.get('customer_phone')}")
-        
+
         # Confidence threshold
         if event.get('ai_confidence', 0) < 0.3:
             validation_errors.append(f"Low confidence event: {event.get('title')} ({event.get('ai_confidence')})")
-    
+
     return validation_errors
 ```
 
@@ -422,6 +435,7 @@ def validate_extraction(extraction_result):
 ### Test Cases by Industry
 
 #### Plumbing Test Transcript
+
 ```
 "Hi, I'm calling because my kitchen sink has been leaking for two days now and it's getting worse. I need someone to come out and fix it. I'm available tomorrow afternoon after 2 PM or Thursday morning before 10 AM. The address is 123 Oak Street in Springfield. My name is Sarah Johnson and my number is 555-0123. Can you give me an estimate over the phone or do you need to see it first?"
 
@@ -433,12 +447,13 @@ Expected Extraction:
 - Customer info: Complete
 ```
 
-#### Real Estate Test Transcript  
+#### Real Estate Test Transcript
+
 ```
 "Hello, I'm interested in seeing the property at 456 Elm Avenue that's listed for $350,000. I'm pre-approved for up to $375K and I'm looking to move quickly. Could we schedule a showing this weekend? Saturday afternoon would be perfect. I'm John Smith, 555-0456. I've been working with Maria Lopez as my agent but she suggested I call you directly since it's your listing."
 
 Expected Extraction:
-- Main Topic: "Property showing - 456 Elm Avenue"  
+- Main Topic: "Property showing - 456 Elm Avenue"
 - Event Type: "meeting"
 - Urgency: "high" (pre-approved, wants to move quickly)
 - Location: Full property address
@@ -454,27 +469,27 @@ class AIExtractionPipeline:
     def __init__(self):
         self.openai_client = OpenAI()
         self.industry_prompts = load_industry_prompts()
-        
+
     async def process_call(self, call_record):
         """Main processing pipeline for call extraction."""
-        
+
         # 1. Prepare context
         context = self.prepare_context(call_record)
-        
+
         # 2. Select appropriate prompt
         prompt = self.select_industry_prompt(context['industry'])
-        
+
         # 3. Execute extraction
         raw_result = await self.extract_with_openai(prompt, context)
-        
+
         # 4. Validate and clean results
         validated_result = self.validate_extraction(raw_result)
-        
+
         # 5. Calculate confidence scores
         final_result = self.calculate_confidence_scores(validated_result)
-        
+
         return final_result
-        
+
     async def extract_with_openai(self, prompt, context):
         """Call OpenAI API with retry logic."""
         try:
@@ -496,16 +511,19 @@ class AIExtractionPipeline:
 ## Performance Optimization
 
 ### Caching Strategy
+
 - Cache industry prompts in memory
 - Cache user industry classifications
 - Store processed results for reprocessing
 
 ### Rate Limiting
+
 - Batch multiple calls when possible
 - Implement queue system for high volume
 - Use OpenAI's batch API for non-real-time processing
 
 ### Error Handling
+
 - Graceful degradation when AI unavailable
 - Fallback to basic transcript parsing
 - Human review queue for failed extractions

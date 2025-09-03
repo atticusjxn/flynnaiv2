@@ -14,18 +14,21 @@ export async function updateSession(request: NextRequest) {
 
   // Skip auth processing for public routes
   const { pathname } = request.nextUrl;
-  const isPublicRoute = pathname === '/' || 
-                       pathname.startsWith('/api/webhooks') ||
-                       pathname.startsWith('/_next') ||
-                       pathname.startsWith('/favicon');
-  
+  const isPublicRoute =
+    pathname === '/' ||
+    pathname.startsWith('/api/webhooks') ||
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/favicon');
+
   if (isPublicRoute) {
     return response;
   }
 
   // Check if environment variables are available
   const supabaseUrl = sanitizeEnvVar(process.env.NEXT_PUBLIC_SUPABASE_URL);
-  const supabaseAnonKey = sanitizeEnvVar(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+  const supabaseAnonKey = sanitizeEnvVar(
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
 
   if (!supabaseUrl || !supabaseAnonKey) {
     return response;

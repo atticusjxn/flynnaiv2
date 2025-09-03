@@ -6,30 +6,31 @@ import { getGoogleCalendarConfig } from '@/lib/calendar/googleCalendarAuth';
 export async function GET() {
   try {
     const config = getGoogleCalendarConfig();
-    
+
     return NextResponse.json({
       message: 'Calendar Service Test',
       timestamp: new Date().toISOString(),
       google_config: config,
-      providers_registered: calendarService.getAvailableProviders().map(p => ({
-        id: p.providerId,
-        name: p.displayName,
-        requiresAuth: p.requiresAuth,
-      })),
+      providers_registered: calendarService
+        .getAvailableProviders()
+        .map((p) => ({
+          id: p.providerId,
+          name: p.displayName,
+          requiresAuth: p.requiresAuth,
+        })),
       endpoints: {
         auth: '/api/calendar/google/auth',
         callback: '/api/calendar/google/callback',
         sync: '/api/calendar/sync',
         test_provider: '/api/calendar/test (POST)',
-      }
+      },
     });
-
   } catch (error) {
     console.error('Calendar test error:', error);
     return NextResponse.json(
-      { 
-        error: 'Calendar test failed', 
-        details: error instanceof Error ? error.message : 'Unknown error' 
+      {
+        error: 'Calendar test failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );
@@ -49,14 +50,14 @@ export async function POST(request: NextRequest) {
       }
 
       console.log('Testing Google Calendar provider for user:', user_id);
-      
+
       // Create and register Google Calendar provider
       const googleProvider = createGoogleCalendarProvider(user_id);
       calendarService.registerProvider(googleProvider);
 
       // Test authentication status
       const authStatus = await calendarService.getProviderAuthStatus('google');
-      
+
       let calendars = [];
       let testResult = null;
 
@@ -70,21 +71,26 @@ export async function POST(request: NextRequest) {
           if (calendar_id) {
             const sampleEvent = {
               title: 'Flynn.ai Calendar Test',
-              description: 'Test event created by Flynn.ai calendar integration system.',
+              description:
+                'Test event created by Flynn.ai calendar integration system.',
               start: {
                 dateTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(), // 1 hour from now
                 timeZone: 'America/Los_Angeles',
               },
               end: {
-                dateTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2 hours from now
+                dateTime: new Date(
+                  Date.now() + 2 * 60 * 60 * 1000
+                ).toISOString(), // 2 hours from now
                 timeZone: 'America/Los_Angeles',
               },
             };
 
-            testResult = await googleProvider.createEvent(calendar_id, sampleEvent);
+            testResult = await googleProvider.createEvent(
+              calendar_id,
+              sampleEvent
+            );
             console.log('Test event creation result:', testResult);
           }
-
         } catch (error) {
           console.error('Error testing calendar provider:', error);
           return NextResponse.json({
@@ -108,13 +114,12 @@ export async function POST(request: NextRequest) {
       { error: 'Unknown action. Use: test-provider' },
       { status: 400 }
     );
-
   } catch (error) {
     console.error('Calendar test error:', error);
     return NextResponse.json(
-      { 
-        error: 'Calendar test failed', 
-        details: error instanceof Error ? error.message : 'Unknown error' 
+      {
+        error: 'Calendar test failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );

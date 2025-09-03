@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url);
     const timeRange = url.searchParams.get('timeRange');
     const timeRangeMs = timeRange ? parseInt(timeRange) * 1000 : 3600000; // Default: 1 hour
-    
+
     // Validate time range (max 24 hours)
     if (timeRangeMs > 24 * 60 * 60 * 1000) {
       return NextResponse.json(
@@ -14,10 +14,10 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     const analytics = performanceMonitor.getAnalytics(timeRangeMs);
     const health = await performanceMonitor.getSystemHealth();
-    
+
     const response = {
       timeRange: timeRangeMs,
       timeRangeHours: timeRangeMs / (1000 * 60 * 60),
@@ -25,14 +25,17 @@ export async function GET(request: NextRequest) {
       systemHealth: health,
       generatedAt: new Date().toISOString(),
     };
-    
+
     return NextResponse.json(response);
   } catch (error) {
     console.error('Performance analytics error:', error);
     return NextResponse.json(
-      { 
-        error: error instanceof Error ? error.message : 'Analytics generation failed',
-        timestamp: new Date().toISOString()
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Analytics generation failed',
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
@@ -45,7 +48,7 @@ export async function POST(request: NextRequest) {
     // Custom metrics reporting endpoint for client-side performance data
     const body = await request.json();
     const { metrics, userAgent, userId } = body;
-    
+
     // Validate required fields
     if (!metrics || typeof metrics !== 'object') {
       return NextResponse.json(
@@ -53,7 +56,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     // Store client-side performance metrics
     // In production, this would be sent to your monitoring service
     console.log('Client Performance Metrics:', {
@@ -67,18 +70,19 @@ export async function POST(request: NextRequest) {
         cumulativeLayoutShift: metrics.cumulativeLayoutShift,
         firstInputDelay: metrics.firstInputDelay,
         route: metrics.route,
-      }
+      },
     });
-    
-    return NextResponse.json({ 
+
+    return NextResponse.json({
       status: 'recorded',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     console.error('Client metrics recording error:', error);
     return NextResponse.json(
-      { 
-        error: error instanceof Error ? error.message : 'Metrics recording failed'
+      {
+        error:
+          error instanceof Error ? error.message : 'Metrics recording failed',
       },
       { status: 500 }
     );

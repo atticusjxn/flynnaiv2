@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuthContext } from '@/components/AuthProvider';
-import { 
-  UserSettings, 
-  DEFAULT_USER_SETTINGS, 
+import {
+  UserSettings,
+  DEFAULT_USER_SETTINGS,
   SettingsUpdateRequest,
-  SettingsSaveResponse 
+  SettingsSaveResponse,
 } from '@/types/settings.types';
 import { createClient } from '@/utils/supabase/client';
 
@@ -14,27 +14,27 @@ interface UseSettingsReturn {
   // Current settings state
   settings: UserSettings;
   originalSettings: UserSettings;
-  
+
   // Loading and error states
   isLoading: boolean;
   isSaving: boolean;
   hasChanges: boolean;
   error: string | null;
-  
+
   // Settings manipulation
   updateSettings: <T extends keyof UserSettings>(
-    section: T, 
+    section: T,
     updates: Partial<UserSettings[T]>
   ) => void;
-  
+
   // Persistence
   saveSettings: () => Promise<boolean>;
   resetSettings: () => void;
   resetToDefaults: () => void;
-  
+
   // Validation
   validateSettings: () => string[];
-  
+
   // Individual setting getters for convenience
   getProfile: () => UserSettings['profile'];
   getEmail: () => UserSettings['email'];
@@ -47,15 +47,18 @@ interface UseSettingsReturn {
 export function useSettings(): UseSettingsReturn {
   const { user, profile } = useAuthContext();
   const [settings, setSettings] = useState<UserSettings>(DEFAULT_USER_SETTINGS);
-  const [originalSettings, setOriginalSettings] = useState<UserSettings>(DEFAULT_USER_SETTINGS);
+  const [originalSettings, setOriginalSettings] = useState<UserSettings>(
+    DEFAULT_USER_SETTINGS
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const supabase = createClient();
 
   // Calculate if there are unsaved changes
-  const hasChanges = JSON.stringify(settings) !== JSON.stringify(originalSettings);
+  const hasChanges =
+    JSON.stringify(settings) !== JSON.stringify(originalSettings);
 
   // Load settings from the user profile
   useEffect(() => {
@@ -67,7 +70,7 @@ export function useSettings(): UseSettingsReturn {
     try {
       // Parse settings from user profile, merge with defaults
       const userSettings = profile.settings as UserSettings | null;
-      const loadedSettings = userSettings 
+      const loadedSettings = userSettings
         ? mergeWithDefaults(userSettings, DEFAULT_USER_SETTINGS)
         : DEFAULT_USER_SETTINGS;
 
@@ -86,19 +89,22 @@ export function useSettings(): UseSettingsReturn {
   }, [profile]);
 
   // Update settings section
-  const updateSettings = useCallback(<T extends keyof UserSettings>(
-    section: T, 
-    updates: Partial<UserSettings[T]>
-  ) => {
-    setSettings(prev => ({
-      ...prev,
-      [section]: {
-        ...prev[section],
-        ...updates
-      }
-    }));
-    setError(null);
-  }, []);
+  const updateSettings = useCallback(
+    <T extends keyof UserSettings>(
+      section: T,
+      updates: Partial<UserSettings[T]>
+    ) => {
+      setSettings((prev) => ({
+        ...prev,
+        [section]: {
+          ...prev[section],
+          ...updates,
+        },
+      }));
+      setError(null);
+    },
+    []
+  );
 
   // Save settings to database
   const saveSettings = useCallback(async (): Promise<boolean> => {
@@ -121,9 +127,9 @@ export function useSettings(): UseSettingsReturn {
       // Update user profile with new settings
       const { error: updateError } = await supabase
         .from('users')
-        .update({ 
+        .update({
           settings: settings,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('id', user.id);
 
@@ -134,7 +140,6 @@ export function useSettings(): UseSettingsReturn {
       // Update original settings to reflect saved state
       setOriginalSettings(settings);
       return true;
-
     } catch (err) {
       console.error('Error saving settings:', err);
       setError(err instanceof Error ? err.message : 'Failed to save settings');
@@ -165,7 +170,10 @@ export function useSettings(): UseSettingsReturn {
   const getProfile = useCallback(() => settings.profile, [settings.profile]);
   const getEmail = useCallback(() => settings.email, [settings.email]);
   const getCalendar = useCallback(() => settings.calendar, [settings.calendar]);
-  const getNotifications = useCallback(() => settings.notifications, [settings.notifications]);
+  const getNotifications = useCallback(
+    () => settings.notifications,
+    [settings.notifications]
+  );
   const getAI = useCallback(() => settings.ai, [settings.ai]);
   const getUI = useCallback(() => settings.ui, [settings.ui]);
 
@@ -191,7 +199,10 @@ export function useSettings(): UseSettingsReturn {
 }
 
 // Helper function to merge user settings with defaults
-function mergeWithDefaults(userSettings: any, defaults: UserSettings): UserSettings {
+function mergeWithDefaults(
+  userSettings: any,
+  defaults: UserSettings
+): UserSettings {
   const merged = { ...defaults };
 
   // Deep merge each section
@@ -206,11 +217,23 @@ function mergeWithDefaults(userSettings: any, defaults: UserSettings): UserSetti
   }
   if (userSettings.notifications) {
     merged.notifications = {
-      email: { ...defaults.notifications.email, ...userSettings.notifications.email },
+      email: {
+        ...defaults.notifications.email,
+        ...userSettings.notifications.email,
+      },
       sms: { ...defaults.notifications.sms, ...userSettings.notifications.sms },
-      push: { ...defaults.notifications.push, ...userSettings.notifications.push },
-      inApp: { ...defaults.notifications.inApp, ...userSettings.notifications.inApp },
-      quietHours: { ...defaults.notifications.quietHours, ...userSettings.notifications.quietHours },
+      push: {
+        ...defaults.notifications.push,
+        ...userSettings.notifications.push,
+      },
+      inApp: {
+        ...defaults.notifications.inApp,
+        ...userSettings.notifications.inApp,
+      },
+      quietHours: {
+        ...defaults.notifications.quietHours,
+        ...userSettings.notifications.quietHours,
+      },
     };
   }
   if (userSettings.ai) {
@@ -233,20 +256,34 @@ function validateSettingsData(settings: UserSettings): string[] {
   const errors: string[] = [];
 
   // Validate profile settings
-  if (settings.profile.timezone && !isValidTimezone(settings.profile.timezone)) {
+  if (
+    settings.profile.timezone &&
+    !isValidTimezone(settings.profile.timezone)
+  ) {
     errors.push('Invalid timezone');
   }
 
   // Validate email settings
-  if (settings.email.frequency && !['immediate', 'hourly', 'daily', 'weekly'].includes(settings.email.frequency)) {
+  if (
+    settings.email.frequency &&
+    !['immediate', 'hourly', 'daily', 'weekly'].includes(
+      settings.email.frequency
+    )
+  ) {
     errors.push('Invalid email frequency');
   }
 
   // Validate AI settings
-  if (settings.ai.autoConfirmThreshold < 0 || settings.ai.autoConfirmThreshold > 1) {
+  if (
+    settings.ai.autoConfirmThreshold < 0 ||
+    settings.ai.autoConfirmThreshold > 1
+  ) {
     errors.push('Auto-confirm threshold must be between 0 and 1');
   }
-  if (settings.ai.humanReviewThreshold < 0 || settings.ai.humanReviewThreshold > 1) {
+  if (
+    settings.ai.humanReviewThreshold < 0 ||
+    settings.ai.humanReviewThreshold > 1
+  ) {
     errors.push('Human review threshold must be between 0 and 1');
   }
 

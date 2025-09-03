@@ -149,9 +149,10 @@ export default function CalendarIntegrationSection() {
       if (response.ok) {
         setMessage({
           type: 'success',
-          content: `Calendar test completed. ${result.auth_status.isAuthenticated ? 
-            `Found ${result.calendars_found} calendars.` : 
-            'Not authenticated - please connect your calendar first.'
+          content: `Calendar test completed. ${
+            result.auth_status.isAuthenticated
+              ? `Found ${result.calendars_found} calendars.`
+              : 'Not authenticated - please connect your calendar first.'
           }`,
         });
       } else {
@@ -180,7 +181,8 @@ export default function CalendarIntegrationSection() {
     if (calendarSuccess === 'google_connected') {
       setMessage({
         type: 'success',
-        content: 'Google Calendar connected successfully! Your appointments will now sync automatically.',
+        content:
+          'Google Calendar connected successfully! Your appointments will now sync automatically.',
       });
       loadIntegrations();
       // Clean up URL
@@ -195,8 +197,10 @@ export default function CalendarIntegrationSection() {
     }
   }, []);
 
-  const getIntegrationForProvider = (providerId: string): CalendarIntegration | undefined => {
-    return integrations.find(i => i.provider === providerId && i.is_active);
+  const getIntegrationForProvider = (
+    providerId: string
+  ): CalendarIntegration | undefined => {
+    return integrations.find((i) => i.provider === providerId && i.is_active);
   };
 
   return (
@@ -217,7 +221,9 @@ export default function CalendarIntegrationSection() {
               }`}
             >
               <div className="flex items-center space-x-4">
-                <div className={`w-12 h-12 rounded-lg ${provider.color} flex items-center justify-center text-white text-xl`}>
+                <div
+                  className={`w-12 h-12 rounded-lg ${provider.color} flex items-center justify-center text-white text-xl`}
+                >
                   {provider.icon}
                 </div>
                 <div>
@@ -234,11 +240,15 @@ export default function CalendarIntegrationSection() {
                       </span>
                     )}
                   </h4>
-                  <p className="text-sm text-muted-foreground">{provider.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {provider.description}
+                  </p>
                   {isConnected && integration && (
                     <p className="text-xs text-green-600 mt-1">
-                      Connected {new Date(integration.connected_at).toLocaleDateString()}
-                      {integration.calendar_count && ` • ${integration.calendar_count} calendars`}
+                      Connected{' '}
+                      {new Date(integration.connected_at).toLocaleDateString()}
+                      {integration.calendar_count &&
+                        ` • ${integration.calendar_count} calendars`}
                     </p>
                   )}
                 </div>
@@ -249,7 +259,9 @@ export default function CalendarIntegrationSection() {
                   <>
                     {isConnected ? (
                       <button
-                        onClick={() => integration && disconnectCalendar(integration.id)}
+                        onClick={() =>
+                          integration && disconnectCalendar(integration.id)
+                        }
                         disabled={isLoading}
                         className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg border border-red-200 transition-colors disabled:opacity-50"
                       >
@@ -285,7 +297,9 @@ export default function CalendarIntegrationSection() {
 
       {/* Calendar Sync Preferences */}
       <div className="pt-4 border-t border-border">
-        <h4 className="font-semibold text-card-foreground mb-3">Sync Preferences</h4>
+        <h4 className="font-semibold text-card-foreground mb-3">
+          Sync Preferences
+        </h4>
         <div className="space-y-3 text-sm">
           <label className="flex items-center space-x-3">
             <input
@@ -293,7 +307,9 @@ export default function CalendarIntegrationSection() {
               defaultChecked={true}
               className="w-4 h-4 text-primary border-border rounded focus:ring-primary focus:ring-2"
             />
-            <span className="text-card-foreground">Auto-sync appointments to calendar</span>
+            <span className="text-card-foreground">
+              Auto-sync appointments to calendar
+            </span>
           </label>
           <label className="flex items-center space-x-3">
             <input
@@ -301,7 +317,9 @@ export default function CalendarIntegrationSection() {
               defaultChecked={true}
               className="w-4 h-4 text-primary border-border rounded focus:ring-primary focus:ring-2"
             />
-            <span className="text-card-foreground">Include customer contact details in events</span>
+            <span className="text-card-foreground">
+              Include customer contact details in events
+            </span>
           </label>
           <label className="flex items-center space-x-3">
             <input
@@ -309,27 +327,49 @@ export default function CalendarIntegrationSection() {
               defaultChecked={true}
               className="w-4 h-4 text-primary border-border rounded focus:ring-primary focus:ring-2"
             />
-            <span className="text-card-foreground">Add 15-minute reminder notifications</span>
+            <span className="text-card-foreground">
+              Add 15-minute reminder notifications
+            </span>
           </label>
         </div>
       </div>
 
       {/* Message Display */}
       {message.content && (
-        <div className={`p-4 rounded-lg border-l-4 ${
-          message.type === 'success' 
-            ? 'bg-green-50 text-green-800 border-green-500 border border-green-200' 
-            : 'bg-red-50 text-red-800 border-red-500 border border-red-200'
-        }`} role="alert" aria-live="polite">
+        <div
+          className={`p-4 rounded-lg border-l-4 ${
+            message.type === 'success'
+              ? 'bg-green-50 text-green-800 border-green-500 border border-green-200'
+              : 'bg-red-50 text-red-800 border-red-500 border border-red-200'
+          }`}
+          role="alert"
+          aria-live="polite"
+        >
           <div className="flex items-start">
             <div className="flex-shrink-0">
               {message.type === 'success' ? (
-                <svg className="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                <svg
+                  className="w-5 h-5 text-green-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               ) : (
-                <svg className="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                <svg
+                  className="w-5 h-5 text-red-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               )}
             </div>

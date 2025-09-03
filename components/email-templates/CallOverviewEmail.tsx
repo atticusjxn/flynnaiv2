@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  Section,
-  Text,
-  Link,
-  Row,
-  Column,
-  Hr,
-} from '@react-email/components';
+import { Section, Text, Link, Row, Column, Hr } from '@react-email/components';
 import BaseEmailLayout from './BaseEmailLayout';
 import EventCard, { ExtractedEvent } from './EventCard';
 import { getIndustryConfiguration } from '@/lib/industry/configurations';
@@ -40,7 +33,9 @@ export default function CallOverviewEmail({
 }: CallOverviewEmailProps) {
   const industryConfig = getIndustryConfiguration(industry);
   const hasEvents = extractedEvents.length > 0;
-  const hasUrgentEvents = extractedEvents.some(e => e.urgency === 'emergency' || e.urgency === 'high');
+  const hasUrgentEvents = extractedEvents.some(
+    (e) => e.urgency === 'emergency' || e.urgency === 'high'
+  );
   const terminology = industryConfig.terminology;
 
   // Generate preview text
@@ -67,7 +62,7 @@ export default function CallOverviewEmail({
       {/* Call Summary Card */}
       <Section style={callSummaryCard}>
         <Text style={sectionTitle}>📞 Call Summary</Text>
-        
+
         <Row style={callInfoGrid}>
           <Column style={callInfoColumn}>
             <div style={callInfoItem}>
@@ -75,12 +70,10 @@ export default function CallOverviewEmail({
               <Text style={callInfoValue}>
                 {callSummary.callerName || 'Unknown Caller'}
               </Text>
-              <Text style={callInfoSubValue}>
-                {callSummary.callerPhone}
-              </Text>
+              <Text style={callInfoSubValue}>{callSummary.callerPhone}</Text>
             </div>
           </Column>
-          
+
           <Column style={callInfoColumn}>
             <div style={callInfoItem}>
               <Text style={callInfoLabel}>DURATION</Text>
@@ -89,7 +82,7 @@ export default function CallOverviewEmail({
               </Text>
             </div>
           </Column>
-          
+
           <Column style={callInfoColumn}>
             <div style={callInfoItem}>
               <Text style={callInfoLabel}>PROCESSED</Text>
@@ -105,7 +98,8 @@ export default function CallOverviewEmail({
           <Section style={transcriptionSection}>
             <Text style={transcriptionLabel}>Call Excerpt:</Text>
             <Text style={transcriptionText}>
-              "{transcriptionSnippet}{transcriptionSnippet.length >= 200 ? '...' : ''}"
+              "{transcriptionSnippet}
+              {transcriptionSnippet.length >= 200 ? '...' : ''}"
             </Text>
           </Section>
         )}
@@ -118,7 +112,8 @@ export default function CallOverviewEmail({
             🎯 {terminology.events_title} ({extractedEvents.length})
           </Text>
           <Text style={sectionSubtitle}>
-            AI has identified the following {terminology.appointment}s from your call:
+            AI has identified the following {terminology.appointment}s from your
+            call:
           </Text>
 
           {extractedEvents.map((event, index) => (
@@ -131,7 +126,7 @@ export default function CallOverviewEmail({
               callId={callId}
             />
           ))}
-          
+
           {/* Batch Actions */}
           {extractedEvents.length > 1 && (
             <Section style={batchActionsSection}>
@@ -140,7 +135,7 @@ export default function CallOverviewEmail({
                 <Column>
                   <Link
                     href={`${dashboardUrl}/events/batch?call=${callId}&action=confirm`}
-                    style={{...batchButton, ...confirmAllButton}}
+                    style={{ ...batchButton, ...confirmAllButton }}
                   >
                     ✓ Confirm All Appointments
                   </Link>
@@ -148,7 +143,7 @@ export default function CallOverviewEmail({
                 <Column>
                   <Link
                     href={`${dashboardUrl}/events/batch?call=${callId}&action=calendar`}
-                    style={{...batchButton, ...calendarButton}}
+                    style={{ ...batchButton, ...calendarButton }}
                   >
                     📅 Add to Calendar
                   </Link>
@@ -163,11 +158,13 @@ export default function CallOverviewEmail({
             No specific appointments were detected
           </Text>
           <Text style={noEventsText}>
-            The call has been processed and transcribed. While no concrete appointments 
-            were identified, you can review the full transcript and call details in your dashboard.
+            The call has been processed and transcribed. While no concrete
+            appointments were identified, you can review the full transcript and
+            call details in your dashboard.
           </Text>
           <Text style={noEventsSubtext}>
-            Common reasons: General inquiry, information request, or scheduling discussion without firm commitment.
+            Common reasons: General inquiry, information request, or scheduling
+            discussion without firm commitment.
           </Text>
         </Section>
       )}
@@ -181,7 +178,7 @@ export default function CallOverviewEmail({
           <Column>
             <Link
               href={`${dashboardUrl}/dashboard`}
-              style={{...mainActionButton, ...dashboardButton}}
+              style={{ ...mainActionButton, ...dashboardButton }}
             >
               📊 View Dashboard
             </Link>
@@ -189,19 +186,19 @@ export default function CallOverviewEmail({
           <Column>
             <Link
               href={`${dashboardUrl}/calls/${callId}`}
-              style={{...mainActionButton, ...transcriptButton}}
+              style={{ ...mainActionButton, ...transcriptButton }}
             >
               🎧 Full Transcript
             </Link>
           </Column>
         </Row>
-        
+
         {hasEvents && (
-          <Row style={{marginTop: '12px'}}>
+          <Row style={{ marginTop: '12px' }}>
             <Column>
               <Link
                 href={`${dashboardUrl}/calendar/sync?call=${callId}`}
-                style={{...mainActionButton, ...syncButton}}
+                style={{ ...mainActionButton, ...syncButton }}
               >
                 📅 Sync to Calendar
               </Link>
@@ -209,7 +206,7 @@ export default function CallOverviewEmail({
             <Column>
               <Link
                 href={`mailto:${userEmail}?subject=Re: ${terminology.appointment} Request&body=Hi, I received your ${terminology.appointment} request...`}
-                style={{...mainActionButton, ...emailButton}}
+                style={{ ...mainActionButton, ...emailButton }}
               >
                 📧 Reply to Caller
               </Link>
@@ -233,7 +230,9 @@ function formatDuration(seconds: number): string {
   if (seconds < 60) return `${seconds}s`;
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-  return remainingSeconds > 0 ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
+  return remainingSeconds > 0
+    ? `${minutes}m ${remainingSeconds}s`
+    : `${minutes}m`;
 }
 
 function formatTimestamp(timestamp: string): string {

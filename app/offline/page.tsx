@@ -48,7 +48,8 @@ export default function OfflinePage() {
             <>
               <h1 className="text-3xl font-bold mb-2">Connection Restored!</h1>
               <p className="text-blue-100 text-lg mb-6">
-                Your internet connection is back. You can now access all Flynn.ai features.
+                Your internet connection is back. You can now access all
+                Flynn.ai features.
               </p>
               <Button
                 onClick={handleGoToDashboard}
@@ -61,7 +62,8 @@ export default function OfflinePage() {
             <>
               <h1 className="text-3xl font-bold mb-2">You're Offline</h1>
               <p className="text-blue-100 text-lg mb-6">
-                Check your internet connection to access Flynn.ai's full features.
+                Check your internet connection to access Flynn.ai's full
+                features.
               </p>
               <Button
                 onClick={handleRetry}
@@ -107,7 +109,8 @@ export default function OfflinePage() {
 
           {/* Refresh Instructions */}
           <p className="text-xs text-blue-200 opacity-80 mt-6">
-            Flynn.ai works best with an active internet connection for AI processing and real-time updates.
+            Flynn.ai works best with an active internet connection for AI
+            processing and real-time updates.
           </p>
         </div>
       </div>

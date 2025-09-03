@@ -13,7 +13,7 @@ export const APP_CONFIG = {
 export const SUBSCRIPTION_TIERS = {
   TRIAL: 'trial',
   BASIC: 'basic',
-  PROFESSIONAL: 'professional', 
+  PROFESSIONAL: 'professional',
   ENTERPRISE: 'enterprise',
 } as const;
 
@@ -34,7 +34,7 @@ export const EVENT_STATUSES = {
 
 export const URGENCY_LEVELS = {
   LOW: 'low',
-  MEDIUM: 'medium', 
+  MEDIUM: 'medium',
   HIGH: 'high',
   EMERGENCY: 'emergency',
 } as const;
@@ -49,7 +49,7 @@ export const SUPPORTED_INDUSTRIES = {
   PLUMBING: 'plumbing',
   REAL_ESTATE: 'real_estate',
   LEGAL: 'legal',
-  MEDICAL: 'medical', 
+  MEDICAL: 'medical',
   SALES: 'sales',
   CONSULTING: 'consulting',
   GENERAL: 'general_services',
@@ -71,7 +71,7 @@ export const EMAIL_CONFIG = {
 export const ROUTES = {
   HOME: '/',
   DASHBOARD: '/dashboard',
-  CALLS: '/calls', 
+  CALLS: '/calls',
   EVENTS: '/events',
   CALENDAR: '/calendar',
   SETTINGS: '/settings',
@@ -90,20 +90,25 @@ export const AUSTRALIAN_INDUSTRY_CONFIG = {
       job: 'job',
       urgency: {
         emergency: 'emergency',
-        urgent: 'urgent', 
+        urgent: 'urgent',
         routine: 'routine',
-        maintenance: 'maintenance'
-      }
+        maintenance: 'maintenance',
+      },
     },
     businessHours: '8:00 AM - 5:00 PM',
     averageCallDuration: 90,
-    commonServices: ['blocked drains', 'hot water systems', 'gas fitting', 'emergency repairs'],
+    commonServices: [
+      'blocked drains',
+      'hot water systems',
+      'gas fitting',
+      'emergency repairs',
+    ],
     australianContext: {
       regulations: 'Licensed tradesperson required',
       peakSeason: 'Summer (Dec-Feb)',
       averageRate: '$120-180/hour',
-      emergencyRate: '$200-300/hour'
-    }
+      emergencyRate: '$200-300/hour',
+    },
   },
   real_estate: {
     displayName: 'Real Estate',
@@ -115,18 +120,23 @@ export const AUSTRALIAN_INDUSTRY_CONFIG = {
       urgency: {
         hot: 'hot prospect',
         warm: 'interested',
-        cold: 'casual inquiry'
-      }
+        cold: 'casual inquiry',
+      },
     },
     businessHours: '9:00 AM - 6:00 PM',
     averageCallDuration: 45,
-    commonServices: ['property showings', 'market appraisals', 'rental inspections', 'settlement'],
+    commonServices: [
+      'property showings',
+      'market appraisals',
+      'rental inspections',
+      'settlement',
+    ],
     australianContext: {
       regulations: 'REI licensed',
       peakSeason: 'Spring (Sep-Nov)',
       averageCommission: '2.5-3.5%',
-      marketCycle: 'Varies by state'
-    }
+      marketCycle: 'Varies by state',
+    },
   },
   legal: {
     displayName: 'Legal Services',
@@ -139,18 +149,23 @@ export const AUSTRALIAN_INDUSTRY_CONFIG = {
         critical: 'critical',
         urgent: 'urgent',
         routine: 'routine',
-        research: 'research'
-      }
+        research: 'research',
+      },
     },
     businessHours: '9:00 AM - 5:00 PM',
     averageCallDuration: 60,
-    commonServices: ['initial consultation', 'contract review', 'court representation', 'conveyancing'],
+    commonServices: [
+      'initial consultation',
+      'contract review',
+      'court representation',
+      'conveyancing',
+    ],
     australianContext: {
       regulations: 'Australian practising certificate',
       billing: 'Usually 6-minute increments',
       averageRate: '$300-800/hour',
-      courtHours: '10:00 AM - 4:00 PM'
-    }
+      courtHours: '10:00 AM - 4:00 PM',
+    },
   },
   medical: {
     displayName: 'Medical Practice',
@@ -163,8 +178,8 @@ export const AUSTRALIAN_INDUSTRY_CONFIG = {
         emergency: 'emergency',
         urgent: 'urgent',
         routine: 'routine',
-        followup: 'follow-up'
-      }
+        followup: 'follow-up',
+      },
     },
     businessHours: '8:00 AM - 5:00 PM',
     averageCallDuration: 30,
@@ -173,9 +188,9 @@ export const AUSTRALIAN_INDUSTRY_CONFIG = {
       regulations: 'AHPRA registered',
       medicare: 'Medicare benefits available',
       bulkBilling: 'Bulk billing available',
-      privateHealth: 'Private health cover accepted'
-    }
-  }
+      privateHealth: 'Private health cover accepted',
+    },
+  },
 } as const;
 
 // Australian Business Context
@@ -183,32 +198,32 @@ export const AUSTRALIAN_BUSINESS_CONTEXT = {
   workingHours: {
     standard: '9:00 AM - 5:00 PM',
     extended: '8:00 AM - 6:00 PM',
-    weekend: 'Saturday mornings (emergency services)'
+    weekend: 'Saturday mornings (emergency services)',
   },
   publicHolidays: [
     'Australia Day',
-    'Easter Weekend', 
+    'Easter Weekend',
     'ANZAC Day',
-    'Queen\'s Birthday',
-    'Christmas Period'
+    "Queen's Birthday",
+    'Christmas Period',
   ],
   timeZones: {
     sydney: 'Australia/Sydney',
-    melbourne: 'Australia/Melbourne', 
+    melbourne: 'Australia/Melbourne',
     brisbane: 'Australia/Brisbane',
     perth: 'Australia/Perth',
-    adelaide: 'Australia/Adelaide'
+    adelaide: 'Australia/Adelaide',
   },
   businessRegistration: {
     abn: 'ABN required for business',
     acn: 'ACN for companies',
     gst: 'GST registration (if >$75k)',
-    insurance: 'Public liability recommended'
+    insurance: 'Public liability recommended',
   },
   paymentTerms: {
     standard: '30 days',
     tradies: '14 days',
     professional: '30 days',
-    government: '30-60 days'
-  }
+    government: '30-60 days',
+  },
 } as const;

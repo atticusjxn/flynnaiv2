@@ -6,13 +6,12 @@ const openai = new OpenAI({
 });
 
 export class BusinessCallDetection {
-  
   /**
    * Determines if a call transcription represents a business-related conversation
    * vs a personal call that should not be processed
    */
   async detectBusinessCall(
-    transcription: string, 
+    transcription: string,
     userIndustry?: string,
     userCompanyName?: string
   ): Promise<{
@@ -21,18 +20,19 @@ export class BusinessCallDetection {
     reasoning: string;
     callType: string;
   }> {
-    
     if (!transcription || transcription.length < 30) {
       return {
         isBusinessCall: false,
         confidence: 0.1,
         reasoning: 'Transcription too short to analyze',
-        callType: 'unknown'
+        callType: 'unknown',
       };
     }
 
-    const industryContext = userIndustry ? this.getIndustryContext(userIndustry) : '';
-    
+    const industryContext = userIndustry
+      ? this.getIndustryContext(userIndustry)
+      : '';
+
     const systemPrompt = `You are Flynn.ai's business call detection system. Analyze phone call transcriptions to determine if they are business-related conversations that should be processed for appointment scheduling.
 
 BUSINESS CALL INDICATORS:
@@ -69,18 +69,18 @@ Respond with JSON only:
         model: 'gpt-4',
         messages: [
           { role: 'system', content: systemPrompt },
-          { 
-            role: 'user', 
-            content: `Analyze this call transcription:\n\n${transcription}\n\nCompany: ${userCompanyName || 'Unknown'}\nIndustry: ${userIndustry || 'Unknown'}` 
-          }
+          {
+            role: 'user',
+            content: `Analyze this call transcription:\n\n${transcription}\n\nCompany: ${userCompanyName || 'Unknown'}\nIndustry: ${userIndustry || 'Unknown'}`,
+          },
         ],
         temperature: 0.1, // Low temperature for consistent classification
         max_tokens: 200,
-        response_format: { type: "json_object" }
+        response_format: { type: 'json_object' },
       });
 
       const result = JSON.parse(response.choices[0].message.content || '{}');
-      
+
       // Validate response format
       if (typeof result.isBusinessCall !== 'boolean') {
         throw new Error('Invalid AI response format');
@@ -90,12 +90,11 @@ Respond with JSON only:
         isBusinessCall: result.isBusinessCall,
         confidence: Math.max(0, Math.min(1, result.confidence || 0.5)),
         reasoning: result.reasoning || 'No reasoning provided',
-        callType: result.callType || 'unknown'
+        callType: result.callType || 'unknown',
       };
-
     } catch (error) {
       console.error('Business call detection failed:', error);
-      
+
       // Fallback to keyword-based detection
       return this.fallbackBusinessDetection(transcription, userIndustry);
     }
@@ -163,19 +162,25 @@ Business calls typically involve:
 - Follow-up calls with prospects
 - Deal negotiations and closing
 - Customer relationship management
-Personal calls would be family/friends, NOT prospects or customers.`
+Personal calls would be family/friends, NOT prospects or customers.`,
     };
 
-    return contexts[industry as keyof typeof contexts] || `
+    return (
+      contexts[industry as keyof typeof contexts] ||
+      `
 USER INDUSTRY: ${industry}
 Business calls typically involve customers, clients, or prospects discussing services, products, appointments, or professional matters.
-Personal calls would be family/friends having social conversations.`;
+Personal calls would be family/friends having social conversations.`
+    );
   }
 
   /**
    * Fallback keyword-based business detection when AI fails
    */
-  private fallbackBusinessDetection(transcription: string, userIndustry?: string): {
+  private fallbackBusinessDetection(
+    transcription: string,
+    userIndustry?: string
+  ): {
     isBusinessCall: boolean;
     confidence: number;
     reasoning: string;
@@ -183,35 +188,96 @@ Personal calls would be family/friends having social conversations.`;
   } {
     const businessKeywords = [
       // Universal business terms
-      'quote', 'service', 'appointment', 'booking', 'estimate', 'consultation',
-      'repair', 'fix', 'install', 'problem', 'issue', 'help', 'urgent',
-      'schedule', 'available', 'price', 'cost', 'how much', 'when can you',
-      
+      'quote',
+      'service',
+      'appointment',
+      'booking',
+      'estimate',
+      'consultation',
+      'repair',
+      'fix',
+      'install',
+      'problem',
+      'issue',
+      'help',
+      'urgent',
+      'schedule',
+      'available',
+      'price',
+      'cost',
+      'how much',
+      'when can you',
+
       // Industry-specific terms
-      'plumber', 'electrician', 'hvac', 'heating', 'cooling', 'leak', 'drain',
-      'property', 'house', 'home', 'real estate', 'buy', 'sell', 'rent',
-      'lawyer', 'legal', 'case', 'court', 'contract', 'advice',
-      'doctor', 'appointment', 'medical', 'patient', 'health', 'treatment',
-      'business', 'company', 'client', 'customer', 'meeting', 'project'
+      'plumber',
+      'electrician',
+      'hvac',
+      'heating',
+      'cooling',
+      'leak',
+      'drain',
+      'property',
+      'house',
+      'home',
+      'real estate',
+      'buy',
+      'sell',
+      'rent',
+      'lawyer',
+      'legal',
+      'case',
+      'court',
+      'contract',
+      'advice',
+      'doctor',
+      'appointment',
+      'medical',
+      'patient',
+      'health',
+      'treatment',
+      'business',
+      'company',
+      'client',
+      'customer',
+      'meeting',
+      'project',
     ];
 
     const personalKeywords = [
-      'family', 'friend', 'birthday', 'party', 'dinner', 'movie', 'weekend',
-      'vacation', 'holiday', 'personal', 'social', 'chat', 'catch up',
-      'love you', 'miss you', 'how are you', 'what are you doing'
+      'family',
+      'friend',
+      'birthday',
+      'party',
+      'dinner',
+      'movie',
+      'weekend',
+      'vacation',
+      'holiday',
+      'personal',
+      'social',
+      'chat',
+      'catch up',
+      'love you',
+      'miss you',
+      'how are you',
+      'what are you doing',
     ];
 
     const businessScore = this.countKeywords(transcription, businessKeywords);
     const personalScore = this.countKeywords(transcription, personalKeywords);
 
     const isBusinessCall = businessScore > personalScore && businessScore > 0;
-    const confidence = Math.min(0.8, (businessScore - personalScore) / Math.max(businessScore + personalScore, 1));
+    const confidence = Math.min(
+      0.8,
+      (businessScore - personalScore) /
+        Math.max(businessScore + personalScore, 1)
+    );
 
     return {
       isBusinessCall,
       confidence: Math.max(0.1, confidence),
       reasoning: `Fallback keyword detection: ${businessScore} business keywords, ${personalScore} personal keywords`,
-      callType: isBusinessCall ? 'unknown_business' : 'personal'
+      callType: isBusinessCall ? 'unknown_business' : 'personal',
     };
   }
 
@@ -228,7 +294,10 @@ Personal calls would be family/friends having social conversations.`;
   /**
    * Get call statistics for analytics
    */
-  async getCallAnalytics(userId: string, days: number = 30): Promise<{
+  async getCallAnalytics(
+    userId: string,
+    days: number = 30
+  ): Promise<{
     totalCalls: number;
     businessCalls: number;
     personalCalls: number;
@@ -242,7 +311,7 @@ Personal calls would be family/friends having social conversations.`;
       businessCalls: 0,
       personalCalls: 0,
       averageConfidence: 0,
-      callTypes: {}
+      callTypes: {},
     };
   }
 }

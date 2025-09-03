@@ -5,10 +5,13 @@ import { createClient } from '@/utils/supabase/server';
 export async function GET(request: NextRequest) {
   try {
     const supabase = createClient();
-    
+
     // Get authenticated user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -23,7 +26,10 @@ export async function GET(request: NextRequest) {
     // Handle case where user record doesn't exist yet - return default progress
     if (error && error.code !== 'PGRST116') {
       console.error('Error fetching onboarding progress:', error);
-      return NextResponse.json({ error: 'Failed to fetch progress' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Failed to fetch progress' },
+        { status: 500 }
+      );
     }
 
     // If no user record exists, return default onboarding state
@@ -48,7 +54,10 @@ export async function GET(request: NextRequest) {
       step3_ai_processing: !!(data?.settings as any)?.ai_processing_enabled,
     };
 
-    const completed = progress.step1_industry && progress.step2_phone_setup && progress.step3_ai_processing;
+    const completed =
+      progress.step1_industry &&
+      progress.step2_phone_setup &&
+      progress.step3_ai_processing;
 
     return NextResponse.json({
       success: true,
@@ -61,22 +70,27 @@ export async function GET(request: NextRequest) {
         fullName: data?.full_name,
       },
     });
-
   } catch (error) {
     console.error('Onboarding progress fetch error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
     const { progress } = await request.json();
-    
+
     const supabase = createClient();
-    
+
     // Get authenticated user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -90,7 +104,7 @@ export async function POST(request: NextRequest) {
 
     // Update user settings based on progress
     const updateData: any = {
-      updated_at: new Date().toISOString()
+      updated_at: new Date().toISOString(),
     };
 
     // Update industry if provided
@@ -107,7 +121,7 @@ export async function POST(request: NextRequest) {
     if (progress.aiProcessingEnabled !== undefined) {
       updateData.settings = {
         ...((userData?.settings as any) || {}),
-        ai_processing_enabled: progress.aiProcessingEnabled
+        ai_processing_enabled: progress.aiProcessingEnabled,
       };
     }
 
@@ -118,7 +132,10 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error('Error updating onboarding progress:', error);
-      return NextResponse.json({ error: 'Failed to update progress' }, { status: 500 });
+      return NextResponse.json(
+        { error: 'Failed to update progress' },
+        { status: 500 }
+      );
     }
 
     // Additional updates are handled above in the main update
@@ -128,12 +145,14 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'Onboarding progress updated successfully'
+      message: 'Onboarding progress updated successfully',
     });
-
   } catch (error) {
     console.error('Onboarding progress update error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }
 
@@ -141,7 +160,7 @@ export async function POST(request: NextRequest) {
 async function trackOnboardingMilestone(userId: string, progress: any) {
   try {
     const supabase = createClient();
-    
+
     // Determine current milestone
     let milestone = '';
     if (progress.completed) {
@@ -157,14 +176,12 @@ async function trackOnboardingMilestone(userId: string, progress: any) {
     }
 
     if (milestone) {
-      await supabase
-        .from('user_events')
-        .insert({
-          user_id: userId,
-          event_type: milestone,
-          event_data: progress,
-          created_at: new Date().toISOString()
-        });
+      await supabase.from('user_events').insert({
+        user_id: userId,
+        event_type: milestone,
+        event_data: progress,
+        created_at: new Date().toISOString(),
+      });
     }
   } catch (error) {
     console.error('Failed to track onboarding milestone:', error);

@@ -31,71 +31,71 @@ const TEMPLATE_VARIABLES: TemplateVariable[] = [
     label: 'Customer Name',
     description: 'Name of the person who called',
     example: 'John Smith',
-    required: true
+    required: true,
   },
   {
     key: '{{customer_phone}}',
     label: 'Customer Phone',
     description: 'Phone number of the caller',
     example: '+61 4XX XXX XXX',
-    required: false
+    required: false,
   },
   {
     key: '{{call_duration}}',
     label: 'Call Duration',
     description: 'Length of the phone call',
     example: '5 minutes 32 seconds',
-    required: false
+    required: false,
   },
   {
     key: '{{appointment_type}}',
     label: 'Appointment Type',
     description: 'Type of appointment scheduled',
     example: 'Service Call',
-    required: true
+    required: true,
   },
   {
     key: '{{appointment_date}}',
     label: 'Appointment Date',
     description: 'Scheduled date for the appointment',
     example: 'Tomorrow, March 15th',
-    required: true
+    required: true,
   },
   {
     key: '{{appointment_time}}',
     label: 'Appointment Time',
     description: 'Scheduled time for the appointment',
     example: '2:00 PM',
-    required: true
+    required: true,
   },
   {
     key: '{{location}}',
     label: 'Location',
     description: 'Address or location for the appointment',
     example: '123 Main Street, Sydney NSW',
-    required: false
+    required: false,
   },
   {
     key: '{{urgency_level}}',
     label: 'Urgency Level',
     description: 'Priority level of the appointment',
     example: 'HIGH PRIORITY',
-    required: false
+    required: false,
   },
   {
     key: '{{call_summary}}',
     label: 'Call Summary',
     description: 'AI-generated summary of the conversation',
     example: 'Customer reported a leaking faucet...',
-    required: true
+    required: true,
   },
   {
     key: '{{company_name}}',
     label: 'Company Name',
     description: 'Your business name',
     example: 'Smith Plumbing Services',
-    required: true
-  }
+    required: true,
+  },
 ];
 
 interface TemplateEditorProps {
@@ -105,27 +105,40 @@ interface TemplateEditorProps {
   onCancel: () => void;
 }
 
-function TemplateEditor({ template, variables, onSave, onCancel }: TemplateEditorProps) {
+function TemplateEditor({
+  template,
+  variables,
+  onSave,
+  onCancel,
+}: TemplateEditorProps) {
   const [editedTemplate, setEditedTemplate] = useState<EmailTemplate>(template);
-  const [activeTab, setActiveTab] = useState<'design' | 'preview' | 'variables'>('design');
+  const [activeTab, setActiveTab] = useState<
+    'design' | 'preview' | 'variables'
+  >('design');
   const [insertVariable, setInsertVariable] = useState<string>('');
 
   const handleInsertVariable = (variable: string) => {
     if (activeTab === 'design') {
-      const textarea = document.getElementById('html-editor') as HTMLTextAreaElement;
+      const textarea = document.getElementById(
+        'html-editor'
+      ) as HTMLTextAreaElement;
       if (textarea) {
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
-        const newContent = editedTemplate.htmlContent.substring(0, start) + 
-                          variable + 
-                          editedTemplate.htmlContent.substring(end);
-        
-        setEditedTemplate(prev => ({ ...prev, htmlContent: newContent }));
-        
+        const newContent =
+          editedTemplate.htmlContent.substring(0, start) +
+          variable +
+          editedTemplate.htmlContent.substring(end);
+
+        setEditedTemplate((prev) => ({ ...prev, htmlContent: newContent }));
+
         // Focus back to textarea and position cursor
         setTimeout(() => {
           textarea.focus();
-          textarea.setSelectionRange(start + variable.length, start + variable.length);
+          textarea.setSelectionRange(
+            start + variable.length,
+            start + variable.length
+          );
         }, 10);
       }
     }
@@ -133,13 +146,16 @@ function TemplateEditor({ template, variables, onSave, onCancel }: TemplateEdito
 
   const generatePreview = () => {
     let preview = editedTemplate.htmlContent;
-    
+
     // Replace variables with example data
-    variables.forEach(variable => {
+    variables.forEach((variable) => {
       const regex = new RegExp(variable.key.replace(/[{}]/g, '\\$&'), 'g');
-      preview = preview.replace(regex, `<span style="background: #fef3c7; padding: 2px 4px; border-radius: 4px; font-weight: 500;">${variable.example}</span>`);
+      preview = preview.replace(
+        regex,
+        `<span style="background: #fef3c7; padding: 2px 4px; border-radius: 4px; font-weight: 500;">${variable.example}</span>`
+      );
     });
-    
+
     return preview;
   };
 
@@ -166,8 +182,18 @@ function TemplateEditor({ template, variables, onSave, onCancel }: TemplateEdito
             onClick={onCancel}
             className="w-8 h-8 rounded-lg bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors"
           >
-            <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-5 h-5 text-muted-foreground"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
@@ -178,7 +204,7 @@ function TemplateEditor({ template, variables, onSave, onCancel }: TemplateEdito
             {[
               { id: 'design', label: 'Design', icon: '🎨' },
               { id: 'preview', label: 'Preview', icon: '👀' },
-              { id: 'variables', label: 'Variables', icon: '🔧' }
+              { id: 'variables', label: 'Variables', icon: '🔧' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -210,7 +236,12 @@ function TemplateEditor({ template, variables, onSave, onCancel }: TemplateEdito
                   <input
                     type="text"
                     value={editedTemplate.subject}
-                    onChange={(e) => setEditedTemplate(prev => ({ ...prev, subject: e.target.value }))}
+                    onChange={(e) =>
+                      setEditedTemplate((prev) => ({
+                        ...prev,
+                        subject: e.target.value,
+                      }))
+                    }
                     className="w-full px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
                   />
                 </div>
@@ -222,7 +253,12 @@ function TemplateEditor({ template, variables, onSave, onCancel }: TemplateEdito
                   <textarea
                     id="html-editor"
                     value={editedTemplate.htmlContent}
-                    onChange={(e) => setEditedTemplate(prev => ({ ...prev, htmlContent: e.target.value }))}
+                    onChange={(e) =>
+                      setEditedTemplate((prev) => ({
+                        ...prev,
+                        htmlContent: e.target.value,
+                      }))
+                    }
                     className="w-full h-96 px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary font-mono text-sm resize-none"
                     placeholder="Enter your HTML template content here..."
                   />
@@ -231,7 +267,9 @@ function TemplateEditor({ template, variables, onSave, onCancel }: TemplateEdito
 
               {/* Variable Sidebar */}
               <div className="w-80 bg-muted/20 border-l border-border p-4 space-y-4">
-                <h4 className="font-medium text-foreground">Available Variables</h4>
+                <h4 className="font-medium text-foreground">
+                  Available Variables
+                </h4>
                 <div className="space-y-2 max-h-96 overflow-y-auto">
                   {variables.map((variable) => (
                     <button
@@ -269,7 +307,7 @@ function TemplateEditor({ template, variables, onSave, onCancel }: TemplateEdito
                   <div className="text-sm text-gray-600">Subject:</div>
                   <div className="font-medium">{editedTemplate.subject}</div>
                 </div>
-                <div 
+                <div
                   className="p-6 prose prose-sm max-w-none"
                   dangerouslySetInnerHTML={{ __html: generatePreview() }}
                 />
@@ -285,7 +323,10 @@ function TemplateEditor({ template, variables, onSave, onCancel }: TemplateEdito
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {variables.map((variable) => (
-                    <div key={variable.key} className="bg-card border border-border rounded-lg p-4">
+                    <div
+                      key={variable.key}
+                      className="bg-card border border-border rounded-lg p-4"
+                    >
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-medium text-foreground">
                           {variable.label}
@@ -300,13 +341,17 @@ function TemplateEditor({ template, variables, onSave, onCancel }: TemplateEdito
                         {variable.description}
                       </p>
                       <div className="space-y-1">
-                        <div className="text-xs text-muted-foreground">Variable:</div>
+                        <div className="text-xs text-muted-foreground">
+                          Variable:
+                        </div>
                         <code className="text-xs bg-muted px-2 py-1 rounded font-mono">
                           {variable.key}
                         </code>
                       </div>
                       <div className="space-y-1 mt-2">
-                        <div className="text-xs text-muted-foreground">Example:</div>
+                        <div className="text-xs text-muted-foreground">
+                          Example:
+                        </div>
                         <div className="text-sm text-foreground">
                           {variable.example}
                         </div>
@@ -323,16 +368,20 @@ function TemplateEditor({ template, variables, onSave, onCancel }: TemplateEdito
         <div className="flex items-center justify-between p-6 border-t border-border">
           <div className="flex items-center space-x-2 text-sm text-muted-foreground">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                clipRule="evenodd"
+              />
             </svg>
             <span>Use variables to personalize emails for each customer</span>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             <Button onClick={onCancel} variant="outline">
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={() => onSave(editedTemplate)}
               className="bg-green-600 hover:bg-green-700 text-white"
             >
@@ -352,13 +401,22 @@ interface TemplateCardProps {
   onDelete: (id: string) => void;
 }
 
-function TemplateCard({ template, onEdit, onDuplicate, onDelete }: TemplateCardProps) {
+function TemplateCard({
+  template,
+  onEdit,
+  onDuplicate,
+  onDelete,
+}: TemplateCardProps) {
   const getCategoryInfo = (category: string) => {
     const configs = {
       call_summary: { label: 'Call Summary', color: '#6366f1', icon: '📞' },
-      event_confirmation: { label: 'Event Confirmation', color: '#10b981', icon: '✅' },
+      event_confirmation: {
+        label: 'Event Confirmation',
+        color: '#10b981',
+        icon: '✅',
+      },
       follow_up: { label: 'Follow-up', color: '#f59e0b', icon: '📧' },
-      emergency: { label: 'Emergency', color: '#dc2626', icon: '🚨' }
+      emergency: { label: 'Emergency', color: '#dc2626', icon: '🚨' },
     };
     return (configs as any)[category] || configs.call_summary;
   };
@@ -375,7 +433,7 @@ function TemplateCard({ template, onEdit, onDuplicate, onDelete }: TemplateCardP
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <div 
+          <div
             className="w-3 h-3 rounded-full"
             style={{ backgroundColor: categoryInfo.color }}
           />
@@ -388,7 +446,7 @@ function TemplateCard({ template, onEdit, onDuplicate, onDelete }: TemplateCardP
             </span>
           )}
         </div>
-        
+
         <span className="text-xs text-muted-foreground">
           {categoryInfo.icon} {categoryInfo.label}
         </span>
@@ -404,7 +462,9 @@ function TemplateCard({ template, onEdit, onDuplicate, onDelete }: TemplateCardP
 
       {/* Content Preview */}
       <div className="mb-4">
-        <div className="text-xs text-muted-foreground mb-1">Content Preview:</div>
+        <div className="text-xs text-muted-foreground mb-1">
+          Content Preview:
+        </div>
         <div className="text-sm text-muted-foreground line-clamp-3">
           {template.htmlContent.replace(/<[^>]*>/g, '').substring(0, 150)}...
         </div>
@@ -417,7 +477,7 @@ function TemplateCard({ template, onEdit, onDuplicate, onDelete }: TemplateCardP
         </div>
         <div className="flex flex-wrap gap-1">
           {template.variables.slice(0, 4).map((variable, index) => (
-            <span 
+            <span
               key={index}
               className="text-xs bg-muted px-2 py-1 rounded font-mono"
             >
@@ -442,7 +502,7 @@ function TemplateCard({ template, onEdit, onDuplicate, onDelete }: TemplateCardP
         >
           Edit
         </Button>
-        
+
         <Button
           onClick={() => onDuplicate(template)}
           variant="outline"
@@ -451,7 +511,7 @@ function TemplateCard({ template, onEdit, onDuplicate, onDelete }: TemplateCardP
         >
           Duplicate
         </Button>
-        
+
         <Button
           onClick={() => onDelete(template.id)}
           variant="outline"
@@ -471,9 +531,14 @@ interface EmailTemplateConfigurationProps {
   onChange: () => void;
 }
 
-export default function EmailTemplateConfiguration({ industry, onChange }: EmailTemplateConfigurationProps) {
+export default function EmailTemplateConfiguration({
+  industry,
+  onChange,
+}: EmailTemplateConfigurationProps) {
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
-  const [editingTemplate, setEditingTemplate] = useState<EmailTemplate | null>(null);
+  const [editingTemplate, setEditingTemplate] = useState<EmailTemplate | null>(
+    null
+  );
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   // Initialize with default templates
@@ -482,7 +547,8 @@ export default function EmailTemplateConfiguration({ industry, onChange }: Email
       {
         id: 'default_call_summary',
         name: 'Default Call Summary',
-        subject: '{{company_name}} - {{appointment_type}} Scheduled with {{customer_name}}',
+        subject:
+          '{{company_name}} - {{appointment_type}} Scheduled with {{customer_name}}',
         htmlContent: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
   <div style="border-bottom: 3px solid ${industry.colors.primary}; padding-bottom: 20px; margin-bottom: 30px;">
@@ -517,9 +583,18 @@ export default function EmailTemplateConfiguration({ industry, onChange }: Email
   </div>
 </div>`,
         textContent: 'Text version of the email...',
-        variables: ['{{customer_name}}', '{{company_name}}', '{{appointment_type}}', '{{appointment_date}}', '{{appointment_time}}', '{{location}}', '{{urgency_level}}', '{{call_summary}}'],
+        variables: [
+          '{{customer_name}}',
+          '{{company_name}}',
+          '{{appointment_type}}',
+          '{{appointment_date}}',
+          '{{appointment_time}}',
+          '{{location}}',
+          '{{urgency_level}}',
+          '{{call_summary}}',
+        ],
         isDefault: true,
-        category: 'call_summary'
+        category: 'call_summary',
       },
       {
         id: 'emergency_template',
@@ -553,10 +628,18 @@ export default function EmailTemplateConfiguration({ industry, onChange }: Email
   </div>
 </div>`,
         textContent: 'Emergency text version...',
-        variables: ['{{customer_name}}', '{{customer_phone}}', '{{appointment_type}}', '{{appointment_time}}', '{{location}}', '{{urgency_level}}', '{{call_summary}}'],
+        variables: [
+          '{{customer_name}}',
+          '{{customer_phone}}',
+          '{{appointment_type}}',
+          '{{appointment_time}}',
+          '{{location}}',
+          '{{urgency_level}}',
+          '{{call_summary}}',
+        ],
         isDefault: false,
-        category: 'emergency'
-      }
+        category: 'emergency',
+      },
     ];
 
     setTemplates(defaultTemplates);
@@ -567,8 +650,8 @@ export default function EmailTemplateConfiguration({ industry, onChange }: Email
   };
 
   const handleSave = (updatedTemplate: EmailTemplate) => {
-    setTemplates(prev => 
-      prev.map(t => t.id === updatedTemplate.id ? updatedTemplate : t)
+    setTemplates((prev) =>
+      prev.map((t) => (t.id === updatedTemplate.id ? updatedTemplate : t))
     );
     setEditingTemplate(null);
     onChange();
@@ -579,14 +662,14 @@ export default function EmailTemplateConfiguration({ industry, onChange }: Email
       ...template,
       id: `${template.id}_copy_${Date.now()}`,
       name: `${template.name} (Copy)`,
-      isDefault: false
+      isDefault: false,
     };
-    setTemplates(prev => [...prev, newTemplate]);
+    setTemplates((prev) => [...prev, newTemplate]);
     onChange();
   };
 
   const handleDelete = (id: string) => {
-    setTemplates(prev => prev.filter(t => t.id !== id));
+    setTemplates((prev) => prev.filter((t) => t.id !== id));
     onChange();
   };
 
@@ -602,21 +685,39 @@ export default function EmailTemplateConfiguration({ industry, onChange }: Email
       textContent: '',
       variables: [],
       isDefault: false,
-      category: 'call_summary'
+      category: 'call_summary',
     };
     setEditingTemplate(newTemplate);
   };
 
-  const filteredTemplates = templates.filter(template => 
-    selectedCategory === 'all' || template.category === selectedCategory
+  const filteredTemplates = templates.filter(
+    (template) =>
+      selectedCategory === 'all' || template.category === selectedCategory
   );
 
   const categories = [
     { id: 'all', label: 'All Templates', count: templates.length },
-    { id: 'call_summary', label: 'Call Summary', count: templates.filter(t => t.category === 'call_summary').length },
-    { id: 'event_confirmation', label: 'Confirmations', count: templates.filter(t => t.category === 'event_confirmation').length },
-    { id: 'follow_up', label: 'Follow-ups', count: templates.filter(t => t.category === 'follow_up').length },
-    { id: 'emergency', label: 'Emergency', count: templates.filter(t => t.category === 'emergency').length }
+    {
+      id: 'call_summary',
+      label: 'Call Summary',
+      count: templates.filter((t) => t.category === 'call_summary').length,
+    },
+    {
+      id: 'event_confirmation',
+      label: 'Confirmations',
+      count: templates.filter((t) => t.category === 'event_confirmation')
+        .length,
+    },
+    {
+      id: 'follow_up',
+      label: 'Follow-ups',
+      count: templates.filter((t) => t.category === 'follow_up').length,
+    },
+    {
+      id: 'emergency',
+      label: 'Emergency',
+      count: templates.filter((t) => t.category === 'emergency').length,
+    },
   ];
 
   return (
@@ -628,13 +729,27 @@ export default function EmailTemplateConfiguration({ industry, onChange }: Email
             Email Template Configuration
           </h3>
           <p className="text-muted-foreground mt-1">
-            Customize email templates to match your brand and communication style
+            Customize email templates to match your brand and communication
+            style
           </p>
         </div>
-        
-        <Button onClick={handleCreateNew} className="flex items-center space-x-2">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+
+        <Button
+          onClick={handleCreateNew}
+          className="flex items-center space-x-2"
+        >
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+            />
           </svg>
           <span>Create Template</span>
         </Button>
@@ -642,7 +757,7 @@ export default function EmailTemplateConfiguration({ industry, onChange }: Email
 
       {/* Category Filter */}
       <div className="flex items-center space-x-1 bg-muted/30 rounded-lg p-1 w-fit">
-        {categories.map(category => (
+        {categories.map((category) => (
           <button
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
@@ -654,9 +769,7 @@ export default function EmailTemplateConfiguration({ industry, onChange }: Email
             )}
           >
             {category.label}
-            <span className="ml-1 text-xs opacity-60">
-              ({category.count})
-            </span>
+            <span className="ml-1 text-xs opacity-60">({category.count})</span>
           </button>
         ))}
       </div>
@@ -682,8 +795,18 @@ export default function EmailTemplateConfiguration({ industry, onChange }: Email
           animate={{ opacity: 1 }}
           className="text-center py-12 bg-muted/30 rounded-xl border-2 border-dashed border-border"
         >
-          <svg className="w-12 h-12 text-muted-foreground mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          <svg
+            className="w-12 h-12 text-muted-foreground mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+            />
           </svg>
           <h4 className="text-lg font-medium text-foreground mb-2">
             No templates in this category
@@ -691,9 +814,7 @@ export default function EmailTemplateConfiguration({ industry, onChange }: Email
           <p className="text-muted-foreground mb-4">
             Create your first template to get started
           </p>
-          <Button onClick={handleCreateNew}>
-            Create Template
-          </Button>
+          <Button onClick={handleCreateNew}>Create Template</Button>
         </motion.div>
       )}
 

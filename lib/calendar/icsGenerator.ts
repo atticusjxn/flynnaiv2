@@ -16,7 +16,9 @@ export interface ICSEventData {
 /**
  * Generate ICS file content for calendar attachment
  */
-export async function generateICSFile(eventData: ICSEventData): Promise<string> {
+export async function generateICSFile(
+  eventData: ICSEventData
+): Promise<string> {
   const {
     title,
     description,
@@ -26,16 +28,16 @@ export async function generateICSFile(eventData: ICSEventData): Promise<string> 
     organizer,
     attendee,
     url,
-    uid
+    uid,
   } = eventData;
 
   // Generate unique UID if not provided
   const eventUid = uid || generateUID(title, startTime);
-  
+
   // Calculate start and end times
   const startDate = new Date(startTime);
   const endDate = new Date(startDate.getTime() + duration * 60 * 1000);
-  
+
   // Format dates for ICS (YYYYMMDDTHHMMSSZ)
   const formatICSDate = (date: Date): string => {
     return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
@@ -99,26 +101,31 @@ export async function generateICSFile(eventData: ICSEventData): Promise<string> 
   icsLines.push('STATUS:TENTATIVE');
   icsLines.push('CLASS:PUBLIC');
   icsLines.push('SEQUENCE:0');
-  
+
   // Set priority based on urgency
   const getPriority = (urgency?: string): number => {
     switch (urgency) {
-      case 'emergency': return 1;
-      case 'high': return 2;
-      case 'medium': return 5;
-      case 'low': return 9;
-      default: return 5;
+      case 'emergency':
+        return 1;
+      case 'high':
+        return 2;
+      case 'medium':
+        return 5;
+      case 'low':
+        return 9;
+      default:
+        return 5;
     }
   };
-  
+
   icsLines.push(`PRIORITY:${getPriority(eventData.urgency)}`);
   icsLines.push('X-MICROSOFT-CDO-BUSYSTATUS:TENTATIVE');
   icsLines.push('X-FLYNN-AI:true');
-  
+
   if (eventData.urgency) {
     icsLines.push(`X-FLYNN-URGENCY:${eventData.urgency.toUpperCase()}`);
   }
-  
+
   // Add reminders
   icsLines.push('BEGIN:VALARM');
   icsLines.push('TRIGGER:-PT15M'); // 15 minutes before
@@ -127,7 +134,10 @@ export async function generateICSFile(eventData: ICSEventData): Promise<string> 
   icsLines.push('END:VALARM');
 
   // Add second reminder for urgent events
-  if (description.toLowerCase().includes('urgent') || description.toLowerCase().includes('emergency')) {
+  if (
+    description.toLowerCase().includes('urgent') ||
+    description.toLowerCase().includes('emergency')
+  ) {
     icsLines.push('BEGIN:VALARM');
     icsLines.push('TRIGGER:-PT60M'); // 1 hour before for urgent
     icsLines.push('ACTION:DISPLAY');
@@ -145,9 +155,12 @@ export async function generateICSFile(eventData: ICSEventData): Promise<string> 
 /**
  * Generate multiple ICS events in a single file
  */
-export async function generateMultiEventICSFile(events: ICSEventData[]): Promise<string> {
-  const dtStamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-  
+export async function generateMultiEventICSFile(
+  events: ICSEventData[]
+): Promise<string> {
+  const dtStamp =
+    new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
   let icsContent = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
@@ -162,14 +175,17 @@ export async function generateMultiEventICSFile(events: ICSEventData[]): Promise
   }
 
   icsContent += '\r\nEND:VCALENDAR';
-  
+
   return icsContent;
 }
 
 /**
  * Generate single event ICS content (without calendar wrapper)
  */
-async function generateSingleEventICS(eventData: ICSEventData, dtStamp: string): Promise<string> {
+async function generateSingleEventICS(
+  eventData: ICSEventData,
+  dtStamp: string
+): Promise<string> {
   const {
     title,
     description,
@@ -179,13 +195,13 @@ async function generateSingleEventICS(eventData: ICSEventData, dtStamp: string):
     organizer,
     attendee,
     url,
-    uid
+    uid,
   } = eventData;
 
   const eventUid = uid || generateUID(title, startTime);
   const startDate = new Date(startTime);
   const endDate = new Date(startDate.getTime() + duration * 60 * 1000);
-  
+
   const formatICSDate = (date: Date): string => {
     return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
   };
@@ -247,7 +263,7 @@ function generateUID(title: string, startTime: string): string {
   const timestamp = new Date(startTime).getTime();
   const titleHash = title.replace(/\s+/g, '-').toLowerCase();
   const randomSuffix = Math.random().toString(36).substring(2, 8);
-  
+
   return `${timestamp}-${titleHash}-${randomSuffix}@flynn.ai`;
 }
 
@@ -263,36 +279,36 @@ export async function generateIndustryICSFile(
     plumbing: {
       defaultDuration: 90,
       category: 'Service Call',
-      priority: 5
+      priority: 5,
     },
     real_estate: {
       defaultDuration: 45,
       category: 'Property Showing',
-      priority: 3
+      priority: 3,
     },
     legal: {
       defaultDuration: 60,
       category: 'Legal Consultation',
-      priority: 4
+      priority: 4,
     },
     medical: {
       defaultDuration: 30,
       category: 'Medical Appointment',
-      priority: 2
-    }
+      priority: 2,
+    },
   };
 
   const config = (industryConfig as any)[industry] || {
     defaultDuration: 60,
     category: 'Appointment',
-    priority: 5
+    priority: 5,
   };
 
   // Apply industry-specific settings
   const enhancedEventData = {
     ...eventData,
     duration: eventData.duration || config.defaultDuration,
-    description: `${config.category}: ${eventData.description}`
+    description: `${config.category}: ${eventData.description}`,
   };
 
   return await generateICSFile(enhancedEventData);
@@ -328,12 +344,15 @@ export function validateICSEventData(eventData: ICSEventData): {
     errors.push('Valid organizer email is required');
   }
 
-  if (eventData.duration && (eventData.duration < 1 || eventData.duration > 480)) {
+  if (
+    eventData.duration &&
+    (eventData.duration < 1 || eventData.duration > 480)
+  ) {
     errors.push('Duration must be between 1 and 480 minutes');
   }
 
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 }

@@ -11,33 +11,85 @@ import { CheckCircleIcon } from '@heroicons/react/24/solid';
 import { z } from 'zod';
 
 const CreateTicketSchema = z.object({
-  subject: z.string().min(1, 'Subject is required').max(255, 'Subject too long'),
-  description: z.string().min(10, 'Description must be at least 10 characters').max(5000, 'Description too long'),
-  category: z.enum(['technical', 'billing', 'feature-request', 'bug-report', 'account', 'general']),
+  subject: z
+    .string()
+    .min(1, 'Subject is required')
+    .max(255, 'Subject too long'),
+  description: z
+    .string()
+    .min(10, 'Description must be at least 10 characters')
+    .max(5000, 'Description too long'),
+  category: z.enum([
+    'technical',
+    'billing',
+    'feature-request',
+    'bug-report',
+    'account',
+    'general',
+  ]),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
 });
 
 const categories = [
-  { key: 'technical', label: 'Technical Support', description: 'Issues with call processing, AI accuracy, or system functionality' },
-  { key: 'billing', label: 'Billing & Subscriptions', description: 'Questions about pricing, invoices, or subscription changes' },
-  { key: 'feature-request', label: 'Feature Request', description: 'Suggest new features or improvements' },
-  { key: 'bug-report', label: 'Bug Report', description: 'Report errors, crashes, or unexpected behavior' },
-  { key: 'account', label: 'Account Management', description: 'Account settings, security, or access issues' },
-  { key: 'general', label: 'General Inquiry', description: 'General questions or feedback' },
+  {
+    key: 'technical',
+    label: 'Technical Support',
+    description:
+      'Issues with call processing, AI accuracy, or system functionality',
+  },
+  {
+    key: 'billing',
+    label: 'Billing & Subscriptions',
+    description: 'Questions about pricing, invoices, or subscription changes',
+  },
+  {
+    key: 'feature-request',
+    label: 'Feature Request',
+    description: 'Suggest new features or improvements',
+  },
+  {
+    key: 'bug-report',
+    label: 'Bug Report',
+    description: 'Report errors, crashes, or unexpected behavior',
+  },
+  {
+    key: 'account',
+    label: 'Account Management',
+    description: 'Account settings, security, or access issues',
+  },
+  {
+    key: 'general',
+    label: 'General Inquiry',
+    description: 'General questions or feedback',
+  },
 ];
 
 const priorities = [
-  { key: 'low', label: 'Low', description: 'General questions or minor issues' },
+  {
+    key: 'low',
+    label: 'Low',
+    description: 'General questions or minor issues',
+  },
   { key: 'medium', label: 'Medium', description: 'Standard support requests' },
-  { key: 'high', label: 'High', description: 'Urgent issues affecting your business' },
-  { key: 'urgent', label: 'Urgent', description: 'Critical system failures or emergencies' },
+  {
+    key: 'high',
+    label: 'High',
+    description: 'Urgent issues affecting your business',
+  },
+  {
+    key: 'urgent',
+    label: 'Urgent',
+    description: 'Critical system failures or emergencies',
+  },
 ];
 
 interface SupportTicketFormProps {
   onSuccess?: (ticketId: string) => void;
 }
 
-export default function SupportTicketForm({ onSuccess }: SupportTicketFormProps) {
+export default function SupportTicketForm({
+  onSuccess,
+}: SupportTicketFormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     subject: '',
@@ -52,7 +104,7 @@ export default function SupportTicketForm({ onSuccess }: SupportTicketFormProps)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       // Validate form data
       const validatedData = CreateTicketSchema.parse(formData);
@@ -86,8 +138,13 @@ export default function SupportTicketForm({ onSuccess }: SupportTicketFormProps)
       // Success
       setCreatedTicketId(data.ticket.id);
       setShowSuccess(true);
-      setFormData({ subject: '', description: '', category: '', priority: 'medium' });
-      
+      setFormData({
+        subject: '',
+        description: '',
+        category: '',
+        priority: 'medium',
+      });
+
       if (onSuccess) {
         onSuccess(data.ticket.id);
       }
@@ -109,14 +166,14 @@ export default function SupportTicketForm({ onSuccess }: SupportTicketFormProps)
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: '' }));
     }
   };
 
-  const selectedCategory = categories.find(c => c.key === formData.category);
-  const selectedPriority = priorities.find(p => p.key === formData.priority);
+  const selectedCategory = categories.find((c) => c.key === formData.category);
+  const selectedPriority = priorities.find((p) => p.key === formData.priority);
 
   return (
     <>
@@ -129,7 +186,7 @@ export default function SupportTicketForm({ onSuccess }: SupportTicketFormProps)
             </p>
           </div>
         </CardHeader>
-        
+
         <CardBody>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -149,14 +206,19 @@ export default function SupportTicketForm({ onSuccess }: SupportTicketFormProps)
                 label="Category"
                 placeholder="Select a category"
                 selectedKeys={formData.category ? [formData.category] : []}
-                onSelectionChange={(keys) => handleInputChange('category', Array.from(keys)[0] as string || '')}
+                onSelectionChange={(keys) =>
+                  handleInputChange(
+                    'category',
+                    (Array.from(keys)[0] as string) || ''
+                  )
+                }
                 isInvalid={!!errors.category}
                 errorMessage={errors.category}
                 isRequired
               >
                 {categories.map((category) => (
-                  <SelectItem 
-                    key={category.key} 
+                  <SelectItem
+                    key={category.key}
                     value={category.key}
                     description={category.description}
                   >
@@ -176,13 +238,18 @@ export default function SupportTicketForm({ onSuccess }: SupportTicketFormProps)
                 label="Priority"
                 placeholder="Select priority level"
                 selectedKeys={[formData.priority]}
-                onSelectionChange={(keys) => handleInputChange('priority', Array.from(keys)[0] as string || 'medium')}
+                onSelectionChange={(keys) =>
+                  handleInputChange(
+                    'priority',
+                    (Array.from(keys)[0] as string) || 'medium'
+                  )
+                }
                 isInvalid={!!errors.priority}
                 errorMessage={errors.priority}
               >
                 {priorities.map((priority) => (
-                  <SelectItem 
-                    key={priority.key} 
+                  <SelectItem
+                    key={priority.key}
                     value={priority.key}
                     description={priority.description}
                   >
@@ -204,7 +271,9 @@ export default function SupportTicketForm({ onSuccess }: SupportTicketFormProps)
                 minRows={6}
                 maxRows={10}
                 value={formData.description}
-                onValueChange={(value) => handleInputChange('description', value)}
+                onValueChange={(value) =>
+                  handleInputChange('description', value)
+                }
                 isInvalid={!!errors.description}
                 errorMessage={errors.description}
                 isRequired
@@ -216,9 +285,7 @@ export default function SupportTicketForm({ onSuccess }: SupportTicketFormProps)
             </div>
 
             {errors.submit && (
-              <div className="text-danger text-sm">
-                {errors.submit}
-              </div>
+              <div className="text-danger text-sm">{errors.submit}</div>
             )}
 
             <div className="flex gap-3">
@@ -226,7 +293,11 @@ export default function SupportTicketForm({ onSuccess }: SupportTicketFormProps)
                 color="primary"
                 type="submit"
                 isLoading={isSubmitting}
-                isDisabled={!formData.subject || !formData.description || !formData.category}
+                isDisabled={
+                  !formData.subject ||
+                  !formData.description ||
+                  !formData.category
+                }
                 className="flex-1"
               >
                 Submit Ticket
@@ -234,7 +305,14 @@ export default function SupportTicketForm({ onSuccess }: SupportTicketFormProps)
               <Button
                 variant="bordered"
                 type="button"
-                onClick={() => setFormData({ subject: '', description: '', category: '', priority: 'medium' })}
+                onClick={() =>
+                  setFormData({
+                    subject: '',
+                    description: '',
+                    category: '',
+                    priority: 'medium',
+                  })
+                }
               >
                 Reset
               </Button>
@@ -244,8 +322,8 @@ export default function SupportTicketForm({ onSuccess }: SupportTicketFormProps)
       </Card>
 
       {/* Success Modal */}
-      <Modal 
-        isOpen={showSuccess} 
+      <Modal
+        isOpen={showSuccess}
         onClose={() => setShowSuccess(false)}
         backdrop="blur"
       >
@@ -259,7 +337,8 @@ export default function SupportTicketForm({ onSuccess }: SupportTicketFormProps)
           <ModalBody className="pb-6">
             <div className="text-center space-y-4">
               <p className="text-default-600">
-                Your support ticket has been submitted successfully. We'll get back to you soon!
+                Your support ticket has been submitted successfully. We'll get
+                back to you soon!
               </p>
               <div className="bg-default-100 p-3 rounded-lg">
                 <p className="text-sm">

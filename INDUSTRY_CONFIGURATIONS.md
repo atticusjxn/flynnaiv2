@@ -1,6 +1,7 @@
 # Flynn.ai v2 Industry Configurations
 
 ## Overview
+
 Comprehensive industry-specific configurations that adapt Flynn.ai's behavior, terminology, event types, and workflows to match different business contexts. Each industry profile optimizes the AI extraction, email templates, and user experience.
 
 ## Industry Configuration System
@@ -14,34 +15,34 @@ export interface IndustryConfiguration {
   name: string;
   code: string;
   description: string;
-  
+
   // Event Management
   eventTypes: EventTypeConfig[];
   defaultEventType: string;
   defaultDuration: number; // minutes
-  
+
   // Terminology
   terminology: TerminologyMap;
-  
+
   // Business Logic
   businessHours: BusinessHours;
   pricingEnabled: boolean;
   locationRequired: boolean;
   autoConfirmEnabled: boolean;
-  
+
   // AI Configuration
   extractionPrompts: ExtractionPrompts;
   urgencyKeywords: string[];
   emergencyKeywords: string[];
-  
+
   // Email Configuration
   emailTemplates: EmailTemplateConfig[];
   subjectLineTemplates: string[];
-  
+
   // Calendar Configuration
   calendarDefaults: CalendarDefaults;
   reminderSettings: ReminderSettings;
-  
+
   // UI Customization
   colors: ColorScheme;
   icons: IconSet;
@@ -71,7 +72,7 @@ export const PLUMBING_CONFIG: IndustryConfiguration = {
   name: 'Plumbing Services',
   code: 'plumbing',
   description: 'Residential and commercial plumbing services',
-  
+
   eventTypes: [
     {
       code: 'service_call',
@@ -82,7 +83,7 @@ export const PLUMBING_CONFIG: IndustryConfiguration = {
       icon: '🔧',
       requiresLocation: true,
       requiresPrice: true,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'emergency',
@@ -93,7 +94,7 @@ export const PLUMBING_CONFIG: IndustryConfiguration = {
       icon: '🚨',
       requiresLocation: true,
       requiresPrice: true,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'quote',
@@ -104,7 +105,7 @@ export const PLUMBING_CONFIG: IndustryConfiguration = {
       icon: '📋',
       requiresLocation: true,
       requiresPrice: false,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'follow_up',
@@ -115,22 +116,22 @@ export const PLUMBING_CONFIG: IndustryConfiguration = {
       icon: '📞',
       requiresLocation: false,
       requiresPrice: false,
-      allowsRecurring: true
-    }
+      allowsRecurring: true,
+    },
   ],
-  
+
   defaultEventType: 'service_call',
   defaultDuration: 90,
-  
+
   terminology: {
-    'appointment': 'service call',
-    'meeting': 'site visit',
-    'consultation': 'estimate visit',
-    'demo': 'system walkthrough',
-    'client': 'customer',
-    'patient': 'customer'
+    appointment: 'service call',
+    meeting: 'site visit',
+    consultation: 'estimate visit',
+    demo: 'system walkthrough',
+    client: 'customer',
+    patient: 'customer',
   },
-  
+
   businessHours: {
     monday: { start: '08:00', end: '17:00', enabled: true },
     tuesday: { start: '08:00', end: '17:00', enabled: true },
@@ -139,13 +140,13 @@ export const PLUMBING_CONFIG: IndustryConfiguration = {
     friday: { start: '08:00', end: '17:00', enabled: true },
     saturday: { start: '09:00', end: '15:00', enabled: true },
     sunday: { start: '10:00', end: '14:00', enabled: false },
-    holidays: { enabled: false }
+    holidays: { enabled: false },
   },
-  
+
   pricingEnabled: true,
   locationRequired: true,
   autoConfirmEnabled: false,
-  
+
   extractionPrompts: {
     systemPrompt: `You are analyzing calls for a plumbing service business. 
     Focus on:
@@ -155,97 +156,124 @@ export const PLUMBING_CONFIG: IndustryConfiguration = {
     - Problem descriptions (for preparation and parts)
     - Time preferences and availability
     - Price estimates and budget discussions`,
-    
+
     eventTypeClassification: {
-      'service_call': ['fix', 'repair', 'install', 'replace', 'service'],
-      'emergency': ['emergency', 'urgent', 'flooding', 'burst', 'no water', 'no heat'],
-      'quote': ['quote', 'estimate', 'price', 'cost', 'how much'],
-      'follow_up': ['follow up', 'check back', 'call back', 'touch base']
+      service_call: ['fix', 'repair', 'install', 'replace', 'service'],
+      emergency: [
+        'emergency',
+        'urgent',
+        'flooding',
+        'burst',
+        'no water',
+        'no heat',
+      ],
+      quote: ['quote', 'estimate', 'price', 'cost', 'how much'],
+      follow_up: ['follow up', 'check back', 'call back', 'touch base'],
     },
-    
+
     urgencyDetection: {
-      emergency: ['flooding', 'burst pipe', 'no water', 'no heat', 'sewage backup', 'gas leak'],
+      emergency: [
+        'flooding',
+        'burst pipe',
+        'no water',
+        'no heat',
+        'sewage backup',
+        'gas leak',
+      ],
       high: ['water damage', 'leak getting worse', 'no hot water', 'backed up'],
       medium: ['slow drain', 'dripping', 'running toilet', 'low pressure'],
-      low: ['maintenance', 'upgrade', 'inspection', 'when convenient']
-    }
+      low: ['maintenance', 'upgrade', 'inspection', 'when convenient'],
+    },
   },
-  
+
   urgencyKeywords: ['leak', 'broken', 'not working', 'clogged', 'backup'],
-  emergencyKeywords: ['emergency', 'flooding', 'burst', 'no water', 'gas smell'],
-  
+  emergencyKeywords: [
+    'emergency',
+    'flooding',
+    'burst',
+    'no water',
+    'gas smell',
+  ],
+
   emailTemplates: [
     {
       name: 'service_call_overview',
       subject: 'Service Call Request - {customer_name} - {date}',
       greeting: 'Thank you for calling {company_name}',
-      eventDescription: 'We have scheduled a service call for {description} at {location}.',
-      footer: 'We look forward to helping you with your plumbing needs.'
+      eventDescription:
+        'We have scheduled a service call for {description} at {location}.',
+      footer: 'We look forward to helping you with your plumbing needs.',
     },
     {
       name: 'emergency_response',
       subject: 'URGENT: Emergency Service - {customer_name}',
       greeting: 'We received your emergency service request',
-      eventDescription: 'Our technician will respond to your {description} emergency at {location}.',
-      footer: 'We understand the urgency and will be there as soon as possible.'
-    }
+      eventDescription:
+        'Our technician will respond to your {description} emergency at {location}.',
+      footer:
+        'We understand the urgency and will be there as soon as possible.',
+    },
   ],
-  
+
   subjectLineTemplates: [
     'Service Call - {main_topic} - {customer_name}',
     '{urgency} Plumbing Request - {location}',
-    'Estimate Request - {description}'
+    'Estimate Request - {description}',
   ],
-  
+
   calendarDefaults: {
     defaultReminders: [30, 1440], // 30 minutes and 1 day
     travelTimeDefault: 15,
     bufferTimeDefault: 15,
-    workingHours: { start: '08:00', end: '17:00' }
+    workingHours: { start: '08:00', end: '17:00' },
   },
-  
+
   reminderSettings: {
     emailReminders: [
       { timing: 1440, message: 'Reminder: Service call tomorrow at {time}' },
-      { timing: 60, message: 'We\'ll be there in 1 hour for your service call' }
+      { timing: 60, message: "We'll be there in 1 hour for your service call" },
     ],
     smsReminders: [
-      { timing: 120, message: 'Hi {customer_name}, we\'ll be there in 2 hours for your {service_type}' }
-    ]
+      {
+        timing: 120,
+        message:
+          "Hi {customer_name}, we'll be there in 2 hours for your {service_type}",
+      },
+    ],
   },
-  
+
   colors: {
     primary: '#1e40af',
     secondary: '#3b82f6',
     accent: '#059669',
     emergency: '#dc2626',
     success: '#10b981',
-    warning: '#f59e0b'
+    warning: '#f59e0b',
   },
-  
+
   icons: {
     service: '🔧',
     emergency: '🚨',
     quote: '📋',
     phone: '📞',
     location: '📍',
-    time: '⏰'
+    time: '⏰',
   },
-  
+
   labels: {
     eventTypes: {
       service_call: 'Service Call',
       emergency: 'Emergency',
       quote: 'Estimate',
-      follow_up: 'Follow-up'
+      follow_up: 'Follow-up',
     },
     statuses: {
       extracted: 'New Request',
       pending: 'Needs Confirmation',
       confirmed: 'Scheduled',
-      completed: 'Completed'
-    }
-  }
+      completed: 'Completed',
+    },
+  },
 };
 ```
 
@@ -257,7 +285,7 @@ export const REAL_ESTATE_CONFIG: IndustryConfiguration = {
   name: 'Real Estate',
   code: 'real_estate',
   description: 'Real estate sales and property management',
-  
+
   eventTypes: [
     {
       code: 'showing',
@@ -268,7 +296,7 @@ export const REAL_ESTATE_CONFIG: IndustryConfiguration = {
       icon: '🏠',
       requiresLocation: true,
       requiresPrice: false,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'meeting',
@@ -279,7 +307,7 @@ export const REAL_ESTATE_CONFIG: IndustryConfiguration = {
       icon: '👥',
       requiresLocation: false,
       requiresPrice: false,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'inspection',
@@ -290,7 +318,7 @@ export const REAL_ESTATE_CONFIG: IndustryConfiguration = {
       icon: '🔍',
       requiresLocation: true,
       requiresPrice: false,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'closing',
@@ -301,21 +329,21 @@ export const REAL_ESTATE_CONFIG: IndustryConfiguration = {
       icon: '📝',
       requiresLocation: true,
       requiresPrice: false,
-      allowsRecurring: false
-    }
+      allowsRecurring: false,
+    },
   ],
-  
+
   defaultEventType: 'showing',
   defaultDuration: 45,
-  
+
   terminology: {
-    'service_call': 'property showing',
-    'appointment': 'showing',
-    'customer': 'client',
-    'quote': 'market analysis',
-    'emergency': 'urgent showing'
+    service_call: 'property showing',
+    appointment: 'showing',
+    customer: 'client',
+    quote: 'market analysis',
+    emergency: 'urgent showing',
   },
-  
+
   businessHours: {
     monday: { start: '09:00', end: '18:00', enabled: true },
     tuesday: { start: '09:00', end: '18:00', enabled: true },
@@ -324,13 +352,13 @@ export const REAL_ESTATE_CONFIG: IndustryConfiguration = {
     friday: { start: '09:00', end: '18:00', enabled: true },
     saturday: { start: '10:00', end: '17:00', enabled: true },
     sunday: { start: '12:00', end: '17:00', enabled: true },
-    holidays: { enabled: false }
+    holidays: { enabled: false },
   },
-  
+
   pricingEnabled: false,
   locationRequired: true,
   autoConfirmEnabled: false,
-  
+
   extractionPrompts: {
     systemPrompt: `You are analyzing calls for a real estate business.
     Focus on:
@@ -340,40 +368,46 @@ export const REAL_ESTATE_CONFIG: IndustryConfiguration = {
     - Property types and preferences
     - Urgency indicators (moving timeline, competing offers)
     - Market conditions and pricing discussions`,
-    
+
     eventTypeClassification: {
-      'showing': ['show', 'see property', 'tour', 'view', 'look at'],
-      'meeting': ['meet', 'discuss', 'consultation', 'talk about'],
-      'inspection': ['inspect', 'walkthrough', 'examine', 'check out'],
-      'closing': ['closing', 'sign', 'finalize', 'settlement']
+      showing: ['show', 'see property', 'tour', 'view', 'look at'],
+      meeting: ['meet', 'discuss', 'consultation', 'talk about'],
+      inspection: ['inspect', 'walkthrough', 'examine', 'check out'],
+      closing: ['closing', 'sign', 'finalize', 'settlement'],
     },
-    
+
     urgencyDetection: {
-      high: ['pre-approved', 'cash buyer', 'move quickly', 'urgent', 'closing soon'],
+      high: [
+        'pre-approved',
+        'cash buyer',
+        'move quickly',
+        'urgent',
+        'closing soon',
+      ],
       medium: ['looking actively', 'ready to buy', 'serious buyer'],
-      low: ['just looking', 'exploring options', 'maybe interested']
-    }
+      low: ['just looking', 'exploring options', 'maybe interested'],
+    },
   },
-  
+
   urgencyKeywords: ['pre-approved', 'cash', 'urgent', 'quickly', 'closing'],
   emergencyKeywords: ['today', 'right now', 'asap', 'immediate'],
-  
+
   emailTemplates: [
     {
       name: 'showing_request',
       subject: 'Property Showing - {property_address} - {date}',
       greeting: 'Thank you for your interest in {property_address}',
       eventDescription: 'I have scheduled a showing for {date} at {time}.',
-      footer: 'I look forward to showing you this beautiful property.'
-    }
+      footer: 'I look forward to showing you this beautiful property.',
+    },
   ],
-  
+
   calendarDefaults: {
     defaultReminders: [60, 1440],
     travelTimeDefault: 20,
     bufferTimeDefault: 15,
-    workingHours: { start: '09:00', end: '18:00' }
-  }
+    workingHours: { start: '09:00', end: '18:00' },
+  },
 };
 ```
 
@@ -385,7 +419,7 @@ export const LEGAL_CONFIG: IndustryConfiguration = {
   name: 'Legal Services',
   code: 'legal',
   description: 'Legal consultations and services',
-  
+
   eventTypes: [
     {
       code: 'consultation',
@@ -396,7 +430,7 @@ export const LEGAL_CONFIG: IndustryConfiguration = {
       icon: '⚖️',
       requiresLocation: false,
       requiresPrice: true,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'meeting',
@@ -407,7 +441,7 @@ export const LEGAL_CONFIG: IndustryConfiguration = {
       icon: '👥',
       requiresLocation: false,
       requiresPrice: false,
-      allowsRecurring: true
+      allowsRecurring: true,
     },
     {
       code: 'court',
@@ -418,7 +452,7 @@ export const LEGAL_CONFIG: IndustryConfiguration = {
       icon: '🏛️',
       requiresLocation: true,
       requiresPrice: false,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'deposition',
@@ -429,17 +463,17 @@ export const LEGAL_CONFIG: IndustryConfiguration = {
       icon: '📝',
       requiresLocation: true,
       requiresPrice: false,
-      allowsRecurring: false
-    }
+      allowsRecurring: false,
+    },
   ],
-  
+
   terminology: {
-    'service_call': 'consultation',
-    'customer': 'client',
-    'appointment': 'consultation',
-    'emergency': 'urgent legal matter'
+    service_call: 'consultation',
+    customer: 'client',
+    appointment: 'consultation',
+    emergency: 'urgent legal matter',
   },
-  
+
   businessHours: {
     monday: { start: '09:00', end: '17:00', enabled: true },
     tuesday: { start: '09:00', end: '17:00', enabled: true },
@@ -448,13 +482,13 @@ export const LEGAL_CONFIG: IndustryConfiguration = {
     friday: { start: '09:00', end: '17:00', enabled: true },
     saturday: { start: '10:00', end: '14:00', enabled: false },
     sunday: { enabled: false },
-    holidays: { enabled: false }
+    holidays: { enabled: false },
   },
-  
+
   pricingEnabled: true,
   locationRequired: false,
   autoConfirmEnabled: false,
-  
+
   extractionPrompts: {
     systemPrompt: `You are analyzing calls for a legal services firm.
     Focus on:
@@ -464,17 +498,17 @@ export const LEGAL_CONFIG: IndustryConfiguration = {
     - Consultation requests vs. ongoing case work
     - Billing and fee discussions
     - Referral sources and existing relationships`,
-    
+
     urgencyDetection: {
       emergency: ['deadline tomorrow', 'court today', 'statute of limitations'],
       high: ['court date', 'deadline', 'urgent legal matter', 'time sensitive'],
       medium: ['consultation needed', 'legal question', 'case review'],
-      low: ['general information', 'thinking about', 'maybe need']
-    }
+      low: ['general information', 'thinking about', 'maybe need'],
+    },
   },
-  
+
   urgencyKeywords: ['deadline', 'court', 'urgent', 'asap', 'time sensitive'],
-  emergencyKeywords: ['emergency', 'tonight', 'today', 'immediate']
+  emergencyKeywords: ['emergency', 'tonight', 'today', 'immediate'],
 };
 ```
 
@@ -486,7 +520,7 @@ export const MEDICAL_CONFIG: IndustryConfiguration = {
   name: 'Medical/Healthcare',
   code: 'medical',
   description: 'Medical appointments and healthcare services',
-  
+
   eventTypes: [
     {
       code: 'appointment',
@@ -497,7 +531,7 @@ export const MEDICAL_CONFIG: IndustryConfiguration = {
       icon: '🩺',
       requiresLocation: false,
       requiresPrice: false,
-      allowsRecurring: true
+      allowsRecurring: true,
     },
     {
       code: 'consultation',
@@ -508,7 +542,7 @@ export const MEDICAL_CONFIG: IndustryConfiguration = {
       icon: '👨‍⚕️',
       requiresLocation: false,
       requiresPrice: false,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'follow_up',
@@ -519,7 +553,7 @@ export const MEDICAL_CONFIG: IndustryConfiguration = {
       icon: '📋',
       requiresLocation: false,
       requiresPrice: false,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'urgent',
@@ -530,17 +564,17 @@ export const MEDICAL_CONFIG: IndustryConfiguration = {
       icon: '🚑',
       requiresLocation: false,
       requiresPrice: false,
-      allowsRecurring: false
-    }
+      allowsRecurring: false,
+    },
   ],
-  
+
   terminology: {
-    'service_call': 'appointment',
-    'customer': 'patient',
-    'client': 'patient',
-    'meeting': 'appointment'
+    service_call: 'appointment',
+    customer: 'patient',
+    client: 'patient',
+    meeting: 'appointment',
   },
-  
+
   businessHours: {
     monday: { start: '08:00', end: '17:00', enabled: true },
     tuesday: { start: '08:00', end: '17:00', enabled: true },
@@ -548,13 +582,13 @@ export const MEDICAL_CONFIG: IndustryConfiguration = {
     thursday: { start: '08:00', end: '17:00', enabled: true },
     friday: { start: '08:00', end: '17:00', enabled: true },
     saturday: { start: '09:00', end: '13:00', enabled: false },
-    sunday: { enabled: false }
+    sunday: { enabled: false },
   },
-  
+
   pricingEnabled: false,
   locationRequired: false,
   autoConfirmEnabled: true,
-  
+
   extractionPrompts: {
     systemPrompt: `You are analyzing calls for a medical/healthcare practice.
     IMPORTANT: Handle all information as potentially PHI (Protected Health Information).
@@ -567,17 +601,28 @@ export const MEDICAL_CONFIG: IndustryConfiguration = {
     - Patient preferences and accessibility needs
     
     PRIVACY: Do not extract or store detailed medical information.`,
-    
+
     urgencyDetection: {
-      emergency: ['chest pain', 'breathing problems', 'severe bleeding', 'unconscious'],
-      high: ['severe pain', 'urgent', 'can\'t wait', 'getting worse'],
+      emergency: [
+        'chest pain',
+        'breathing problems',
+        'severe bleeding',
+        'unconscious',
+      ],
+      high: ['severe pain', 'urgent', "can't wait", 'getting worse'],
       medium: ['uncomfortable', 'concerning', 'soon as possible'],
-      low: ['routine', 'check-up', 'when convenient', 'maintenance']
-    }
+      low: ['routine', 'check-up', 'when convenient', 'maintenance'],
+    },
   },
-  
+
   urgencyKeywords: ['pain', 'urgent', 'worse', 'concerned', 'symptoms'],
-  emergencyKeywords: ['emergency', 'chest pain', 'breathing', 'severe', 'unconscious']
+  emergencyKeywords: [
+    'emergency',
+    'chest pain',
+    'breathing',
+    'severe',
+    'unconscious',
+  ],
 };
 ```
 
@@ -589,7 +634,7 @@ export const SALES_CONFIG: IndustryConfiguration = {
   name: 'Sales & Business Development',
   code: 'sales',
   description: 'Sales meetings and business development',
-  
+
   eventTypes: [
     {
       code: 'demo',
@@ -600,7 +645,7 @@ export const SALES_CONFIG: IndustryConfiguration = {
       icon: '🖥️',
       requiresLocation: false,
       requiresPrice: false,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'discovery',
@@ -611,7 +656,7 @@ export const SALES_CONFIG: IndustryConfiguration = {
       icon: '🔍',
       requiresLocation: false,
       requiresPrice: false,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'follow_up',
@@ -622,7 +667,7 @@ export const SALES_CONFIG: IndustryConfiguration = {
       icon: '📞',
       requiresLocation: false,
       requiresPrice: false,
-      allowsRecurring: true
+      allowsRecurring: true,
     },
     {
       code: 'proposal',
@@ -633,17 +678,17 @@ export const SALES_CONFIG: IndustryConfiguration = {
       icon: '📊',
       requiresLocation: false,
       requiresPrice: false,
-      allowsRecurring: false
-    }
+      allowsRecurring: false,
+    },
   ],
-  
+
   terminology: {
-    'service_call': 'sales call',
-    'appointment': 'meeting',
-    'customer': 'prospect',
-    'client': 'prospect'
+    service_call: 'sales call',
+    appointment: 'meeting',
+    customer: 'prospect',
+    client: 'prospect',
   },
-  
+
   extractionPrompts: {
     systemPrompt: `You are analyzing calls for a sales/business development team.
     Focus on:
@@ -654,13 +699,18 @@ export const SALES_CONFIG: IndustryConfiguration = {
     - Pain points and requirements
     - Competitor mentions and comparisons
     - Urgency indicators (budget cycles, deadlines)`,
-    
+
     urgencyDetection: {
-      high: ['budget approved', 'need by', 'decision this week', 'ready to move'],
+      high: [
+        'budget approved',
+        'need by',
+        'decision this week',
+        'ready to move',
+      ],
       medium: ['evaluating options', 'interested', 'timeline'],
-      low: ['exploring', 'just learning', 'future consideration']
-    }
-  }
+      low: ['exploring', 'just learning', 'future consideration'],
+    },
+  },
 };
 ```
 
@@ -672,7 +722,7 @@ export const CONSULTING_CONFIG: IndustryConfiguration = {
   name: 'Consulting Services',
   code: 'consulting',
   description: 'Professional consulting services',
-  
+
   eventTypes: [
     {
       code: 'consultation',
@@ -683,7 +733,7 @@ export const CONSULTING_CONFIG: IndustryConfiguration = {
       icon: '💼',
       requiresLocation: false,
       requiresPrice: true,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'strategy_session',
@@ -694,7 +744,7 @@ export const CONSULTING_CONFIG: IndustryConfiguration = {
       icon: '🎯',
       requiresLocation: false,
       requiresPrice: false,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'workshop',
@@ -705,7 +755,7 @@ export const CONSULTING_CONFIG: IndustryConfiguration = {
       icon: '🎓',
       requiresLocation: false,
       requiresPrice: false,
-      allowsRecurring: false
+      allowsRecurring: false,
     },
     {
       code: 'check_in',
@@ -716,15 +766,15 @@ export const CONSULTING_CONFIG: IndustryConfiguration = {
       icon: '📈',
       requiresLocation: false,
       requiresPrice: false,
-      allowsRecurring: true
-    }
+      allowsRecurring: true,
+    },
   ],
-  
+
   terminology: {
-    'service_call': 'consultation',
-    'customer': 'client',
-    'appointment': 'session'
-  }
+    service_call: 'consultation',
+    customer: 'client',
+    appointment: 'session',
+  },
 };
 ```
 
@@ -736,11 +786,11 @@ export const CONSULTING_CONFIG: IndustryConfiguration = {
 // lib/industry/configurationManager.ts
 export class IndustryConfigurationManager {
   private configurations: Map<string, IndustryConfiguration> = new Map();
-  
+
   constructor() {
     this.loadConfigurations();
   }
-  
+
   private loadConfigurations() {
     const configs = [
       PLUMBING_CONFIG,
@@ -748,53 +798,55 @@ export class IndustryConfigurationManager {
       LEGAL_CONFIG,
       MEDICAL_CONFIG,
       SALES_CONFIG,
-      CONSULTING_CONFIG
+      CONSULTING_CONFIG,
     ];
-    
-    configs.forEach(config => {
+
+    configs.forEach((config) => {
       this.configurations.set(config.code, config);
     });
   }
-  
+
   getConfiguration(industryCode: string): IndustryConfiguration | null {
     return this.configurations.get(industryCode) || null;
   }
-  
+
   getAllConfigurations(): IndustryConfiguration[] {
     return Array.from(this.configurations.values());
   }
-  
+
   getEventTypes(industryCode: string): EventTypeConfig[] {
     const config = this.getConfiguration(industryCode);
     return config?.eventTypes || [];
   }
-  
+
   getTerminology(industryCode: string): TerminologyMap {
     const config = this.getConfiguration(industryCode);
     return config?.terminology || {};
   }
-  
+
   translateTerm(industryCode: string, term: string): string {
     const terminology = this.getTerminology(industryCode);
     return terminology[term] || term;
   }
-  
+
   getBusinessHours(industryCode: string): BusinessHours {
     const config = this.getConfiguration(industryCode);
     return config?.businessHours || this.getDefaultBusinessHours();
   }
-  
+
   isBusinessTime(industryCode: string, dateTime: Date): boolean {
     const businessHours = this.getBusinessHours(industryCode);
-    const dayName = dateTime.toLocaleDateString('en-US', { weekday: 'lowercase' }) as keyof BusinessHours;
+    const dayName = dateTime.toLocaleDateString('en-US', {
+      weekday: 'lowercase',
+    }) as keyof BusinessHours;
     const hours = businessHours[dayName];
-    
+
     if (!hours?.enabled) return false;
-    
+
     const timeString = dateTime.toTimeString().slice(0, 5); // HH:MM format
     return timeString >= hours.start && timeString <= hours.end;
   }
-  
+
   private getDefaultBusinessHours(): BusinessHours {
     const defaultHours = { start: '09:00', end: '17:00', enabled: true };
     return {
@@ -805,7 +857,7 @@ export class IndustryConfigurationManager {
       friday: defaultHours,
       saturday: { start: '10:00', end: '14:00', enabled: false },
       sunday: { enabled: false },
-      holidays: { enabled: false }
+      holidays: { enabled: false },
     };
   }
 }
@@ -831,35 +883,46 @@ export interface UserIndustryConfiguration {
 }
 
 export class UserConfigurationManager {
-  async getUserConfiguration(userId: string): Promise<UserIndustryConfiguration | null> {
+  async getUserConfiguration(
+    userId: string
+  ): Promise<UserIndustryConfiguration | null> {
     // Load from database
     const userConfig = await supabase
       .from('user_industry_configurations')
       .select('*')
       .eq('user_id', userId)
       .single();
-      
+
     return userConfig.data;
   }
-  
-  async saveUserConfiguration(config: UserIndustryConfiguration): Promise<void> {
-    await supabase
-      .from('user_industry_configurations')
-      .upsert(config);
+
+  async saveUserConfiguration(
+    config: UserIndustryConfiguration
+  ): Promise<void> {
+    await supabase.from('user_industry_configurations').upsert(config);
   }
-  
+
   mergeWithIndustryDefaults(
-    industryConfig: IndustryConfiguration, 
+    industryConfig: IndustryConfiguration,
     userConfig: UserIndustryConfiguration
   ): IndustryConfiguration {
     return {
       ...industryConfig,
-      eventTypes: userConfig.customizations.eventTypes || industryConfig.eventTypes,
-      terminology: { ...industryConfig.terminology, ...userConfig.customizations.terminology },
-      businessHours: { ...industryConfig.businessHours, ...userConfig.customizations.businessHours },
-      emailTemplates: userConfig.customizations.emailTemplates || industryConfig.emailTemplates,
+      eventTypes:
+        userConfig.customizations.eventTypes || industryConfig.eventTypes,
+      terminology: {
+        ...industryConfig.terminology,
+        ...userConfig.customizations.terminology,
+      },
+      businessHours: {
+        ...industryConfig.businessHours,
+        ...userConfig.customizations.businessHours,
+      },
+      emailTemplates:
+        userConfig.customizations.emailTemplates ||
+        industryConfig.emailTemplates,
       colors: { ...industryConfig.colors, ...userConfig.customizations.colors },
-      labels: { ...industryConfig.labels, ...userConfig.customizations.labels }
+      labels: { ...industryConfig.labels, ...userConfig.customizations.labels },
     };
   }
 }
@@ -879,21 +942,25 @@ interface IndustrySelectorProps {
   onIndustryChange: (industryCode: string) => void;
 }
 
-export function IndustrySelector({ selectedIndustry, onIndustryChange }: IndustrySelectorProps) {
+export function IndustrySelector({
+  selectedIndustry,
+  onIndustryChange,
+}: IndustrySelectorProps) {
   const configManager = new IndustryConfigurationManager();
   const industries = configManager.getAllConfigurations();
-  
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-      {industries.map(industry => (
+      {industries.map((industry) => (
         <button
           key={industry.code}
           onClick={() => onIndustryChange(industry.code)}
           className={`
             p-6 rounded-lg border-2 transition-all
-            ${selectedIndustry === industry.code 
-              ? 'border-blue-500 bg-blue-50' 
-              : 'border-gray-200 hover:border-gray-300'
+            ${
+              selectedIndustry === industry.code
+                ? 'border-blue-500 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300'
             }
           `}
         >
@@ -919,29 +986,33 @@ interface EventTypeSelectorProps {
   onEventTypeChange: (eventType: string) => void;
 }
 
-export function EventTypeSelector({ 
-  industryCode, 
-  selectedEventType, 
-  onEventTypeChange 
+export function EventTypeSelector({
+  industryCode,
+  selectedEventType,
+  onEventTypeChange,
 }: EventTypeSelectorProps) {
   const configManager = new IndustryConfigurationManager();
   const eventTypes = configManager.getEventTypes(industryCode);
-  
+
   return (
     <div className="flex flex-wrap gap-2">
-      {eventTypes.map(eventType => (
+      {eventTypes.map((eventType) => (
         <button
           key={eventType.code}
           onClick={() => onEventTypeChange(eventType.code)}
           className={`
             px-4 py-2 rounded-full border flex items-center space-x-2
-            ${selectedEventType === eventType.code
-              ? 'border-blue-500 bg-blue-100 text-blue-800'
-              : 'border-gray-300 hover:border-gray-400'
+            ${
+              selectedEventType === eventType.code
+                ? 'border-blue-500 bg-blue-100 text-blue-800'
+                : 'border-gray-300 hover:border-gray-400'
             }
           `}
           style={{
-            borderColor: selectedEventType === eventType.code ? eventType.color : undefined
+            borderColor:
+              selectedEventType === eventType.code
+                ? eventType.color
+                : undefined,
           }}
         >
           <span>{eventType.icon}</span>
@@ -970,7 +1041,7 @@ export const EventTypeConfigSchema = z.object({
   icon: z.string(),
   requiresLocation: z.boolean(),
   requiresPrice: z.boolean(),
-  allowsRecurring: z.boolean()
+  allowsRecurring: z.boolean(),
 });
 
 export const IndustryConfigurationSchema = z.object({
@@ -984,10 +1055,12 @@ export const IndustryConfigurationSchema = z.object({
   terminology: z.record(z.string()),
   pricingEnabled: z.boolean(),
   locationRequired: z.boolean(),
-  autoConfirmEnabled: z.boolean()
+  autoConfirmEnabled: z.boolean(),
 });
 
-export function validateIndustryConfiguration(config: unknown): IndustryConfiguration {
+export function validateIndustryConfiguration(
+  config: unknown
+): IndustryConfiguration {
   return IndustryConfigurationSchema.parse(config);
 }
 ```
@@ -1014,26 +1087,34 @@ export const CONFIGURATION_MIGRATIONS: ConfigurationMigration[] = [
         config.eventTypes = getDefaultEventTypes(config.code);
       }
       return config;
-    }
-  }
+    },
+  },
 ];
 
 export class ConfigurationMigrator {
-  migrateConfiguration(config: any, currentVersion: string): IndustryConfiguration {
+  migrateConfiguration(
+    config: any,
+    currentVersion: string
+  ): IndustryConfiguration {
     let migratedConfig = config;
-    
+
     for (const migration of CONFIGURATION_MIGRATIONS) {
       if (this.shouldApplyMigration(currentVersion, migration)) {
         migratedConfig = migration.migrate(migratedConfig);
       }
     }
-    
+
     return validateIndustryConfiguration(migratedConfig);
   }
-  
-  private shouldApplyMigration(currentVersion: string, migration: ConfigurationMigration): boolean {
-    return this.compareVersions(currentVersion, migration.fromVersion) >= 0 &&
-           this.compareVersions(currentVersion, migration.toVersion) < 0;
+
+  private shouldApplyMigration(
+    currentVersion: string,
+    migration: ConfigurationMigration
+  ): boolean {
+    return (
+      this.compareVersions(currentVersion, migration.fromVersion) >= 0 &&
+      this.compareVersions(currentVersion, migration.toVersion) < 0
+    );
   }
 }
 ```
@@ -1049,37 +1130,40 @@ import { PLUMBING_CONFIG } from '@/lib/industry/configurations';
 
 describe('Industry Configurations', () => {
   let configManager: IndustryConfigurationManager;
-  
+
   beforeEach(() => {
     configManager = new IndustryConfigurationManager();
   });
-  
+
   test('should load all industry configurations', () => {
     const configs = configManager.getAllConfigurations();
     expect(configs).toHaveLength(6);
-    expect(configs.map(c => c.code)).toContain('plumbing');
-    expect(configs.map(c => c.code)).toContain('real_estate');
+    expect(configs.map((c) => c.code)).toContain('plumbing');
+    expect(configs.map((c) => c.code)).toContain('real_estate');
   });
-  
+
   test('should get plumbing configuration correctly', () => {
     const config = configManager.getConfiguration('plumbing');
     expect(config).toBeDefined();
     expect(config?.name).toBe('Plumbing Services');
     expect(config?.eventTypes).toHaveLength(4);
   });
-  
+
   test('should translate terminology correctly', () => {
     const translated = configManager.translateTerm('plumbing', 'appointment');
     expect(translated).toBe('service call');
-    
-    const notTranslated = configManager.translateTerm('plumbing', 'unknown_term');
+
+    const notTranslated = configManager.translateTerm(
+      'plumbing',
+      'unknown_term'
+    );
     expect(notTranslated).toBe('unknown_term');
   });
-  
+
   test('should validate business hours correctly', () => {
     const mondayMorning = new Date('2025-01-13T10:00:00Z'); // Monday 10 AM
     const sundayEvening = new Date('2025-01-12T20:00:00Z'); // Sunday 8 PM
-    
+
     expect(configManager.isBusinessTime('plumbing', mondayMorning)).toBe(true);
     expect(configManager.isBusinessTime('plumbing', sundayEvening)).toBe(false);
   });

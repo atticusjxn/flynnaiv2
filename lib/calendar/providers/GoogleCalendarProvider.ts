@@ -1,7 +1,16 @@
 // Google Calendar Provider for Flynn.ai v2
 import { google } from 'googleapis';
-import { CalendarProvider, CalendarEvent, CalendarInfo, CalendarEventResult, CalendarConflict } from '@/types/calendar.types';
-import { googleCalendarAuth, GoogleCalendarTokens } from '../googleCalendarAuth';
+import {
+  CalendarProvider,
+  CalendarEvent,
+  CalendarInfo,
+  CalendarEventResult,
+  CalendarConflict,
+} from '@/types/calendar.types';
+import {
+  googleCalendarAuth,
+  GoogleCalendarTokens,
+} from '../googleCalendarAuth';
 import { createAdminClient } from '@/utils/supabase/server';
 
 export class GoogleCalendarProvider implements CalendarProvider {
@@ -31,7 +40,10 @@ export class GoogleCalendarProvider implements CalendarProvider {
         .single();
 
       if (error || !data) {
-        console.log('No Google Calendar integration found for user:', this.userId);
+        console.log(
+          'No Google Calendar integration found for user:',
+          this.userId
+        );
         return null;
       }
 
@@ -40,9 +52,10 @@ export class GoogleCalendarProvider implements CalendarProvider {
         refresh_token: data.refresh_token || undefined,
         scope: data.scope,
         token_type: data.token_type,
-        expiry_date: data.expires_at ? new Date(data.expires_at).getTime() : undefined,
+        expiry_date: data.expires_at
+          ? new Date(data.expires_at).getTime()
+          : undefined,
       };
-
     } catch (error) {
       console.error('Error loading Google Calendar tokens:', error);
       return null;
@@ -62,14 +75,22 @@ export class GoogleCalendarProvider implements CalendarProvider {
     }
 
     // Check if token needs refresh
-    if (this.tokens.expiry_date && Date.now() > this.tokens.expiry_date - 300000) { // 5 minutes buffer
+    if (
+      this.tokens.expiry_date &&
+      Date.now() > this.tokens.expiry_date - 300000
+    ) {
+      // 5 minutes buffer
       console.log('Refreshing Google Calendar access token');
-      
+
       if (!this.tokens.refresh_token) {
-        throw new Error('No refresh token available, re-authentication required');
+        throw new Error(
+          'No refresh token available, re-authentication required'
+        );
       }
 
-      const refreshResult = await googleCalendarAuth.refreshAccessToken(this.tokens.refresh_token);
+      const refreshResult = await googleCalendarAuth.refreshAccessToken(
+        this.tokens.refresh_token
+      );
       if (!refreshResult.success || !refreshResult.tokens) {
         throw new Error(`Token refresh failed: ${refreshResult.error}`);
       }
@@ -83,7 +104,9 @@ export class GoogleCalendarProvider implements CalendarProvider {
         .update({
           access_token: this.tokens.access_token,
           refresh_token: this.tokens.refresh_token,
-          expires_at: this.tokens.expiry_date ? new Date(this.tokens.expiry_date).toISOString() : null,
+          expires_at: this.tokens.expiry_date
+            ? new Date(this.tokens.expiry_date).toISOString()
+            : null,
           updated_at: new Date().toISOString(),
         })
         .eq('user_id', this.userId)
@@ -113,7 +136,9 @@ export class GoogleCalendarProvider implements CalendarProvider {
   /**
    * Initiate authentication
    */
-  async authenticate(userId: string): Promise<{ authUrl?: string; success: boolean; error?: string }> {
+  async authenticate(
+    userId: string
+  ): Promise<{ authUrl?: string; success: boolean; error?: string }> {
     try {
       const authUrl = googleCalendarAuth.generateAuthUrl(userId);
       return {
@@ -135,9 +160,9 @@ export class GoogleCalendarProvider implements CalendarProvider {
     try {
       const calendar = await this.getCalendarClient();
       const response = await calendar.calendarList.list();
-      
+
       const calendars = response.data.items || [];
-      return calendars.map(cal => ({
+      return calendars.map((cal) => ({
         id: cal.id || '',
         summary: cal.summary || 'Unnamed Calendar',
         description: cal.description || undefined,
@@ -149,10 +174,11 @@ export class GoogleCalendarProvider implements CalendarProvider {
         primary: cal.primary || false,
         selected: cal.selected || false,
       }));
-
     } catch (error) {
       console.error('Error listing Google Calendars:', error);
-      throw new Error(`Failed to list calendars: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to list calendars: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -163,7 +189,7 @@ export class GoogleCalendarProvider implements CalendarProvider {
     try {
       const calendar = await this.getCalendarClient();
       const response = await calendar.calendarList.get({ calendarId });
-      
+
       const cal = response.data;
       return {
         id: cal.id || '',
@@ -177,7 +203,6 @@ export class GoogleCalendarProvider implements CalendarProvider {
         primary: cal.primary || false,
         selected: cal.selected || false,
       };
-
     } catch (error) {
       console.error('Error getting Google Calendar:', error);
       return null;
@@ -187,10 +212,13 @@ export class GoogleCalendarProvider implements CalendarProvider {
   /**
    * Create calendar event
    */
-  async createEvent(calendarId: string, event: CalendarEvent): Promise<CalendarEventResult> {
+  async createEvent(
+    calendarId: string,
+    event: CalendarEvent
+  ): Promise<CalendarEventResult> {
     try {
       const calendar = await this.getCalendarClient();
-      
+
       // Convert Flynn event format to Google Calendar format
       const googleEvent = {
         summary: event.title,
@@ -204,7 +232,7 @@ export class GoogleCalendarProvider implements CalendarProvider {
           dateTime: event.end.dateTime,
           timeZone: event.end.timeZone || 'America/Los_Angeles',
         },
-        attendees: event.attendees?.map(attendee => ({
+        attendees: event.attendees?.map((attendee) => ({
           email: attendee.email,
           displayName: attendee.displayName,
           responseStatus: attendee.responseStatus,
@@ -218,8 +246,11 @@ export class GoogleCalendarProvider implements CalendarProvider {
         source: event.source,
       };
 
-      console.log('Creating Google Calendar event:', { calendarId, title: event.title });
-      
+      console.log('Creating Google Calendar event:', {
+        calendarId,
+        title: event.title,
+      });
+
       const response = await calendar.events.insert({
         calendarId,
         requestBody: googleEvent,
@@ -227,7 +258,7 @@ export class GoogleCalendarProvider implements CalendarProvider {
       });
 
       const createdEvent = response.data;
-      
+
       return {
         success: true,
         eventId: createdEvent.id || undefined,
@@ -236,12 +267,12 @@ export class GoogleCalendarProvider implements CalendarProvider {
           id: createdEvent.id || undefined,
         },
       };
-
     } catch (error) {
       console.error('Error creating Google Calendar event:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create event',
+        error:
+          error instanceof Error ? error.message : 'Failed to create event',
       };
     }
   }
@@ -249,12 +280,19 @@ export class GoogleCalendarProvider implements CalendarProvider {
   /**
    * Update calendar event
    */
-  async updateEvent(calendarId: string, eventId: string, event: Partial<CalendarEvent>): Promise<CalendarEventResult> {
+  async updateEvent(
+    calendarId: string,
+    eventId: string,
+    event: Partial<CalendarEvent>
+  ): Promise<CalendarEventResult> {
     try {
       const calendar = await this.getCalendarClient();
-      
+
       // Get existing event first
-      const existingResponse = await calendar.events.get({ calendarId, eventId });
+      const existingResponse = await calendar.events.get({
+        calendarId,
+        eventId,
+      });
       const existingEvent = existingResponse.data;
 
       // Merge updates with existing event
@@ -263,14 +301,18 @@ export class GoogleCalendarProvider implements CalendarProvider {
         summary: event.title || existingEvent.summary,
         description: event.description || existingEvent.description,
         location: event.location || existingEvent.location,
-        start: event.start ? {
-          dateTime: event.start.dateTime,
-          timeZone: event.start.timeZone,
-        } : existingEvent.start,
-        end: event.end ? {
-          dateTime: event.end.dateTime,
-          timeZone: event.end.timeZone,
-        } : existingEvent.end,
+        start: event.start
+          ? {
+              dateTime: event.start.dateTime,
+              timeZone: event.start.timeZone,
+            }
+          : existingEvent.start,
+        end: event.end
+          ? {
+              dateTime: event.end.dateTime,
+              timeZone: event.end.timeZone,
+            }
+          : existingEvent.end,
         attendees: event.attendees || existingEvent.attendees,
         status: event.status || existingEvent.status,
         transparency: event.transparency || existingEvent.transparency,
@@ -288,12 +330,12 @@ export class GoogleCalendarProvider implements CalendarProvider {
         eventId: response.data.id || undefined,
         event: event as CalendarEvent,
       };
-
     } catch (error) {
       console.error('Error updating Google Calendar event:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to update event',
+        error:
+          error instanceof Error ? error.message : 'Failed to update event',
       };
     }
   }
@@ -301,10 +343,13 @@ export class GoogleCalendarProvider implements CalendarProvider {
   /**
    * Delete calendar event
    */
-  async deleteEvent(calendarId: string, eventId: string): Promise<{ success: boolean; error?: string }> {
+  async deleteEvent(
+    calendarId: string,
+    eventId: string
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       const calendar = await this.getCalendarClient();
-      
+
       await calendar.events.delete({
         calendarId,
         eventId,
@@ -313,12 +358,12 @@ export class GoogleCalendarProvider implements CalendarProvider {
 
       console.log('Successfully deleted Google Calendar event:', eventId);
       return { success: true };
-
     } catch (error) {
       console.error('Error deleting Google Calendar event:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to delete event',
+        error:
+          error instanceof Error ? error.message : 'Failed to delete event',
       };
     }
   }
@@ -326,11 +371,14 @@ export class GoogleCalendarProvider implements CalendarProvider {
   /**
    * Get specific calendar event
    */
-  async getEvent(calendarId: string, eventId: string): Promise<CalendarEvent | null> {
+  async getEvent(
+    calendarId: string,
+    eventId: string
+  ): Promise<CalendarEvent | null> {
     try {
       const calendar = await this.getCalendarClient();
       const response = await calendar.events.get({ calendarId, eventId });
-      
+
       const event = response.data;
       return {
         id: event.id || undefined,
@@ -345,7 +393,7 @@ export class GoogleCalendarProvider implements CalendarProvider {
           dateTime: event.end?.dateTime || event.end?.date || '',
           timeZone: event.end?.timeZone,
         },
-        attendees: event.attendees?.map(attendee => ({
+        attendees: event.attendees?.map((attendee) => ({
           email: attendee.email || '',
           displayName: attendee.displayName,
           responseStatus: attendee.responseStatus as any,
@@ -353,7 +401,6 @@ export class GoogleCalendarProvider implements CalendarProvider {
         status: event.status as any,
         transparency: event.transparency as any,
       };
-
     } catch (error) {
       console.error('Error getting Google Calendar event:', error);
       return null;
@@ -375,7 +422,7 @@ export class GoogleCalendarProvider implements CalendarProvider {
   ): Promise<CalendarEvent[]> {
     try {
       const calendar = await this.getCalendarClient();
-      
+
       const response = await calendar.events.list({
         calendarId,
         timeMin: options.timeMin,
@@ -386,7 +433,7 @@ export class GoogleCalendarProvider implements CalendarProvider {
       });
 
       const events = response.data.items || [];
-      return events.map(event => ({
+      return events.map((event) => ({
         id: event.id || undefined,
         title: event.summary || 'Untitled Event',
         description: event.description || undefined,
@@ -399,7 +446,7 @@ export class GoogleCalendarProvider implements CalendarProvider {
           dateTime: event.end?.dateTime || event.end?.date || '',
           timeZone: event.end?.timeZone,
         },
-        attendees: event.attendees?.map(attendee => ({
+        attendees: event.attendees?.map((attendee) => ({
           email: attendee.email || '',
           displayName: attendee.displayName,
           responseStatus: attendee.responseStatus as any,
@@ -407,17 +454,21 @@ export class GoogleCalendarProvider implements CalendarProvider {
         status: event.status as any,
         transparency: event.transparency as any,
       }));
-
     } catch (error) {
       console.error('Error listing Google Calendar events:', error);
-      throw new Error(`Failed to list events: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Failed to list events: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
   /**
    * Check for calendar conflicts
    */
-  async checkConflicts(calendarId: string, event: CalendarEvent): Promise<CalendarConflict[]> {
+  async checkConflicts(
+    calendarId: string,
+    event: CalendarEvent
+  ): Promise<CalendarConflict[]> {
     try {
       const conflicts: CalendarConflict[] = [];
 
@@ -425,7 +476,7 @@ export class GoogleCalendarProvider implements CalendarProvider {
       const buffer = 2 * 60 * 60 * 1000; // 2 hours buffer
       const eventStart = new Date(event.start.dateTime);
       const eventEnd = new Date(event.end.dateTime);
-      
+
       const timeMin = new Date(eventStart.getTime() - buffer).toISOString();
       const timeMax = new Date(eventEnd.getTime() + buffer).toISOString();
 
@@ -454,8 +505,10 @@ export class GoogleCalendarProvider implements CalendarProvider {
         }
         // Adjacent events (less than 15 minutes apart)
         else if (
-          Math.abs(eventStart.getTime() - existingEnd.getTime()) < 15 * 60 * 1000 ||
-          Math.abs(existingStart.getTime() - eventEnd.getTime()) < 15 * 60 * 1000
+          Math.abs(eventStart.getTime() - existingEnd.getTime()) <
+            15 * 60 * 1000 ||
+          Math.abs(existingStart.getTime() - eventEnd.getTime()) <
+            15 * 60 * 1000
         ) {
           conflicts.push({
             conflictingEvent: existing,
@@ -466,9 +519,11 @@ export class GoogleCalendarProvider implements CalendarProvider {
         }
         // Travel time consideration for events with locations
         else if (
-          event.location && existing.location && 
+          event.location &&
+          existing.location &&
           event.location !== existing.location &&
-          Math.abs(eventStart.getTime() - existingEnd.getTime()) < 30 * 60 * 1000
+          Math.abs(eventStart.getTime() - existingEnd.getTime()) <
+            30 * 60 * 1000
         ) {
           conflicts.push({
             conflictingEvent: existing,
@@ -480,7 +535,6 @@ export class GoogleCalendarProvider implements CalendarProvider {
       }
 
       return conflicts;
-
     } catch (error) {
       console.error('Error checking Google Calendar conflicts:', error);
       return []; // Return empty array rather than throwing
@@ -489,6 +543,8 @@ export class GoogleCalendarProvider implements CalendarProvider {
 }
 
 // Factory function for creating Google Calendar provider instances
-export function createGoogleCalendarProvider(userId: string): GoogleCalendarProvider {
+export function createGoogleCalendarProvider(
+  userId: string
+): GoogleCalendarProvider {
   return new GoogleCalendarProvider(userId);
 }

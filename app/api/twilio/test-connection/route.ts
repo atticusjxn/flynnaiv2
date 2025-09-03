@@ -7,7 +7,10 @@ export async function POST(request: NextRequest) {
 
     if (!accountSid || !authToken || !phoneNumber) {
       return NextResponse.json(
-        { error: 'Missing required fields: accountSid, authToken, or phoneNumber' },
+        {
+          error:
+            'Missing required fields: accountSid, authToken, or phoneNumber',
+        },
         { status: 400 }
       );
     }
@@ -18,10 +21,10 @@ export async function POST(request: NextRequest) {
     // Test the connection by fetching account info
     try {
       const account = await twilioClient.api.accounts(accountSid).fetch();
-      
+
       // Verify the phone number exists and is active
       const incomingPhoneNumber = await twilioClient.incomingPhoneNumbers.list({
-        phoneNumber: phoneNumber
+        phoneNumber: phoneNumber,
       });
 
       if (incomingPhoneNumber.length === 0) {
@@ -46,13 +49,12 @@ export async function POST(request: NextRequest) {
           friendlyName: account.friendlyName,
           status: account.status,
           phoneNumber: phoneNumberDetails.phoneNumber,
-          capabilities: phoneNumberDetails.capabilities
-        }
+          capabilities: phoneNumberDetails.capabilities,
+        },
       });
-
     } catch (twilioError: any) {
       console.error('Twilio API Error:', twilioError);
-      
+
       if (twilioError.status === 401) {
         return NextResponse.json(
           { error: 'Invalid Twilio credentials' },
@@ -60,7 +62,10 @@ export async function POST(request: NextRequest) {
         );
       } else if (twilioError.status === 403) {
         return NextResponse.json(
-          { error: 'Access denied. Please check your Twilio account permissions' },
+          {
+            error:
+              'Access denied. Please check your Twilio account permissions',
+          },
           { status: 403 }
         );
       } else {
@@ -70,7 +75,6 @@ export async function POST(request: NextRequest) {
         );
       }
     }
-
   } catch (error) {
     console.error('Test connection error:', error);
     return NextResponse.json(

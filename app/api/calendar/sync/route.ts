@@ -25,7 +25,9 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const userId = user?.id || '00000000-0000-0000-0000-000000000123'; // Fallback for testing
 
     initializeCalendarService(userId);
@@ -37,20 +39,19 @@ export async function GET(request: NextRequest) {
       message: 'Calendar sync status',
       timestamp: new Date().toISOString(),
       user_id: userId,
-      providers: calendarService.getAvailableProviders().map(p => ({
+      providers: calendarService.getAvailableProviders().map((p) => ({
         id: p.providerId,
         name: p.displayName,
         authenticated: false, // Will be updated when we check each provider
       })),
       google_auth_status: authStatus,
     });
-
   } catch (error) {
     console.error('Calendar sync status error:', error);
     return NextResponse.json(
-      { 
-        error: 'Failed to get calendar sync status', 
-        details: error instanceof Error ? error.message : 'Unknown error' 
+      {
+        error: 'Failed to get calendar sync status',
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );
@@ -74,7 +75,9 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const userId = user?.id || '00000000-0000-0000-0000-000000000123'; // Fallback for testing
 
     initializeCalendarService(userId);
@@ -94,9 +97,12 @@ export async function POST(request: NextRequest) {
         id: `test-event-${Date.now()}`,
         call_id: `test-call-${Date.now()}`,
         title: 'Kitchen Sink Repair - Test Event',
-        description: 'Test appointment created by Flynn.ai calendar integration. Customer needs kitchen sink leak fixed.',
+        description:
+          'Test appointment created by Flynn.ai calendar integration. Customer needs kitchen sink leak fixed.',
         type: 'service_call',
-        proposed_datetime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Tomorrow
+        proposed_datetime: new Date(
+          Date.now() + 24 * 60 * 60 * 1000
+        ).toISOString(), // Tomorrow
         duration_minutes: 90,
         urgency: 'medium',
         customer_name: 'John Test',
@@ -163,15 +169,20 @@ export async function POST(request: NextRequest) {
 
     if (action === 'batch-sync') {
       const { flynn_events } = await request.json();
-      
+
       if (!calendar_id || !flynn_events || !Array.isArray(flynn_events)) {
         return NextResponse.json(
-          { error: 'calendar_id and flynn_events array are required for batch sync' },
+          {
+            error:
+              'calendar_id and flynn_events array are required for batch sync',
+          },
           { status: 400 }
         );
       }
 
-      console.log(`Batch syncing ${flynn_events.length} Flynn events to calendar`);
+      console.log(
+        `Batch syncing ${flynn_events.length} Flynn events to calendar`
+      );
 
       const result = await calendarService.batchSyncEventsToCalendar(
         flynn_events,
@@ -192,16 +203,18 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { error: 'Unknown action. Use: create-test-event, sync-flynn-event, batch-sync' },
+      {
+        error:
+          'Unknown action. Use: create-test-event, sync-flynn-event, batch-sync',
+      },
       { status: 400 }
     );
-
   } catch (error) {
     console.error('Calendar sync error:', error);
     return NextResponse.json(
-      { 
-        error: 'Calendar sync failed', 
-        details: error instanceof Error ? error.message : 'Unknown error' 
+      {
+        error: 'Calendar sync failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );

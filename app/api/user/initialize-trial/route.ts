@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         message: 'User trial already initialized',
-        alreadyInitialized: true
+        alreadyInitialized: true,
       });
     }
 
@@ -47,9 +47,8 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Trial initialized successfully',
       trial: trialUser,
-      alreadyInitialized: false
+      alreadyInitialized: false,
     });
-
   } catch (error) {
     console.error('Failed to initialize trial:', error);
     return NextResponse.json(

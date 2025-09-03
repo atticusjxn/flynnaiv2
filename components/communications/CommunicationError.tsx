@@ -11,7 +11,10 @@ interface CommunicationErrorProps {
   onRetry?: () => void;
 }
 
-export default function CommunicationError({ error, onRetry }: CommunicationErrorProps) {
+export default function CommunicationError({
+  error,
+  onRetry,
+}: CommunicationErrorProps) {
   return (
     <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-700">
       <CardBody className="text-center py-12">
@@ -19,7 +22,11 @@ export default function CommunicationError({ error, onRetry }: CommunicationErro
         <h3 className="text-lg font-semibold mb-2">Communication Error</h3>
         <p className="text-slate-600 dark:text-slate-400 mb-4">{error}</p>
         {onRetry && (
-          <Button color="primary" onPress={onRetry} startContent={<RefreshCw />}>
+          <Button
+            color="primary"
+            onPress={onRetry}
+            startContent={<RefreshCw />}
+          >
             Try Again
           </Button>
         )}

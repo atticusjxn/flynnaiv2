@@ -1,6 +1,7 @@
 # Twilio Webhook Setup for Flynn.ai v2
 
 ## Overview
+
 This document outlines the Twilio webhook configuration required for Flynn.ai v2 to process incoming calls and recordings.
 
 ## Required Environment Variables
@@ -16,21 +17,25 @@ TWILIO_PHONE_NUMBER=+1234567890
 ## Webhook Endpoints
 
 ### 1. Voice Webhook
+
 **URL:** `https://your-domain.com/api/webhooks/twilio/voice`
 **Method:** POST
 **Description:** Handles incoming calls, generates TwiML response with industry-specific greeting
 
-### 2. Recording Webhook  
+### 2. Recording Webhook
+
 **URL:** `https://your-domain.com/api/webhooks/twilio/recording`
 **Method:** POST
 **Description:** Processes completed recordings and triggers AI processing pipeline
 
 ### 3. Recording Status Webhook
+
 **URL:** `https://your-domain.com/api/webhooks/twilio/recording-status`
 **Method:** POST
 **Description:** Tracks recording status updates (completed, failed, in-progress)
 
 ### 4. Test Webhook
+
 **URL:** `https://your-domain.com/api/webhooks/twilio/test`
 **Method:** POST/GET
 **Description:** Test endpoint for verifying webhook connectivity
@@ -44,11 +49,13 @@ TWILIO_PHONE_NUMBER=+1234567890
 3. Set the following webhook URLs:
 
 #### Voice Configuration
+
 - **Webhook URL:** `https://your-domain.com/api/webhooks/twilio/voice`
 - **HTTP Method:** POST
 - **Call Status Changes:** `https://your-domain.com/api/webhooks/ `
 
 #### Messaging Configuration (Optional)
+
 - **Webhook URL:** `https://your-domain.com/api/webhooks/twilio/sms` (if implementing SMS features later)
 
 ### Step 2: Recording Configuration
@@ -56,7 +63,7 @@ TWILIO_PHONE_NUMBER=+1234567890
 Recordings are configured via TwiML in the voice webhook:
 
 ```xml
-<Record 
+<Record
   action="/api/webhooks/twilio/recording"
   method="POST"
   maxLength="600"
@@ -129,6 +136,7 @@ Recordings are configured via TwiML in the voice webhook:
 ## Next Steps
 
 After webhook setup is complete:
+
 1. Implement OpenAI integration for transcription and AI processing
 2. Set up email system for sending call summaries
 3. Configure calendar integration for event creation

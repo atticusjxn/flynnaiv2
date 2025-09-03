@@ -38,7 +38,10 @@ export class EventService {
     return data || [];
   }
 
-  async updateEvent(eventId: string, updates: EventUpdate): Promise<Event | null> {
+  async updateEvent(
+    eventId: string,
+    updates: EventUpdate
+  ): Promise<Event | null> {
     const { data, error } = await this.supabase
       .from('events')
       .update(updates)
@@ -125,13 +128,13 @@ export class EventService {
       updates.completed_at = completedAt;
     }
 
-    await this.supabase
-      .from('events')
-      .update(updates)
-      .eq('id', eventId);
+    await this.supabase.from('events').update(updates).eq('id', eventId);
   }
 
-  async markCalendarSynced(eventId: string, calendarEventId: string): Promise<void> {
+  async markCalendarSynced(
+    eventId: string,
+    calendarEventId: string
+  ): Promise<void> {
     await this.supabase
       .from('events')
       .update({
@@ -158,13 +161,15 @@ export class EventService {
       return null;
     }
 
-    return data?.[0] || {
-      total_events: 0,
-      pending_events: 0,
-      confirmed_events: 0,
-      completed_events: 0,
-      conversion_rate: 0,
-    };
+    return (
+      data?.[0] || {
+        total_events: 0,
+        pending_events: 0,
+        confirmed_events: 0,
+        completed_events: 0,
+        conversion_rate: 0,
+      }
+    );
   }
 
   async deleteEvent(eventId: string): Promise<boolean> {

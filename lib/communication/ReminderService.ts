@@ -10,7 +10,8 @@ import { Resend } from 'resend';
 
 type Event = Database['public']['Tables']['events']['Row'];
 type User = Database['public']['Tables']['users']['Row'];
-type CommunicationLog = Database['public']['Tables']['communication_logs']['Insert'];
+type CommunicationLog =
+  Database['public']['Tables']['communication_logs']['Insert'];
 
 export interface ReminderConfig {
   emailEnabled: boolean;
@@ -34,11 +35,17 @@ export class ReminderService {
 
   constructor() {
     if (!process.env.RESEND_API_KEY) {
-      console.warn('RESEND_API_KEY not configured - email reminders will be disabled');
+      console.warn(
+        'RESEND_API_KEY not configured - email reminders will be disabled'
+      );
     }
   }
 
-  async scheduleEventReminders(eventId: string, userId: string, config?: ReminderConfig): Promise<{
+  async scheduleEventReminders(
+    eventId: string,
+    userId: string,
+    config?: ReminderConfig
+  ): Promise<{
     success: boolean;
     scheduledCount: number;
     error?: string;
@@ -74,7 +81,7 @@ export class ReminderService {
             userId,
             reminderType: this.getReminderType(event, reminderConfig),
             scheduledFor: reminderTime.scheduledFor,
-            hoursBeforeEvent: reminderTime.hoursBeforeEvent
+            hoursBeforeEvent: reminderTime.hoursBeforeEvent,
           });
           scheduledCount++;
         }
@@ -87,13 +94,12 @@ export class ReminderService {
         .eq('id', eventId);
 
       return { success: true, scheduledCount };
-
     } catch (error) {
       console.error('Error scheduling reminders:', error);
       return {
         success: false,
         scheduledCount: 0,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -114,15 +120,22 @@ export class ReminderService {
 
       for (const event of upcomingEvents) {
         processed++;
-        
+
         try {
           const reminderConfig = await this.getReminderConfig(event.user_id);
-          const hoursUntilEvent = this.getHoursUntilEvent(event.confirmed_datetime || event.proposed_datetime);
-          
+          const hoursUntilEvent = this.getHoursUntilEvent(
+            event.confirmed_datetime || event.proposed_datetime
+          );
+
           // Check if it's time to send reminder
-          if (this.shouldSendReminder(hoursUntilEvent, reminderConfig.reminderHours)) {
+          if (
+            this.shouldSendReminder(
+              hoursUntilEvent,
+              reminderConfig.reminderHours
+            )
+          ) {
             const result = await this.sendEventReminder(event, reminderConfig);
-            
+
             if (result.success) {
               successful++;
               // Mark reminder as sent
@@ -135,11 +148,13 @@ export class ReminderService {
             }
           }
         } catch (error) {
-          console.error(`Error processing reminder for event ${event.id}:`, error);
+          console.error(
+            `Error processing reminder for event ${event.id}:`,
+            error
+          );
           failed++;
         }
       }
-
     } catch (error) {
       console.error('Error processing scheduled reminders:', error);
     }
@@ -147,14 +162,24 @@ export class ReminderService {
     return { processed, successful, failed };
   }
 
-  async sendEventReminder(event: Event, config: ReminderConfig): Promise<{
+  async sendEventReminder(
+    event: Event,
+    config: ReminderConfig
+  ): Promise<{
     success: boolean;
     emailSent?: boolean;
     smsSent?: boolean;
     error?: string;
   }> {
-    const results = { success: false, emailSent: false, smsSent: false, error: '' };
-    const hoursUntilEvent = this.getHoursUntilEvent(event.confirmed_datetime || event.proposed_datetime);
+    const results = {
+      success: false,
+      emailSent: false,
+      smsSent: false,
+      error: '',
+    };
+    const hoursUntilEvent = this.getHoursUntilEvent(
+      event.confirmed_datetime || event.proposed_datetime
+    );
 
     try {
       // Get user details
@@ -171,7 +196,11 @@ export class ReminderService {
       // Send email reminder
       if (config.emailEnabled && event.customer_email) {
         try {
-          const emailResult = await this.sendEmailReminder(event, user, hoursUntilEvent);
+          const emailResult = await this.sendEmailReminder(
+            event,
+            user,
+            hoursUntilEvent
+          );
           results.emailSent = emailResult.success;
           if (!emailResult.success) {
             results.error += `Email failed: ${emailResult.error}. `;
@@ -184,7 +213,11 @@ export class ReminderService {
       // Send SMS reminder
       if (config.smsEnabled && event.customer_phone) {
         try {
-          const smsResult = await smsService.sendEventReminder(event, event.user_id, hoursUntilEvent);
+          const smsResult = await smsService.sendEventReminder(
+            event,
+            event.user_id,
+            hoursUntilEvent
+          );
           results.smsSent = smsResult.success;
           if (!smsResult.success) {
             results.error += `SMS failed: ${smsResult.error}. `;
@@ -196,16 +229,19 @@ export class ReminderService {
 
       results.success = results.emailSent || results.smsSent;
       return results;
-
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
 
-  private async sendEmailReminder(event: Event, user: User, hoursUntilEvent: number): Promise<{
+  private async sendEmailReminder(
+    event: Event,
+    user: User,
+    hoursUntilEvent: number
+  ): Promise<{
     success: boolean;
     error?: string;
   }> {
@@ -214,19 +250,25 @@ export class ReminderService {
     }
 
     try {
-      const emailHtml = render(CustomerReminderEmail({
-        customerName: event.customer_name || 'Valued Customer',
-        companyName: user.company_name || user.full_name || 'Your Service Provider',
-        eventType: this.formatEventType(event.event_type),
-        eventTitle: event.title,
-        confirmedDateTime: event.confirmed_datetime || event.proposed_datetime || new Date().toISOString(),
-        location: event.location,
-        duration: event.duration_minutes || undefined,
-        businessPhone: user.phone_number || undefined,
-        businessEmail: user.email,
-        hoursUntilEvent,
-        specialInstructions: event.notes || undefined
-      }));
+      const emailHtml = render(
+        CustomerReminderEmail({
+          customerName: event.customer_name || 'Valued Customer',
+          companyName:
+            user.company_name || user.full_name || 'Your Service Provider',
+          eventType: this.formatEventType(event.event_type),
+          eventTitle: event.title,
+          confirmedDateTime:
+            event.confirmed_datetime ||
+            event.proposed_datetime ||
+            new Date().toISOString(),
+          location: event.location,
+          duration: event.duration_minutes || undefined,
+          businessPhone: user.phone_number || undefined,
+          businessEmail: user.email,
+          hoursUntilEvent,
+          specialInstructions: event.notes || undefined,
+        })
+      );
 
       const emailResponse = await this.resend.emails.send({
         from: `${user.company_name || 'Flynn.ai'} <noreply@flynn.ai>`,
@@ -245,14 +287,13 @@ export class ReminderService {
         content: 'Appointment reminder email',
         status: 'sent',
         external_id: emailResponse.data?.id,
-        sent_at: new Date().toISOString()
+        sent_at: new Date().toISOString(),
       });
 
       return { success: true };
-
     } catch (error) {
       console.error('Email reminder failed:', error);
-      
+
       // Log failed email
       await this.logCommunication({
         user_id: event.user_id,
@@ -262,17 +303,20 @@ export class ReminderService {
         subject: `Reminder: ${event.title}`,
         content: 'Appointment reminder email',
         status: 'failed',
-        error_message: error instanceof Error ? error.message : 'Unknown error'
+        error_message: error instanceof Error ? error.message : 'Unknown error',
       });
 
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
 
-  private async getReminderConfig(userId: string, override?: ReminderConfig): Promise<ReminderConfig> {
+  private async getReminderConfig(
+    userId: string,
+    override?: ReminderConfig
+  ): Promise<ReminderConfig> {
     if (override) return override;
 
     try {
@@ -290,7 +334,7 @@ export class ReminderService {
         smsEnabled: settings?.smsEnabled ?? true,
         reminderHours: settings?.reminderHours ?? [24, 2], // 24 hours and 2 hours before
         onlyBusinessHours: settings?.onlyBusinessHours ?? false,
-        timezone: settings?.timezone ?? 'America/New_York'
+        timezone: settings?.timezone ?? 'America/New_York',
       };
     } catch (error) {
       // Return defaults if no config found
@@ -299,36 +343,49 @@ export class ReminderService {
         smsEnabled: true,
         reminderHours: [24, 2],
         onlyBusinessHours: false,
-        timezone: 'America/New_York'
+        timezone: 'America/New_York',
       };
     }
   }
 
-  private calculateReminderTimes(eventDateTime: string | null, config: ReminderConfig): Array<{
+  private calculateReminderTimes(
+    eventDateTime: string | null,
+    config: ReminderConfig
+  ): Array<{
     scheduledFor: Date;
     hoursBeforeEvent: number;
   }> {
     if (!eventDateTime) return [];
 
     const eventDate = new Date(eventDateTime);
-    const reminderTimes: Array<{ scheduledFor: Date; hoursBeforeEvent: number }> = [];
+    const reminderTimes: Array<{
+      scheduledFor: Date;
+      hoursBeforeEvent: number;
+    }> = [];
 
     for (const hours of config.reminderHours) {
-      const reminderTime = new Date(eventDate.getTime() - (hours * 60 * 60 * 1000));
-      
+      const reminderTime = new Date(
+        eventDate.getTime() - hours * 60 * 60 * 1000
+      );
+
       // Skip if reminder time is in the past
       if (reminderTime > new Date()) {
         reminderTimes.push({
           scheduledFor: reminderTime,
-          hoursBeforeEvent: hours
+          hoursBeforeEvent: hours,
         });
       }
     }
 
-    return reminderTimes.sort((a, b) => a.scheduledFor.getTime() - b.scheduledFor.getTime());
+    return reminderTimes.sort(
+      (a, b) => a.scheduledFor.getTime() - b.scheduledFor.getTime()
+    );
   }
 
-  private getReminderType(event: Event, config: ReminderConfig): 'email' | 'sms' | 'both' {
+  private getReminderType(
+    event: Event,
+    config: ReminderConfig
+  ): 'email' | 'sms' | 'both' {
     const hasEmail = !!event.customer_email && config.emailEnabled;
     const hasSMS = !!event.customer_phone && config.smsEnabled;
 
@@ -342,8 +399,10 @@ export class ReminderService {
     try {
       // Get events that are confirmed and have datetime within next 48 hours
       // and haven't had reminders sent recently
-      const twoDaysFromNow = new Date(Date.now() + (48 * 60 * 60 * 1000)).toISOString();
-      const oneHourAgo = new Date(Date.now() - (60 * 60 * 1000)).toISOString();
+      const twoDaysFromNow = new Date(
+        Date.now() + 48 * 60 * 60 * 1000
+      ).toISOString();
+      const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
 
       const { data: events, error } = await this.supabase
         .from('events')
@@ -361,50 +420,56 @@ export class ReminderService {
     }
   }
 
-  private shouldSendReminder(hoursUntilEvent: number, reminderHours: number[]): boolean {
+  private shouldSendReminder(
+    hoursUntilEvent: number,
+    reminderHours: number[]
+  ): boolean {
     // Check if current time matches any configured reminder time (within 30 minutes)
-    return reminderHours.some(hours => 
-      Math.abs(hoursUntilEvent - hours) <= 0.5
+    return reminderHours.some(
+      (hours) => Math.abs(hoursUntilEvent - hours) <= 0.5
     );
   }
 
   private getHoursUntilEvent(eventDateTime: string | null): number {
     if (!eventDateTime) return 0;
-    
+
     const eventDate = new Date(eventDateTime);
     const now = new Date();
-    return Math.max(0, (eventDate.getTime() - now.getTime()) / (1000 * 60 * 60));
+    return Math.max(
+      0,
+      (eventDate.getTime() - now.getTime()) / (1000 * 60 * 60)
+    );
   }
 
   private formatEventType(eventType: string | null): string {
     if (!eventType) return 'appointment';
-    
+
     const typeMap: Record<string, string> = {
-      'service_call': 'service call',
-      'meeting': 'meeting',
-      'appointment': 'appointment',
-      'demo': 'demo',
-      'follow_up': 'follow-up',
-      'quote': 'quote appointment',
-      'consultation': 'consultation',
-      'inspection': 'inspection',
-      'emergency': 'emergency service'
+      service_call: 'service call',
+      meeting: 'meeting',
+      appointment: 'appointment',
+      demo: 'demo',
+      follow_up: 'follow-up',
+      quote: 'quote appointment',
+      consultation: 'consultation',
+      inspection: 'inspection',
+      emergency: 'emergency service',
     };
-    
+
     return typeMap[eventType] || eventType.replace('_', ' ');
   }
 
   private async scheduleReminder(job: ReminderJob): Promise<void> {
     // In a production environment, this would add the job to a queue
     // For now, we'll store it in the database for processing
-    console.log(`Reminder scheduled for event ${job.eventId} at ${job.scheduledFor}`);
+    console.log(
+      `Reminder scheduled for event ${job.eventId} at ${job.scheduledFor}`
+    );
   }
 
   private async logCommunication(log: CommunicationLog): Promise<void> {
     try {
-      await this.supabase
-        .from('communication_logs')
-        .insert(log);
+      await this.supabase.from('communication_logs').insert(log);
     } catch (error) {
       console.error('Failed to log communication:', error);
     }

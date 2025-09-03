@@ -7,7 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -24,7 +30,10 @@ import MedicalEmail from './industry/MedicalEmail';
 import SalesEmail from './industry/SalesEmail';
 import ConsultingEmail from './industry/ConsultingEmail';
 
-import { getIndustryConfiguration, getAllIndustries } from '@/lib/industry/configurations';
+import {
+  getIndustryConfiguration,
+  getAllIndustries,
+} from '@/lib/industry/configurations';
 import { EmailNotificationService } from '@/lib/email/EmailNotificationService';
 
 interface EmailPreviewProps {
@@ -38,7 +47,7 @@ interface PreviewData {
   userEmail: string;
   companyName: string;
   industry: string;
-  
+
   // Call data
   callSummary: {
     callerPhone: string;
@@ -47,7 +56,7 @@ interface PreviewData {
     timestamp: string;
     callSid: string;
   };
-  
+
   // Events
   extractedEvents: Array<{
     id: string;
@@ -63,18 +72,22 @@ interface PreviewData {
     confidence: number;
     estimatedPrice?: number;
   }>;
-  
+
   // Additional context
   transcriptionSnippet: string;
   callId: string;
-  
+
   // Industry-specific toggles
   industryFeatures: {
     [key: string]: any;
   };
 }
 
-export default function EmailPreview({ initialData, onSendTest, className }: EmailPreviewProps) {
+export default function EmailPreview({
+  initialData,
+  onSendTest,
+  className,
+}: EmailPreviewProps) {
   const [previewData, setPreviewData] = useState<PreviewData>(() => ({
     userEmail: 'user@example.com',
     companyName: 'Acme Services',
@@ -91,8 +104,11 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
         id: '1',
         type: 'service_call',
         title: 'Kitchen Sink Repair',
-        description: 'Customer reports slow draining kitchen sink, possible clog in main line',
-        proposedDateTime: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        description:
+          'Customer reports slow draining kitchen sink, possible clog in main line',
+        proposedDateTime: new Date(
+          Date.now() + 24 * 60 * 60 * 1000
+        ).toISOString(),
         location: '123 Main Street, Anytown, State 12345',
         customerName: 'John Smith',
         customerPhone: '+1 (555) 123-4567',
@@ -102,7 +118,8 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
         estimatedPrice: 150,
       },
     ],
-    transcriptionSnippet: 'Hi, I need someone to come look at my kitchen sink. It\'s been draining really slowly for the past few days...',
+    transcriptionSnippet:
+      "Hi, I need someone to come look at my kitchen sink. It's been draining really slowly for the past few days...",
     callId: 'test-call-123',
     industryFeatures: {
       emergencyContact: '+1 (555) 999-0000',
@@ -110,15 +127,18 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
     },
     ...initialData,
   }));
-  
+
   const [renderedHtml, setRenderedHtml] = useState<string>('');
   const [testEmail, setTestEmail] = useState('test@example.com');
   const [isLoading, setIsLoading] = useState(false);
-  const [sendResult, setSendResult] = useState<{ success: boolean; message: string } | null>(null);
-  
+  const [sendResult, setSendResult] = useState<{
+    success: boolean;
+    message: string;
+  } | null>(null);
+
   const industries = getAllIndustries();
   const currentIndustry = getIndustryConfiguration(previewData.industry);
-  
+
   // Render the email template
   const renderEmailPreview = async () => {
     setIsLoading(true);
@@ -133,15 +153,16 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
         userEmail: previewData.userEmail,
         dashboardUrl: 'https://flynn.ai',
       };
-      
+
       let emailComponent;
-      
+
       switch (previewData.industry) {
         case 'plumbing':
           emailComponent = PlumbingEmail({
             ...baseProps,
             emergencyContact: previewData.industryFeatures.emergencyContact,
-            afterHoursAvailable: previewData.industryFeatures.afterHoursAvailable,
+            afterHoursAvailable:
+              previewData.industryFeatures.afterHoursAvailable,
           });
           break;
         case 'real_estate':
@@ -156,7 +177,8 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
             ...baseProps,
             attorneyBarNumber: previewData.industryFeatures.attorneyBarNumber,
             lawFirm: previewData.industryFeatures.lawFirm,
-            confidentialityRequired: previewData.industryFeatures.confidentialityRequired,
+            confidentialityRequired:
+              previewData.industryFeatures.confidentialityRequired,
           });
           break;
         case 'medical':
@@ -184,7 +206,7 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
         default:
           emailComponent = CallOverviewEmail(baseProps);
       }
-      
+
       const html = render(emailComponent);
       setRenderedHtml(html);
     } catch (error) {
@@ -192,38 +214,45 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
     }
     setIsLoading(false);
   };
-  
+
   // Send test email
   const sendTestEmail = async () => {
     setIsLoading(true);
     setSendResult(null);
-    
+
     try {
       const emailService = new EmailNotificationService();
-      const result = await emailService.sendEmailPreview(previewData as any, testEmail);
-      
+      const result = await emailService.sendEmailPreview(
+        previewData as any,
+        testEmail
+      );
+
       setSendResult({
         success: result.success,
-        message: result.success ? 'Test email sent successfully!' : result.error || 'Failed to send test email',
+        message: result.success
+          ? 'Test email sent successfully!'
+          : result.error || 'Failed to send test email',
       });
-      
+
       if (onSendTest) {
         onSendTest({ ...previewData, testEmail, result });
       }
     } catch (error) {
       setSendResult({
         success: false,
-        message: 'Failed to send test email: ' + (error instanceof Error ? error.message : 'Unknown error'),
+        message:
+          'Failed to send test email: ' +
+          (error instanceof Error ? error.message : 'Unknown error'),
       });
     }
-    
+
     setIsLoading(false);
   };
-  
+
   // Download HTML
   const downloadHtml = () => {
     if (!renderedHtml) return;
-    
+
     const blob = new Blob([renderedHtml], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -234,16 +263,16 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
-  
+
   // Update industry and reset features
   const updateIndustry = (industry: string) => {
-    setPreviewData(prev => ({
+    setPreviewData((prev) => ({
       ...prev,
       industry,
       industryFeatures: getDefaultIndustryFeatures(industry),
     }));
   };
-  
+
   // Get default industry features
   const getDefaultIndustryFeatures = (industry: string) => {
     switch (industry) {
@@ -283,12 +312,12 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
         return {};
     }
   };
-  
+
   // Initialize with rendered HTML
   React.useEffect(() => {
     renderEmailPreview();
   }, [previewData]);
-  
+
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Configuration Panel */}
@@ -307,17 +336,20 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
               <TabsTrigger value="industry">Industry Features</TabsTrigger>
               <TabsTrigger value="testing">Testing</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="basic" className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="industry">Industry</Label>
-                  <Select value={previewData.industry} onValueChange={updateIndustry}>
+                  <Select
+                    value={previewData.industry}
+                    onValueChange={updateIndustry}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {industries.map(industry => (
+                      {industries.map((industry) => (
                         <SelectItem key={industry.id} value={industry.id}>
                           {industry.name}
                         </SelectItem>
@@ -325,73 +357,89 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div>
                   <Label htmlFor="companyName">Company Name</Label>
                   <Input
                     id="companyName"
                     value={previewData.companyName}
-                    onChange={(e) => setPreviewData(prev => ({
-                      ...prev,
-                      companyName: e.target.value,
-                    }))}
+                    onChange={(e) =>
+                      setPreviewData((prev) => ({
+                        ...prev,
+                        companyName: e.target.value,
+                      }))
+                    }
                   />
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="callerName">Caller Name</Label>
                   <Input
                     id="callerName"
                     value={previewData.callSummary.callerName}
-                    onChange={(e) => setPreviewData(prev => ({
-                      ...prev,
-                      callSummary: {
-                        ...prev.callSummary,
-                        callerName: e.target.value,
-                      },
-                    }))}
+                    onChange={(e) =>
+                      setPreviewData((prev) => ({
+                        ...prev,
+                        callSummary: {
+                          ...prev.callSummary,
+                          callerName: e.target.value,
+                        },
+                      }))
+                    }
                   />
                 </div>
-                
+
                 <div>
                   <Label htmlFor="callerPhone">Caller Phone</Label>
                   <Input
                     id="callerPhone"
                     value={previewData.callSummary.callerPhone}
-                    onChange={(e) => setPreviewData(prev => ({
-                      ...prev,
-                      callSummary: {
-                        ...prev.callSummary,
-                        callerPhone: e.target.value,
-                      },
-                    }))}
+                    onChange={(e) =>
+                      setPreviewData((prev) => ({
+                        ...prev,
+                        callSummary: {
+                          ...prev.callSummary,
+                          callerPhone: e.target.value,
+                        },
+                      }))
+                    }
                   />
                 </div>
               </div>
-              
+
               <div>
                 <Label htmlFor="transcription">Transcription Snippet</Label>
                 <Textarea
                   id="transcription"
                   rows={3}
                   value={previewData.transcriptionSnippet}
-                  onChange={(e) => setPreviewData(prev => ({
-                    ...prev,
-                    transcriptionSnippet: e.target.value,
-                  }))}
+                  onChange={(e) =>
+                    setPreviewData((prev) => ({
+                      ...prev,
+                      transcriptionSnippet: e.target.value,
+                    }))
+                  }
                 />
               </div>
             </TabsContent>
-            
+
             <TabsContent value="events" className="space-y-4">
               {previewData.extractedEvents.map((event, index) => (
                 <Card key={event.id}>
                   <CardHeader>
                     <CardTitle className="text-sm flex items-center justify-between">
                       Event {index + 1}
-                      <Badge variant={event.urgency === 'emergency' ? 'destructive' : event.urgency === 'high' ? 'secondary' : 'outline'}>
+                      <Badge
+                        variant={
+                          event.urgency === 'emergency'
+                            ? 'destructive'
+                            : event.urgency === 'high'
+                              ? 'secondary'
+                              : 'outline'
+                        }
+                      >
                         {event.urgency}
                       </Badge>
                     </CardTitle>
@@ -402,25 +450,33 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
                         <Label>Title</Label>
                         <Input
                           value={event.title}
-                          onChange={(e) => setPreviewData(prev => ({
-                            ...prev,
-                            extractedEvents: prev.extractedEvents.map((evt, i) => 
-                              i === index ? { ...evt, title: e.target.value } : evt
-                            ),
-                          }))}
+                          onChange={(e) =>
+                            setPreviewData((prev) => ({
+                              ...prev,
+                              extractedEvents: prev.extractedEvents.map(
+                                (evt, i) =>
+                                  i === index
+                                    ? { ...evt, title: e.target.value }
+                                    : evt
+                              ),
+                            }))
+                          }
                         />
                       </div>
-                      
+
                       <div>
                         <Label>Urgency</Label>
                         <Select
                           value={event.urgency}
-                          onValueChange={(value) => setPreviewData(prev => ({
-                            ...prev,
-                            extractedEvents: prev.extractedEvents.map((evt, i) => 
-                              i === index ? { ...evt, urgency: value } : evt
-                            ),
-                          }))}
+                          onValueChange={(value) =>
+                            setPreviewData((prev) => ({
+                              ...prev,
+                              extractedEvents: prev.extractedEvents.map(
+                                (evt, i) =>
+                                  i === index ? { ...evt, urgency: value } : evt
+                              ),
+                            }))
+                          }
                         >
                           <SelectTrigger>
                             <SelectValue />
@@ -434,46 +490,57 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
                         </Select>
                       </div>
                     </div>
-                    
+
                     <div>
                       <Label>Description</Label>
                       <Textarea
                         rows={2}
                         value={event.description}
-                        onChange={(e) => setPreviewData(prev => ({
-                          ...prev,
-                          extractedEvents: prev.extractedEvents.map((evt, i) => 
-                            i === index ? { ...evt, description: e.target.value } : evt
-                          ),
-                        }))}
+                        onChange={(e) =>
+                          setPreviewData((prev) => ({
+                            ...prev,
+                            extractedEvents: prev.extractedEvents.map(
+                              (evt, i) =>
+                                i === index
+                                  ? { ...evt, description: e.target.value }
+                                  : evt
+                            ),
+                          }))
+                        }
                       />
                     </div>
-                    
+
                     <div>
                       <Label>Location</Label>
                       <Input
                         value={event.location}
-                        onChange={(e) => setPreviewData(prev => ({
-                          ...prev,
-                          extractedEvents: prev.extractedEvents.map((evt, i) => 
-                            i === index ? { ...evt, location: e.target.value } : evt
-                          ),
-                        }))}
+                        onChange={(e) =>
+                          setPreviewData((prev) => ({
+                            ...prev,
+                            extractedEvents: prev.extractedEvents.map(
+                              (evt, i) =>
+                                i === index
+                                  ? { ...evt, location: e.target.value }
+                                  : evt
+                            ),
+                          }))
+                        }
                       />
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </TabsContent>
-            
+
             <TabsContent value="industry" className="space-y-4">
               <div className="text-sm text-muted-foreground mb-4">
-                Industry: <Badge variant="outline">{currentIndustry.name}</Badge>
+                Industry:{' '}
+                <Badge variant="outline">{currentIndustry.name}</Badge>
               </div>
-              
+
               {renderIndustryFeatures()}
             </TabsContent>
-            
+
             <TabsContent value="testing" className="space-y-4">
               <div>
                 <Label htmlFor="testEmail">Test Email Address</Label>
@@ -485,26 +552,37 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
                   placeholder="Enter email to receive test"
                 />
               </div>
-              
+
               <div className="flex gap-2">
-                <Button onClick={sendTestEmail} disabled={isLoading || !testEmail}>
+                <Button
+                  onClick={sendTestEmail}
+                  disabled={isLoading || !testEmail}
+                >
                   <Send className="h-4 w-4 mr-2" />
                   Send Test Email
                 </Button>
-                
-                <Button variant="outline" onClick={downloadHtml} disabled={!renderedHtml}>
+
+                <Button
+                  variant="outline"
+                  onClick={downloadHtml}
+                  disabled={!renderedHtml}
+                >
                   <Download className="h-4 w-4 mr-2" />
                   Download HTML
                 </Button>
-                
-                <Button variant="outline" onClick={renderEmailPreview} disabled={isLoading}>
+
+                <Button
+                  variant="outline"
+                  onClick={renderEmailPreview}
+                  disabled={isLoading}
+                >
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Refresh Preview
                 </Button>
               </div>
-              
+
               {sendResult && (
-                <Alert variant={sendResult.success ? "default" : "destructive"}>
+                <Alert variant={sendResult.success ? 'default' : 'destructive'}>
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>{sendResult.message}</AlertDescription>
                 </Alert>
@@ -513,7 +591,7 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
           </Tabs>
         </CardContent>
       </Card>
-      
+
       {/* Email Preview */}
       <Card>
         <CardHeader>
@@ -542,7 +620,7 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
       </Card>
     </div>
   );
-  
+
   function renderIndustryFeatures() {
     switch (previewData.industry) {
       case 'plumbing':
@@ -553,33 +631,39 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
               <Input
                 id="emergencyContact"
                 value={previewData.industryFeatures.emergencyContact || ''}
-                onChange={(e) => setPreviewData(prev => ({
-                  ...prev,
-                  industryFeatures: {
-                    ...prev.industryFeatures,
-                    emergencyContact: e.target.value,
-                  },
-                }))}
+                onChange={(e) =>
+                  setPreviewData((prev) => ({
+                    ...prev,
+                    industryFeatures: {
+                      ...prev.industryFeatures,
+                      emergencyContact: e.target.value,
+                    },
+                  }))
+                }
               />
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Switch
                 id="afterHours"
-                checked={previewData.industryFeatures.afterHoursAvailable || false}
-                onCheckedChange={(checked) => setPreviewData(prev => ({
-                  ...prev,
-                  industryFeatures: {
-                    ...prev.industryFeatures,
-                    afterHoursAvailable: checked,
-                  },
-                }))}
+                checked={
+                  previewData.industryFeatures.afterHoursAvailable || false
+                }
+                onCheckedChange={(checked) =>
+                  setPreviewData((prev) => ({
+                    ...prev,
+                    industryFeatures: {
+                      ...prev.industryFeatures,
+                      afterHoursAvailable: checked,
+                    },
+                  }))
+                }
               />
               <Label htmlFor="afterHours">After Hours Available</Label>
             </div>
           </div>
         );
-        
+
       case 'legal':
         return (
           <div className="space-y-4">
@@ -588,48 +672,56 @@ export default function EmailPreview({ initialData, onSendTest, className }: Ema
               <Input
                 id="attorneyBar"
                 value={previewData.industryFeatures.attorneyBarNumber || ''}
-                onChange={(e) => setPreviewData(prev => ({
-                  ...prev,
-                  industryFeatures: {
-                    ...prev.industryFeatures,
-                    attorneyBarNumber: e.target.value,
-                  },
-                }))}
+                onChange={(e) =>
+                  setPreviewData((prev) => ({
+                    ...prev,
+                    industryFeatures: {
+                      ...prev.industryFeatures,
+                      attorneyBarNumber: e.target.value,
+                    },
+                  }))
+                }
               />
             </div>
-            
+
             <div>
               <Label htmlFor="lawFirm">Law Firm</Label>
               <Input
                 id="lawFirm"
                 value={previewData.industryFeatures.lawFirm || ''}
-                onChange={(e) => setPreviewData(prev => ({
-                  ...prev,
-                  industryFeatures: {
-                    ...prev.industryFeatures,
-                    lawFirm: e.target.value,
-                  },
-                }))}
+                onChange={(e) =>
+                  setPreviewData((prev) => ({
+                    ...prev,
+                    industryFeatures: {
+                      ...prev.industryFeatures,
+                      lawFirm: e.target.value,
+                    },
+                  }))
+                }
               />
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <Switch
                 id="confidential"
-                checked={previewData.industryFeatures.confidentialityRequired || false}
-                onCheckedChange={(checked) => setPreviewData(prev => ({
-                  ...prev,
-                  industryFeatures: {
-                    ...prev.industryFeatures,
-                    confidentialityRequired: checked,
-                  },
-                }))}
+                checked={
+                  previewData.industryFeatures.confidentialityRequired || false
+                }
+                onCheckedChange={(checked) =>
+                  setPreviewData((prev) => ({
+                    ...prev,
+                    industryFeatures: {
+                      ...prev.industryFeatures,
+                      confidentialityRequired: checked,
+                    },
+                  }))
+                }
               />
               <Label htmlFor="confidential">Confidentiality Required</Label>
             </div>
           </div>
         );
-        
+
       // Add other industries as needed
       default:
         return (

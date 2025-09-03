@@ -1,5 +1,7 @@
 import React from 'react';
-import CallOverviewEmail, { CallOverviewEmailProps } from '../CallOverviewEmail';
+import CallOverviewEmail, {
+  CallOverviewEmailProps,
+} from '../CallOverviewEmail';
 import { Section, Text, Link, Row, Column } from '@react-email/components';
 
 interface RealEstateEmailProps extends CallOverviewEmailProps {
@@ -11,11 +13,15 @@ interface RealEstateEmailProps extends CallOverviewEmailProps {
 }
 
 export default function RealEstateEmail(props: RealEstateEmailProps) {
-  const hasHighPriorityEvents = props.extractedEvents.some(e => e.urgency === 'high');
-  const hasPropertyMentions = props.extractedEvents.some(e => 
-    e.location || e.description?.toLowerCase().includes('property') || 
-    e.description?.toLowerCase().includes('house') || 
-    e.description?.toLowerCase().includes('home')
+  const hasHighPriorityEvents = props.extractedEvents.some(
+    (e) => e.urgency === 'high'
+  );
+  const hasPropertyMentions = props.extractedEvents.some(
+    (e) =>
+      e.location ||
+      e.description?.toLowerCase().includes('property') ||
+      e.description?.toLowerCase().includes('house') ||
+      e.description?.toLowerCase().includes('home')
   );
 
   return (
@@ -23,14 +29,13 @@ export default function RealEstateEmail(props: RealEstateEmailProps) {
       {/* High-priority client alert */}
       {hasHighPriorityEvents && (
         <Section style={priorityClientSection}>
-          <Text style={priorityTitle}>
-            🏆 HIGH-PRIORITY CLIENT ACTIVITY
-          </Text>
+          <Text style={priorityTitle}>🏆 HIGH-PRIORITY CLIENT ACTIVITY</Text>
           <Text style={priorityText}>
-            This call contains high-priority property inquiries. Quick response times are crucial 
-            in today's competitive market to secure qualified buyers and maintain momentum.
+            This call contains high-priority property inquiries. Quick response
+            times are crucial in today's competitive market to secure qualified
+            buyers and maintain momentum.
           </Text>
-          
+
           <Row style={priorityActions}>
             <Column>
               <Link
@@ -60,20 +65,27 @@ export default function RealEstateEmail(props: RealEstateEmailProps) {
             <Column>
               <Text style={propertyLabel}>Client Type:</Text>
               <Text style={propertyText}>
-                {determineClientType(props.extractedEvents, props.transcriptionSnippet)}
+                {determineClientType(
+                  props.extractedEvents,
+                  props.transcriptionSnippet
+                )}
               </Text>
             </Column>
             <Column>
               <Text style={propertyLabel}>Price Range Mentioned:</Text>
               <Text style={propertyText}>
-                {extractPriceRange(props.transcriptionSnippet) || 'Not specified'}
+                {extractPriceRange(props.transcriptionSnippet) ||
+                  'Not specified'}
               </Text>
             </Column>
           </Row>
-          
+
           <Text style={propertyLabel}>Property Preferences:</Text>
           <Text style={propertyText}>
-            {extractPropertyPreferences(props.extractedEvents, props.transcriptionSnippet)}
+            {extractPropertyPreferences(
+              props.extractedEvents,
+              props.transcriptionSnippet
+            )}
           </Text>
         </Section>
       )}
@@ -85,18 +97,21 @@ export default function RealEstateEmail(props: RealEstateEmailProps) {
           <Column>
             <Text style={timingLabel}>Response Priority:</Text>
             <Text style={timingText}>
-              {hasHighPriorityEvents ? 'IMMEDIATE (< 1 hour)' : 'Same day preferred'}
+              {hasHighPriorityEvents
+                ? 'IMMEDIATE (< 1 hour)'
+                : 'Same day preferred'}
             </Text>
           </Column>
           <Column>
             <Text style={timingLabel}>Best Follow-up Time:</Text>
             <Text style={timingText}>
-              Business hours: 9 AM - 6 PM<br />
+              Business hours: 9 AM - 6 PM
+              <br />
               Weekends available for showings
             </Text>
           </Column>
         </Row>
-        
+
         <Text style={marketTip}>
           💡 Market Tip: {getMarketTip(props.extractedEvents)}
         </Text>
@@ -109,7 +124,7 @@ export default function RealEstateEmail(props: RealEstateEmailProps) {
           <Column>
             <Link
               href={`${props.dashboardUrl}/property-matcher?call=${props.callId}`}
-              style={{...engagementButton, ...propertyMatchButton}}
+              style={{ ...engagementButton, ...propertyMatchButton }}
             >
               🔍 Property Matcher
             </Link>
@@ -117,17 +132,17 @@ export default function RealEstateEmail(props: RealEstateEmailProps) {
           <Column>
             <Link
               href={`${props.dashboardUrl}/market-report?call=${props.callId}`}
-              style={{...engagementButton, ...marketReportButton}}
+              style={{ ...engagementButton, ...marketReportButton }}
             >
               📊 Market Report
             </Link>
           </Column>
         </Row>
-        <Row style={{marginTop: '8px'}}>
+        <Row style={{ marginTop: '8px' }}>
           <Column>
             <Link
               href={`${props.dashboardUrl}/showing-scheduler?call=${props.callId}`}
-              style={{...engagementButton, ...schedulerButton}}
+              style={{ ...engagementButton, ...schedulerButton }}
             >
               📅 Showing Scheduler
             </Link>
@@ -135,7 +150,7 @@ export default function RealEstateEmail(props: RealEstateEmailProps) {
           <Column>
             <Link
               href={`${props.dashboardUrl}/comps?call=${props.callId}`}
-              style={{...engagementButton, ...compsButton}}
+              style={{ ...engagementButton, ...compsButton }}
             >
               🏘️ Comparable Sales
             </Link>
@@ -147,10 +162,14 @@ export default function RealEstateEmail(props: RealEstateEmailProps) {
       <Section style={complianceSection}>
         <Text style={complianceTitle}>⚖️ Professional Standards</Text>
         <Text style={complianceText}>
-          • All communications logged for compliance<br />
-          • Fair housing laws strictly observed<br />
-          • MLS data handled per broker guidelines<br />
-          • Client information kept confidential<br />
+          • All communications logged for compliance
+          <br />
+          • Fair housing laws strictly observed
+          <br />
+          • MLS data handled per broker guidelines
+          <br />
+          • Client information kept confidential
+          <br />
           {props.agentLicense && `• Agent License: ${props.agentLicense}`}
           {props.brokerageInfo && `<br />• Brokerage: ${props.brokerageInfo}`}
         </Text>
@@ -160,11 +179,16 @@ export default function RealEstateEmail(props: RealEstateEmailProps) {
       <Section style={proTipsSection}>
         <Text style={proTipsTitle}>🎓 Real Estate Pro Tips:</Text>
         <Text style={proTipsList}>
-          • <strong>Quick Response:</strong> Reply within 5-15 minutes for hot leads<br />
-          • <strong>Property Photos:</strong> Have current listings ready to share<br />
-          • <strong>Market Data:</strong> Prepare neighborhood statistics and comps<br />
-          • <strong>Availability:</strong> Confirm your showing schedule flexibility<br />
-          • <strong>Pre-approval:</strong> Ask about financing pre-qualification status
+          • <strong>Quick Response:</strong> Reply within 5-15 minutes for hot
+          leads
+          <br />• <strong>Property Photos:</strong> Have current listings ready
+          to share
+          <br />• <strong>Market Data:</strong> Prepare neighborhood statistics
+          and comps
+          <br />• <strong>Availability:</strong> Confirm your showing schedule
+          flexibility
+          <br />• <strong>Pre-approval:</strong> Ask about financing
+          pre-qualification status
         </Text>
       </Section>
     </CallOverviewEmail>
@@ -174,45 +198,56 @@ export default function RealEstateEmail(props: RealEstateEmailProps) {
 // Helper functions
 function determineClientType(events: any[], transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
-  
-  if (content.includes('first time') || content.includes('first home')) return 'First-time buyer';
-  if (content.includes('selling') || content.includes('list my')) return 'Seller';
-  if (content.includes('investment') || content.includes('rental')) return 'Investor';
-  if (content.includes('relocat') || content.includes('moving')) return 'Relocating buyer';
-  if (content.includes('cash') || content.includes('pre-approved')) return 'Qualified buyer';
-  
+
+  if (content.includes('first time') || content.includes('first home'))
+    return 'First-time buyer';
+  if (content.includes('selling') || content.includes('list my'))
+    return 'Seller';
+  if (content.includes('investment') || content.includes('rental'))
+    return 'Investor';
+  if (content.includes('relocat') || content.includes('moving'))
+    return 'Relocating buyer';
+  if (content.includes('cash') || content.includes('pre-approved'))
+    return 'Qualified buyer';
+
   return 'Prospective buyer';
 }
 
 function extractPriceRange(transcription?: string): string | null {
   if (!transcription) return null;
-  
+
   const pricePatterns = [
     /\$?(\d{1,3}(?:,\d{3})*(?:\.\d{2})?[kK]?)/g,
     /(\d{1,3}(?:,\d{3})*)\s*(?:thousand|million|k|m)/gi,
     /budget.*?(\$?\d{1,3}(?:,\d{3})*(?:\.\d{2})?[kK]?)/gi,
   ];
-  
+
   for (const pattern of pricePatterns) {
     const matches = transcription.match(pattern);
     if (matches && matches.length > 0) {
       return matches[0];
     }
   }
-  
+
   return null;
 }
 
-function extractPropertyPreferences(events: any[], transcription?: string): string {
+function extractPropertyPreferences(
+  events: any[],
+  transcription?: string
+): string {
   const content = transcription?.toLowerCase() || '';
   const preferences = [];
-  
+
   // Property types
   if (content.includes('condo')) preferences.push('Condominium');
-  if (content.includes('townhouse') || content.includes('townhome')) preferences.push('Townhouse');
-  if (content.includes('single family') || content.includes('house')) preferences.push('Single-family home');
-  if (content.includes('new construction')) preferences.push('New construction');
-  
+  if (content.includes('townhouse') || content.includes('townhome'))
+    preferences.push('Townhouse');
+  if (content.includes('single family') || content.includes('house'))
+    preferences.push('Single-family home');
+  if (content.includes('new construction'))
+    preferences.push('New construction');
+
   // Features
   if (content.includes('bedroom')) {
     const bedroomMatch = content.match(/(\d+)\s*bedroom/);
@@ -223,14 +258,19 @@ function extractPropertyPreferences(events: any[], transcription?: string): stri
     if (bathroomMatch) preferences.push(`${bathroomMatch[1]}+ bathrooms`);
   }
   if (content.includes('garage')) preferences.push('Garage required');
-  if (content.includes('yard') || content.includes('garden')) preferences.push('Outdoor space');
-  
+  if (content.includes('yard') || content.includes('garden'))
+    preferences.push('Outdoor space');
+
   // Location preferences
   if (content.includes('school')) preferences.push('Good school district');
-  if (content.includes('downtown') || content.includes('city')) preferences.push('Urban location');
-  if (content.includes('quiet') || content.includes('suburban')) preferences.push('Quiet neighborhood');
-  
-  return preferences.length > 0 ? preferences.join(', ') : 'General property inquiry';
+  if (content.includes('downtown') || content.includes('city'))
+    preferences.push('Urban location');
+  if (content.includes('quiet') || content.includes('suburban'))
+    preferences.push('Quiet neighborhood');
+
+  return preferences.length > 0
+    ? preferences.join(', ')
+    : 'General property inquiry';
 }
 
 function getMarketTip(events: any[]): string {
@@ -241,7 +281,7 @@ function getMarketTip(events: any[]): string {
     'Market comparables help justify pricing discussions',
     'Quick follow-up is critical in competitive markets',
   ];
-  
+
   return tips[Math.floor(Math.random() * tips.length)];
 }
 

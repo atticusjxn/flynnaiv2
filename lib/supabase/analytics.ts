@@ -4,7 +4,8 @@ import { Database } from '@/types/database.types';
 
 type Call = Database['public']['Tables']['calls']['Row'];
 type Event = Database['public']['Tables']['events']['Row'];
-type CommunicationLog = Database['public']['Tables']['communication_logs']['Row'];
+type CommunicationLog =
+  Database['public']['Tables']['communication_logs']['Row'];
 
 export class AnalyticsService {
   private supabase = createClient();
@@ -16,12 +17,12 @@ export class AnalyticsService {
         .from('calls')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', userId),
-      
+
       this.supabase
         .from('events')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', userId),
-      
+
       this.supabase
         .from('events')
         .select('*', { count: 'exact', head: true })
@@ -66,28 +67,28 @@ export class AnalyticsService {
     if (!calls) return null;
 
     // Calculate processing times and success rates
-    const processedCalls = calls.filter(call => 
-      call.ai_processing_status === 'completed' && call.processed_at
+    const processedCalls = calls.filter(
+      (call) => call.ai_processing_status === 'completed' && call.processed_at
     );
 
-    const processingTimes = processedCalls.map(call => {
+    const processingTimes = processedCalls.map((call) => {
       const start = new Date(call.created_at);
       const end = new Date(call.processed_at!);
       return end.getTime() - start.getTime();
     });
 
-    const averageProcessingTime = processingTimes.length > 0
-      ? processingTimes.reduce((sum, time) => sum + time, 0) / processingTimes.length
-      : 0;
+    const averageProcessingTime =
+      processingTimes.length > 0
+        ? processingTimes.reduce((sum, time) => sum + time, 0) /
+          processingTimes.length
+        : 0;
 
-    const successRate = calls.length > 0
-      ? (processedCalls.length / calls.length) * 100
-      : 0;
+    const successRate =
+      calls.length > 0 ? (processedCalls.length / calls.length) * 100 : 0;
 
-    const emailsSent = calls.filter(call => call.email_sent_at).length;
-    const emailDeliveryRate = calls.length > 0
-      ? (emailsSent / calls.length) * 100
-      : 0;
+    const emailsSent = calls.filter((call) => call.email_sent_at).length;
+    const emailDeliveryRate =
+      calls.length > 0 ? (emailsSent / calls.length) * 100 : 0;
 
     return {
       totalCalls: calls.length,
@@ -111,43 +112,47 @@ export class AnalyticsService {
     if (!events) return null;
 
     // Group by event type
-    const eventTypeStats = events.reduce((acc, event) => {
-      const type = event.event_type || 'unknown';
-      if (!acc[type]) {
-        acc[type] = {
-          total: 0,
-          confirmed: 0,
-          completed: 0,
-          cancelled: 0,
-        };
-      }
-      
-      acc[type].total++;
-      if (event.status === 'confirmed') acc[type].confirmed++;
-      if (event.status === 'completed') acc[type].completed++;
-      if (event.status === 'cancelled') acc[type].cancelled++;
-      
-      return acc;
-    }, {} as Record<string, any>);
+    const eventTypeStats = events.reduce(
+      (acc, event) => {
+        const type = event.event_type || 'unknown';
+        if (!acc[type]) {
+          acc[type] = {
+            total: 0,
+            confirmed: 0,
+            completed: 0,
+            cancelled: 0,
+          };
+        }
+
+        acc[type].total++;
+        if (event.status === 'confirmed') acc[type].confirmed++;
+        if (event.status === 'completed') acc[type].completed++;
+        if (event.status === 'cancelled') acc[type].cancelled++;
+
+        return acc;
+      },
+      {} as Record<string, any>
+    );
 
     // Calculate overall conversion rate
     const totalEvents = events.length;
-    const convertedEvents = events.filter(e => 
-      e.status === 'confirmed' || e.status === 'completed'
+    const convertedEvents = events.filter(
+      (e) => e.status === 'confirmed' || e.status === 'completed'
     ).length;
-    
-    const conversionRate = totalEvents > 0
-      ? (convertedEvents / totalEvents) * 100
-      : 0;
+
+    const conversionRate =
+      totalEvents > 0 ? (convertedEvents / totalEvents) * 100 : 0;
 
     // AI confidence analysis
-    const highConfidenceEvents = events.filter(e => 
-      (e.ai_confidence || 0) >= 0.8
+    const highConfidenceEvents = events.filter(
+      (e) => (e.ai_confidence || 0) >= 0.8
     ).length;
-    
-    const averageConfidence = events.length > 0
-      ? events.reduce((sum, e) => sum + (e.ai_confidence || 0), 0) / events.length
-      : 0;
+
+    const averageConfidence =
+      events.length > 0
+        ? events.reduce((sum, e) => sum + (e.ai_confidence || 0), 0) /
+          events.length
+        : 0;
 
     return {
       totalEvents,
@@ -171,27 +176,37 @@ export class AnalyticsService {
 
     if (!communications) return null;
 
-    const emailStats = communications.filter(c => c.communication_type === 'email');
-    const smsStats = communications.filter(c => c.communication_type === 'sms');
+    const emailStats = communications.filter(
+      (c) => c.communication_type === 'email'
+    );
+    const smsStats = communications.filter(
+      (c) => c.communication_type === 'sms'
+    );
 
-    const emailDeliveryRate = emailStats.length > 0
-      ? (emailStats.filter(e => e.status === 'delivered').length / emailStats.length) * 100
-      : 0;
+    const emailDeliveryRate =
+      emailStats.length > 0
+        ? (emailStats.filter((e) => e.status === 'delivered').length /
+            emailStats.length) *
+          100
+        : 0;
 
-    const smsDeliveryRate = smsStats.length > 0
-      ? (smsStats.filter(s => s.status === 'delivered').length / smsStats.length) * 100
-      : 0;
+    const smsDeliveryRate =
+      smsStats.length > 0
+        ? (smsStats.filter((s) => s.status === 'delivered').length /
+            smsStats.length) *
+          100
+        : 0;
 
     return {
       totalCommunications: communications.length,
       emails: {
         sent: emailStats.length,
-        delivered: emailStats.filter(e => e.status === 'delivered').length,
+        delivered: emailStats.filter((e) => e.status === 'delivered').length,
         deliveryRate: Math.round(emailDeliveryRate * 100) / 100,
       },
       sms: {
         sent: smsStats.length,
-        delivered: smsStats.filter(s => s.status === 'delivered').length,
+        delivered: smsStats.filter((s) => s.status === 'delivered').length,
         deliveryRate: Math.round(smsDeliveryRate * 100) / 100,
       },
     };

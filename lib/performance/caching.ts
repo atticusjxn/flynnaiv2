@@ -13,20 +13,26 @@ export interface CacheConfig {
  * Advanced caching utility for Next.js API routes and pages
  */
 export class CacheManager {
-  private static cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+  private static cache = new Map<
+    string,
+    { data: any; timestamp: number; ttl: number }
+  >();
   private static readonly maxCacheSize = 1000;
 
   /**
    * Generate cache key from request
    */
-  static generateCacheKey(request: NextRequest, additionalKeys?: string[]): string {
+  static generateCacheKey(
+    request: NextRequest,
+    additionalKeys?: string[]
+  ): string {
     const url = new URL(request.url);
     const baseKey = `${request.method}-${url.pathname}-${url.search}`;
-    
+
     if (additionalKeys?.length) {
       return `${baseKey}-${additionalKeys.join('-')}`;
     }
-    
+
     return baseKey;
   }
 
@@ -35,15 +41,15 @@ export class CacheManager {
    */
   static get(key: string): any | null {
     const cached = this.cache.get(key);
-    
+
     if (!cached) return null;
-    
+
     // Check if expired
     if (Date.now() > cached.timestamp + cached.ttl * 1000) {
       this.cache.delete(key);
       return null;
     }
-    
+
     return cached.data;
   }
 
@@ -56,7 +62,7 @@ export class CacheManager {
       const oldestKey = this.cache.keys().next().value;
       this.cache.delete(oldestKey);
     }
-    
+
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
@@ -69,7 +75,7 @@ export class CacheManager {
    */
   static invalidatePattern(pattern: string): void {
     const regex = new RegExp(pattern);
-    
+
     for (const key of this.cache.keys()) {
       if (regex.test(key)) {
         this.cache.delete(key);
@@ -106,9 +112,12 @@ export function cacheResponse(
   const cacheControl = [
     `max-age=${config.maxAge}`,
     config.sMaxAge && `s-maxage=${config.sMaxAge}`,
-    config.staleWhileRevalidate && `stale-while-revalidate=${config.staleWhileRevalidate}`,
+    config.staleWhileRevalidate &&
+      `stale-while-revalidate=${config.staleWhileRevalidate}`,
     config.revalidate === false && 'no-revalidate',
-  ].filter(Boolean).join(', ');
+  ]
+    .filter(Boolean)
+    .join(', ');
 
   response.headers.set('Cache-Control', cacheControl);
 
@@ -132,7 +141,7 @@ export function withCache(
 ) {
   return async (req: NextRequest): Promise<NextResponse> => {
     const cacheKey = CacheManager.generateCacheKey(req);
-    
+
     // Try to get from cache first
     const cached = CacheManager.get(cacheKey);
     if (cached) {
@@ -143,12 +152,12 @@ export function withCache(
 
     // Execute handler
     const response = await handler(req);
-    
+
     // Cache successful responses
     if (response.status === 200) {
       const responseData = await response.json();
       CacheManager.set(cacheKey, responseData, config.maxAge);
-      
+
       // Return cached response with appropriate headers
       const cachedResponse = NextResponse.json(responseData);
       cachedResponse.headers.set('X-Cache', 'MISS');
@@ -170,9 +179,13 @@ export function withConditionalCache(
   }
 ) {
   return async (req: NextRequest): Promise<NextResponse> => {
-    const isAuthenticated = req.headers.get('authorization')?.startsWith('Bearer ');
-    const cacheConfig = isAuthenticated ? config.authenticatedCache : config.anonymousCache;
-    
+    const isAuthenticated = req.headers
+      .get('authorization')
+      ?.startsWith('Bearer ');
+    const cacheConfig = isAuthenticated
+      ? config.authenticatedCache
+      : config.anonymousCache;
+
     return withCache(handler, cacheConfig)(req);
   };
 }
@@ -181,7 +194,10 @@ export function withConditionalCache(
  * Rate-limited caching for expensive operations
  */
 export class RateLimitedCache {
-  private static rateLimits = new Map<string, { count: number; resetTime: number }>();
+  private static rateLimits = new Map<
+    string,
+    { count: number; resetTime: number }
+  >();
 
   static checkRateLimit(
     identifier: string,
@@ -205,7 +221,11 @@ export class RateLimitedCache {
     }
 
     window.count++;
-    return { allowed: true, remaining: limit - window.count, resetTime: window.resetTime };
+    return {
+      allowed: true,
+      remaining: limit - window.count,
+      resetTime: window.resetTime,
+    };
   }
 }
 

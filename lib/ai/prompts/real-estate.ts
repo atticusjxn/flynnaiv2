@@ -111,9 +111,13 @@ COMMUNICATION PATTERNS:
 - Financing affects real urgency vs stated urgency
 `;
 
-export function buildRealEstatePrompt(context?: { marketConditions?: string; userLocation?: string; businessHours?: string }): string {
+export function buildRealEstatePrompt(context?: {
+  marketConditions?: string;
+  userLocation?: string;
+  businessHours?: string;
+}): string {
   const basePrompt = buildSystemPrompt('real_estate');
-  
+
   return `${basePrompt}
 
 ${REAL_ESTATE_INDUSTRY_CONTEXT}
@@ -141,17 +145,34 @@ REMEMBER: Real estate is relationship-driven and timeline-sensitive. Qualified b
 
 export const REAL_ESTATE_VALIDATION_RULES = {
   requiredFields: ['title', 'description', 'urgency'],
-  highValueFields: ['location', 'customer_name', 'customer_phone', 'proposed_datetime'],
+  highValueFields: [
+    'location',
+    'customer_name',
+    'customer_phone',
+    'proposed_datetime',
+  ],
   buyerQualificationKeywords: [
-    'pre-approved', 'cash buyer', 'financing ready', 'qualified buyer',
-    'closing soon', 'relocating', 'job transfer', 'must move'
+    'pre-approved',
+    'cash buyer',
+    'financing ready',
+    'qualified buyer',
+    'closing soon',
+    'relocating',
+    'job transfer',
+    'must move',
   ],
   showingKeywords: [
-    'show', 'tour', 'see property', 'walk through', 'look at',
-    'open house', 'private showing', 'visit property'
+    'show',
+    'tour',
+    'see property',
+    'walk through',
+    'look at',
+    'open house',
+    'private showing',
+    'visit property',
   ],
   propertyRequired: true,
   averageAppointmentDuration: 45, // minutes
   defaultBusinessHours: '09:00-18:00 Mon-Sun',
-  qualificationImportance: 'high'
+  qualificationImportance: 'high',
 };

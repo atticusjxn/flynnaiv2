@@ -1,5 +1,7 @@
 import React from 'react';
-import CallOverviewEmail, { CallOverviewEmailProps } from '../CallOverviewEmail';
+import CallOverviewEmail, {
+  CallOverviewEmailProps,
+} from '../CallOverviewEmail';
 import { Section, Text, Link, Row, Column } from '@react-email/components';
 
 interface SalesEmailProps extends CallOverviewEmailProps {
@@ -11,7 +13,7 @@ interface SalesEmailProps extends CallOverviewEmailProps {
 }
 
 export default function SalesEmail(props: SalesEmailProps) {
-  const hasHotLeads = props.extractedEvents.some(e => e.urgency === 'high');
+  const hasHotLeads = props.extractedEvents.some((e) => e.urgency === 'high');
   const hasMultipleMeetings = props.extractedEvents.length > 1;
 
   return (
@@ -19,14 +21,13 @@ export default function SalesEmail(props: SalesEmailProps) {
       {/* Hot Lead Alert */}
       {hasHotLeads && (
         <Section style={hotLeadSection}>
-          <Text style={hotLeadTitle}>
-            🔥 HOT LEAD ALERT
-          </Text>
+          <Text style={hotLeadTitle}>🔥 HOT LEAD ALERT</Text>
           <Text style={hotLeadText}>
-            This prospect shows high buying intent and requires immediate follow-up. 
-            Quick response time is critical to maintain momentum and secure the opportunity.
+            This prospect shows high buying intent and requires immediate
+            follow-up. Quick response time is critical to maintain momentum and
+            secure the opportunity.
           </Text>
-          
+
           <Row style={hotLeadActions}>
             <Column>
               <Link
@@ -55,27 +56,33 @@ export default function SalesEmail(props: SalesEmailProps) {
           <Column>
             <Text style={qualificationLabel}>Lead Quality:</Text>
             <Text style={qualificationText}>
-              {assessLeadQuality(props.extractedEvents, props.transcriptionSnippet)}
+              {assessLeadQuality(
+                props.extractedEvents,
+                props.transcriptionSnippet
+              )}
             </Text>
           </Column>
           <Column>
             <Text style={qualificationLabel}>Buying Stage:</Text>
             <Text style={qualificationText}>
-              {determineBuyingStage(props.extractedEvents, props.transcriptionSnippet)}
+              {determineBuyingStage(
+                props.extractedEvents,
+                props.transcriptionSnippet
+              )}
             </Text>
           </Column>
         </Row>
-        
+
         <Text style={qualificationLabel}>Budget Indicators:</Text>
         <Text style={qualificationText}>
           {extractBudgetIndicators(props.transcriptionSnippet)}
         </Text>
-        
+
         <Text style={qualificationLabel}>Decision Authority:</Text>
         <Text style={qualificationText}>
           {assessDecisionAuthority(props.transcriptionSnippet)}
         </Text>
-        
+
         <Text style={qualificationLabel}>Timeline:</Text>
         <Text style={qualificationText}>
           {extractTimeline(props.extractedEvents, props.transcriptionSnippet)}
@@ -88,18 +95,34 @@ export default function SalesEmail(props: SalesEmailProps) {
         <Row>
           <Column>
             <Text style={scoreLabel}>Lead Score:</Text>
-            <Text style={{...scoreText, ...getScoreStyle(calculateLeadScore(props.extractedEvents, props.transcriptionSnippet))}}>
-              {calculateLeadScore(props.extractedEvents, props.transcriptionSnippet)}/100
+            <Text
+              style={{
+                ...scoreText,
+                ...getScoreStyle(
+                  calculateLeadScore(
+                    props.extractedEvents,
+                    props.transcriptionSnippet
+                  )
+                ),
+              }}
+            >
+              {calculateLeadScore(
+                props.extractedEvents,
+                props.transcriptionSnippet
+              )}
+              /100
             </Text>
           </Column>
           <Column>
             <Text style={scoreLabel}>Priority Level:</Text>
             <Text style={scoreText}>
-              {hasHotLeads ? 'HIGH - Immediate Action' : 'MEDIUM - Standard Follow-up'}
+              {hasHotLeads
+                ? 'HIGH - Immediate Action'
+                : 'MEDIUM - Standard Follow-up'}
             </Text>
           </Column>
         </Row>
-        
+
         <Text style={opportunityTip}>
           💡 Sales Tip: {getSalesTip(props.extractedEvents)}
         </Text>
@@ -112,7 +135,7 @@ export default function SalesEmail(props: SalesEmailProps) {
           <Column>
             <Link
               href={`${props.dashboardUrl}/crm-update?call=${props.callId}`}
-              style={{...salesButton, ...crmButton}}
+              style={{ ...salesButton, ...crmButton }}
             >
               📊 Update CRM
             </Link>
@@ -120,17 +143,17 @@ export default function SalesEmail(props: SalesEmailProps) {
           <Column>
             <Link
               href={`${props.dashboardUrl}/proposal-builder?call=${props.callId}`}
-              style={{...salesButton, ...proposalButton}}
+              style={{ ...salesButton, ...proposalButton }}
             >
               📋 Build Proposal
             </Link>
           </Column>
         </Row>
-        <Row style={{marginTop: '8px'}}>
+        <Row style={{ marginTop: '8px' }}>
           <Column>
             <Link
               href={`${props.dashboardUrl}/demo-scheduler?call=${props.callId}`}
-              style={{...salesButton, ...demoButton}}
+              style={{ ...salesButton, ...demoButton }}
             >
               🖥️ Schedule Demo
             </Link>
@@ -138,7 +161,7 @@ export default function SalesEmail(props: SalesEmailProps) {
           <Column>
             <Link
               href={`${props.dashboardUrl}/follow-up-sequence?call=${props.callId}`}
-              style={{...salesButton, ...sequenceButton}}
+              style={{ ...salesButton, ...sequenceButton }}
             >
               📧 Follow-up Sequence
             </Link>
@@ -152,7 +175,7 @@ export default function SalesEmail(props: SalesEmailProps) {
         <Text style={competitiveText}>
           {extractCompetitiveInfo(props.transcriptionSnippet)}
         </Text>
-        
+
         {extractCompetitors(props.transcriptionSnippet).length > 0 && (
           <>
             <Text style={competitiveLabel}>Competitors Mentioned:</Text>
@@ -170,7 +193,10 @@ export default function SalesEmail(props: SalesEmailProps) {
           <Column>
             <Text style={pipelineLabel}>Suggested Next Stage:</Text>
             <Text style={pipelineText}>
-              {suggestPipelineStage(props.extractedEvents, props.transcriptionSnippet)}
+              {suggestPipelineStage(
+                props.extractedEvents,
+                props.transcriptionSnippet
+              )}
             </Text>
           </Column>
           <Column>
@@ -180,10 +206,13 @@ export default function SalesEmail(props: SalesEmailProps) {
             </Text>
           </Column>
         </Row>
-        
+
         <Text style={pipelineLabel}>Recommended Actions:</Text>
         <Text style={pipelineActions}>
-          {getRecommendedActions(props.extractedEvents, props.transcriptionSnippet)}
+          {getRecommendedActions(
+            props.extractedEvents,
+            props.transcriptionSnippet
+          )}
         </Text>
       </Section>
 
@@ -191,12 +220,18 @@ export default function SalesEmail(props: SalesEmailProps) {
       <Section style={bestPracticesSection}>
         <Text style={bestPracticesTitle}>🎓 Sales Best Practices:</Text>
         <Text style={bestPracticesList}>
-          • <strong>Quick Response:</strong> Contact hot leads within 5 minutes when possible<br />
-          • <strong>Value Proposition:</strong> Lead with benefits, not features<br />
-          • <strong>Discovery Questions:</strong> Understand pain points and business impact<br />
-          • <strong>Next Steps:</strong> Always establish clear next steps and timeline<br />
-          • <strong>CRM Updates:</strong> Log all interactions and update opportunity stage<br />
-          • <strong>Follow-through:</strong> Honor commitments and deliver on promises
+          • <strong>Quick Response:</strong> Contact hot leads within 5 minutes
+          when possible
+          <br />• <strong>Value Proposition:</strong> Lead with benefits, not
+          features
+          <br />• <strong>Discovery Questions:</strong> Understand pain points
+          and business impact
+          <br />• <strong>Next Steps:</strong> Always establish clear next steps
+          and timeline
+          <br />• <strong>CRM Updates:</strong> Log all interactions and update
+          opportunity stage
+          <br />• <strong>Follow-through:</strong> Honor commitments and deliver
+          on promises
         </Text>
       </Section>
 
@@ -204,8 +239,8 @@ export default function SalesEmail(props: SalesEmailProps) {
       <Section style={metricsSection}>
         <Text style={metricsTitle}>📊 Sales Performance Tracking</Text>
         <Text style={metricsText}>
-          This lead interaction has been logged for sales performance analysis. 
-          Tracking response time, conversion rates, and follow-up effectiveness 
+          This lead interaction has been logged for sales performance analysis.
+          Tracking response time, conversion rates, and follow-up effectiveness
           helps optimize your sales process and improve close rates.
         </Text>
       </Section>
@@ -217,224 +252,341 @@ export default function SalesEmail(props: SalesEmailProps) {
 function assessLeadQuality(events: any[], transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
   let qualityScore = 0;
-  
+
   // High-quality indicators
-  if (content.includes('budget') || content.includes('approved') || content.includes('funding')) qualityScore += 3;
-  if (content.includes('decision maker') || content.includes('owner') || content.includes('director')) qualityScore += 3;
-  if (content.includes('timeline') || content.includes('urgent') || content.includes('soon')) qualityScore += 2;
-  if (content.includes('current vendor') || content.includes('contract expiring')) qualityScore += 2;
-  if (content.includes('specific requirements') || content.includes('detailed')) qualityScore += 2;
-  
+  if (
+    content.includes('budget') ||
+    content.includes('approved') ||
+    content.includes('funding')
+  )
+    qualityScore += 3;
+  if (
+    content.includes('decision maker') ||
+    content.includes('owner') ||
+    content.includes('director')
+  )
+    qualityScore += 3;
+  if (
+    content.includes('timeline') ||
+    content.includes('urgent') ||
+    content.includes('soon')
+  )
+    qualityScore += 2;
+  if (
+    content.includes('current vendor') ||
+    content.includes('contract expiring')
+  )
+    qualityScore += 2;
+  if (content.includes('specific requirements') || content.includes('detailed'))
+    qualityScore += 2;
+
   // Medium-quality indicators
-  if (content.includes('interested') || content.includes('looking into')) qualityScore += 1;
-  if (content.includes('team') || content.includes('company')) qualityScore += 1;
-  
+  if (content.includes('interested') || content.includes('looking into'))
+    qualityScore += 1;
+  if (content.includes('team') || content.includes('company'))
+    qualityScore += 1;
+
   if (qualityScore >= 8) return 'A+ Lead - Highly Qualified';
   if (qualityScore >= 5) return 'A Lead - Well Qualified';
   if (qualityScore >= 3) return 'B Lead - Moderately Qualified';
   if (qualityScore >= 1) return 'C Lead - Basic Interest';
-  
+
   return 'D Lead - Needs Qualification';
 }
 
 function determineBuyingStage(events: any[], transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
-  
-  if (content.includes('ready to buy') || content.includes('move forward') || 
-      content.includes('contract') || content.includes('purchase order')) {
+
+  if (
+    content.includes('ready to buy') ||
+    content.includes('move forward') ||
+    content.includes('contract') ||
+    content.includes('purchase order')
+  ) {
     return 'Decision Stage - Ready to Buy';
   }
-  
-  if (content.includes('proposal') || content.includes('quote') || 
-      content.includes('pricing') || content.includes('demo')) {
+
+  if (
+    content.includes('proposal') ||
+    content.includes('quote') ||
+    content.includes('pricing') ||
+    content.includes('demo')
+  ) {
     return 'Evaluation Stage - Considering Options';
   }
-  
-  if (content.includes('requirements') || content.includes('needs assessment') || 
-      content.includes('solution') || content.includes('capabilities')) {
+
+  if (
+    content.includes('requirements') ||
+    content.includes('needs assessment') ||
+    content.includes('solution') ||
+    content.includes('capabilities')
+  ) {
     return 'Consideration Stage - Defining Needs';
   }
-  
-  if (content.includes('research') || content.includes('looking into') || 
-      content.includes('exploring') || content.includes('information')) {
+
+  if (
+    content.includes('research') ||
+    content.includes('looking into') ||
+    content.includes('exploring') ||
+    content.includes('information')
+  ) {
     return 'Awareness Stage - Early Research';
   }
-  
+
   return 'Interest Stage - General Inquiry';
 }
 
 function extractBudgetIndicators(transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
-  
-  if (content.includes('no budget') || content.includes('tight budget') || 
-      content.includes('limited funding')) {
+
+  if (
+    content.includes('no budget') ||
+    content.includes('tight budget') ||
+    content.includes('limited funding')
+  ) {
     return 'Budget Constraints - May need financing options';
   }
-  
-  if (content.includes('budget approved') || content.includes('funding secured') || 
-      content.includes('money allocated')) {
+
+  if (
+    content.includes('budget approved') ||
+    content.includes('funding secured') ||
+    content.includes('money allocated')
+  ) {
     return 'Budget Confirmed - Ready to proceed';
   }
-  
-  if (content.includes('budget range') || content.includes('price range') || 
-      content.includes('spending') || content.includes('investment')) {
+
+  if (
+    content.includes('budget range') ||
+    content.includes('price range') ||
+    content.includes('spending') ||
+    content.includes('investment')
+  ) {
     return 'Budget Discussed - Price-conscious buyer';
   }
-  
-  if (content.includes('cost') || content.includes('price') || content.includes('expensive')) {
+
+  if (
+    content.includes('cost') ||
+    content.includes('price') ||
+    content.includes('expensive')
+  ) {
     return 'Price Sensitive - Value justification needed';
   }
-  
+
   return 'Budget Status Unknown - Needs qualification';
 }
 
 function assessDecisionAuthority(transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
-  
-  if (content.includes('owner') || content.includes('ceo') || content.includes('president') || 
-      content.includes('decision maker') || content.includes('final say')) {
+
+  if (
+    content.includes('owner') ||
+    content.includes('ceo') ||
+    content.includes('president') ||
+    content.includes('decision maker') ||
+    content.includes('final say')
+  ) {
     return 'Primary Decision Maker - Can authorize purchase';
   }
-  
-  if (content.includes('manager') || content.includes('director') || content.includes('vp') || 
-      content.includes('head of')) {
+
+  if (
+    content.includes('manager') ||
+    content.includes('director') ||
+    content.includes('vp') ||
+    content.includes('head of')
+  ) {
     return 'Key Influencer - Significant decision authority';
   }
-  
-  if (content.includes('team') || content.includes('committee') || content.includes('group')) {
+
+  if (
+    content.includes('team') ||
+    content.includes('committee') ||
+    content.includes('group')
+  ) {
     return 'Team Decision - Multiple stakeholders involved';
   }
-  
-  if (content.includes('need approval') || content.includes('check with') || 
-      content.includes('run it by')) {
+
+  if (
+    content.includes('need approval') ||
+    content.includes('check with') ||
+    content.includes('run it by')
+  ) {
     return 'Needs Approval - Limited authority';
   }
-  
+
   return 'Authority Level Unknown - Needs qualification';
 }
 
 function extractTimeline(events: any[], transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
-  
-  if (content.includes('immediately') || content.includes('asap') || 
-      content.includes('urgent') || content.includes('right away')) {
+
+  if (
+    content.includes('immediately') ||
+    content.includes('asap') ||
+    content.includes('urgent') ||
+    content.includes('right away')
+  ) {
     return 'Immediate Need - High Priority';
   }
-  
-  if (content.includes('this month') || content.includes('end of quarter') || 
-      content.includes('before year end')) {
+
+  if (
+    content.includes('this month') ||
+    content.includes('end of quarter') ||
+    content.includes('before year end')
+  ) {
     return 'Short-term - Within 30 days';
   }
-  
-  if (content.includes('next quarter') || content.includes('early next year') || 
-      content.includes('few months')) {
+
+  if (
+    content.includes('next quarter') ||
+    content.includes('early next year') ||
+    content.includes('few months')
+  ) {
     return 'Medium-term - 3-6 months';
   }
-  
-  if (content.includes('planning') || content.includes('future') || 
-      content.includes('down the road')) {
+
+  if (
+    content.includes('planning') ||
+    content.includes('future') ||
+    content.includes('down the road')
+  ) {
     return 'Long-term - 6+ months';
   }
-  
+
   return 'Timeline Unclear - Needs qualification';
 }
 
 function calculateLeadScore(events: any[], transcription?: string): number {
   const content = transcription?.toLowerCase() || '';
   let score = 50; // Base score
-  
+
   // Budget indicators
   if (content.includes('budget approved')) score += 20;
   else if (content.includes('budget')) score += 10;
-  
+
   // Authority indicators
   if (content.includes('owner') || content.includes('ceo')) score += 20;
-  else if (content.includes('manager') || content.includes('director')) score += 15;
-  
+  else if (content.includes('manager') || content.includes('director'))
+    score += 15;
+
   // Urgency indicators
-  if (content.includes('urgent') || content.includes('immediately')) score += 15;
-  else if (content.includes('soon') || content.includes('this month')) score += 10;
-  
+  if (content.includes('urgent') || content.includes('immediately'))
+    score += 15;
+  else if (content.includes('soon') || content.includes('this month'))
+    score += 10;
+
   // Engagement indicators
   if (content.includes('demo') || content.includes('proposal')) score += 10;
   if (content.includes('specific requirements')) score += 5;
-  
+
   // Competition indicators
-  if (content.includes('current vendor') || content.includes('contract expiring')) score += 10;
-  
+  if (
+    content.includes('current vendor') ||
+    content.includes('contract expiring')
+  )
+    score += 10;
+
   return Math.min(Math.max(score, 0), 100);
 }
 
 function extractCompetitiveInfo(transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
-  
-  if (content.includes('current vendor') || content.includes('currently using') || 
-      content.includes('working with')) {
+
+  if (
+    content.includes('current vendor') ||
+    content.includes('currently using') ||
+    content.includes('working with')
+  ) {
     return 'Competitive Situation - Currently has vendor relationship';
   }
-  
-  if (content.includes('comparing') || content.includes('looking at options') || 
-      content.includes('evaluating')) {
+
+  if (
+    content.includes('comparing') ||
+    content.includes('looking at options') ||
+    content.includes('evaluating')
+  ) {
     return 'Competitive Evaluation - Considering multiple vendors';
   }
-  
-  if (content.includes('not happy') || content.includes('problems with') || 
-      content.includes('switching from')) {
+
+  if (
+    content.includes('not happy') ||
+    content.includes('problems with') ||
+    content.includes('switching from')
+  ) {
     return 'Opportunity - Dissatisfaction with current solution';
   }
-  
+
   return 'Competitive Landscape - Standard evaluation process';
 }
 
 function extractCompetitors(transcription?: string): string[] {
   const content = transcription?.toLowerCase() || '';
   const competitors: string[] = [];
-  
+
   // Common competitor names (would be customized per industry)
-  const commonCompetitors = ['salesforce', 'hubspot', 'microsoft', 'google', 'adobe', 'oracle'];
-  
-  commonCompetitors.forEach(competitor => {
+  const commonCompetitors = [
+    'salesforce',
+    'hubspot',
+    'microsoft',
+    'google',
+    'adobe',
+    'oracle',
+  ];
+
+  commonCompetitors.forEach((competitor) => {
     if (content.includes(competitor)) {
-      competitors.push(competitor.charAt(0).toUpperCase() + competitor.slice(1));
+      competitors.push(
+        competitor.charAt(0).toUpperCase() + competitor.slice(1)
+      );
     }
   });
-  
+
   return competitors;
 }
 
 function suggestPipelineStage(events: any[], transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
-  
+
   if (content.includes('ready to buy') || content.includes('move forward')) {
     return 'Negotiation/Close';
   }
-  
-  if (content.includes('proposal') || content.includes('demo') || content.includes('quote')) {
+
+  if (
+    content.includes('proposal') ||
+    content.includes('demo') ||
+    content.includes('quote')
+  ) {
     return 'Proposal/Presentation';
   }
-  
-  if (content.includes('requirements') || content.includes('needs assessment')) {
+
+  if (
+    content.includes('requirements') ||
+    content.includes('needs assessment')
+  ) {
     return 'Discovery/Qualification';
   }
-  
+
   return 'Lead/Qualification';
 }
 
 function getRecommendedActions(events: any[], transcription?: string): string {
   const content = transcription?.toLowerCase() || '';
   const actions = [];
-  
+
   if (content.includes('demo')) actions.push('Schedule product demonstration');
-  if (content.includes('proposal') || content.includes('quote')) actions.push('Prepare detailed proposal');
-  if (content.includes('budget')) actions.push('Discuss pricing and payment options');
-  if (content.includes('team') || content.includes('decision maker')) actions.push('Identify all stakeholders');
-  if (content.includes('timeline')) actions.push('Confirm project timeline and milestones');
-  
+  if (content.includes('proposal') || content.includes('quote'))
+    actions.push('Prepare detailed proposal');
+  if (content.includes('budget'))
+    actions.push('Discuss pricing and payment options');
+  if (content.includes('team') || content.includes('decision maker'))
+    actions.push('Identify all stakeholders');
+  if (content.includes('timeline'))
+    actions.push('Confirm project timeline and milestones');
+
   if (actions.length === 0) {
     actions.push('Schedule discovery call to understand needs');
     actions.push('Send relevant case studies and materials');
   }
-  
+
   return actions.join(' • ');
 }
 
@@ -446,7 +598,7 @@ function getSalesTip(events: any[]): string {
     'Build rapport and trust before presenting solutions',
     'Get commitment on small decisions to build toward the final close',
   ];
-  
+
   return tips[Math.floor(Math.random() * tips.length)];
 }
 
