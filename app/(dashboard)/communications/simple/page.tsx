@@ -27,7 +27,7 @@ import {
   Activity,
   BarChart3,
   Calendar,
-  Template
+  FileText
 } from 'lucide-react';
 
 const containerVariants = {
@@ -196,7 +196,7 @@ export default function SimpleCommunicationsPage() {
               key="templates"
               title={
                 <div className="flex items-center gap-2">
-                  <Template className="h-4 w-4" />
+                  <FileText className="h-4 w-4" />
                   Templates
                 </div>
               }
@@ -357,7 +357,7 @@ function TemplatesPanel() {
     <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-700">
       <CardBody>
         <div className="text-center py-8">
-          <Template className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+          <FileText className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
           <h3 className="text-lg font-semibold mb-2">Template Manager</h3>
           <p className="text-slate-500 dark:text-slate-400">
             Template management interface for creating and editing communication templates.

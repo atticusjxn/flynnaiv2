@@ -32,7 +32,7 @@ import {
   BarChart3,
   Users,
   Calendar,
-  Template
+  FileText
 } from 'lucide-react';
 import { useCommunicationMetrics } from '@/hooks/useCommunications';
 import CommunicationHistory from '@/components/communications/CommunicationHistory';
@@ -209,7 +209,7 @@ export default function CommunicationsPage() {
               key="templates"
               title={
                 <div className="flex items-center gap-2">
-                  <Template className="h-4 w-4" />
+                  <FileText className="h-4 w-4" />
                   Templates
                 </div>
               }

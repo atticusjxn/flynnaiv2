@@ -33,7 +33,7 @@ import {
   Mail,
   MessageSquare,
   Phone,
-  Template,
+  FileText,
   Users,
   Clock,
   Eye,
@@ -573,7 +573,7 @@ function TemplateSelectionModal({
       <ModalContent>
         <ModalHeader>
           <div className="flex items-center gap-3">
-            <Template className="h-6 w-6 text-primary-500" />
+            <FileText className="h-6 w-6 text-primary-500" />
             <div>
               <h2 className="text-lg font-semibold">Select Template</h2>
               <p className="text-sm text-slate-500 dark:text-slate-400 font-normal">
@@ -586,7 +586,7 @@ function TemplateSelectionModal({
         <ModalBody className="py-6">
           {templates.length === 0 ? (
             <div className="text-center py-12">
-              <Template className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+              <FileText className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
               <p className="text-slate-500 dark:text-slate-400">
                 No templates available for {communicationType}
               </p>

@@ -36,7 +36,7 @@ import {
   Tooltip
 } from '@nextui-org/react';
 import {
-  Template,
+  FileText,
   Plus,
   Edit3,
   Trash2,
@@ -298,7 +298,7 @@ export default function TemplateManager() {
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/40 dark:to-pink-900/40">
-                  <Template className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                  <FileText className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold">Template Manager</h2>
@@ -389,7 +389,7 @@ export default function TemplateManager() {
               <TableBody
                 emptyContent={
                   <div className="text-center py-12">
-                    <Template className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+                    <FileText className="h-12 w-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
                     <p className="text-slate-500 dark:text-slate-400">No templates found</p>
                     <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">
                       Create your first template to get started
