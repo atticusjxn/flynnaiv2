@@ -28,7 +28,13 @@
     "perf:monitor": "node scripts/performance-monitor.js",
     "db:optimize": "node scripts/optimize-database.js",
     "cache:warm": "node scripts/warm-cache.js",
-    "health:check": "curl http://localhost:3000/api/performance/health"
+    "health:check": "curl http://localhost:3000/api/performance/health",
+    "deploy:health": "node scripts/deployment-health-check.js",
+    "load:test": "artillery run load-tests/api-stress-test.yml",
+    "load:journey": "k6 run load-tests/user-journey.js",
+    "security:audit": "node scripts/security-audit.js",
+    "production:deploy": "vercel --prod",
+    "production:check": "npm run deploy:health && npm run security:audit"
   },
   "dependencies": {
     "@google-cloud/local-auth": "^3.0.1",

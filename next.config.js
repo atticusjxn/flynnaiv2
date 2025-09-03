@@ -16,7 +16,6 @@ const nextConfig = {
 
   // Experimental Features for Performance
   experimental: {
-    appDir: true,
     serverComponentsExternalPackages: ['twilio', 'openai', '@supabase/supabase-js'],
     optimizePackageImports: [
       '@nextui-org/react',
@@ -24,28 +23,6 @@ const nextConfig = {
       'lodash',
       'date-fns'
     ],
-  },
-
-  // Bundle Analysis and Optimization
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Bundle splitting for better performance
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        tls: false,
-      };
-    }
-
-    // Optimize bundle size
-    config.optimization = {
-      ...config.optimization,
-      usedExports: true,
-      sideEffects: false,
-    };
-
-    return config;
   },
 
   // Headers for Security and Performance
@@ -69,6 +46,18 @@ const nextConfig = {
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=31536000; includeSubDomains; preload',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://maps.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.supabase.co https://api.openai.com https://api.twilio.com https://api.resend.com https://api.stripe.com; frame-src 'self' https://js.stripe.com; object-src 'none'; base-uri 'self'; form-action 'self';",
           },
         ],
       },
@@ -95,20 +84,9 @@ const nextConfig = {
 
   // Redirects and Rewrites
   async redirects() {
-    return [
-      {
-        source: '/dashboard',
-        destination: '/dashboard',
-        permanent: false,
-      },
-    ];
+    return [];
   },
 
-  // Performance monitoring
-  onDemandEntries: {
-    maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 2,
-  },
 }
 
 module.exports = nextConfig

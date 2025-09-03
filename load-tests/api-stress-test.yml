@@ -1,0 +1,182 @@
+# Flynn.ai v2 - API Load Testing Configuration
+# Artillery.js configuration for stress testing production APIs
+
+config:
+  target: '{{ $processEnvironment.LOAD_TEST_URL || "https://flynn.ai" }}'
+  phases:
+    # Warm-up phase
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm up"
+    
+    # Ramp up phase
+    - duration: 300
+      arrivalRate: 10
+      rampTo: 50
+      name: "Ramp up load"
+    
+    # Sustained load phase
+    - duration: 600
+      arrivalRate: 50
+      name: "Sustained load"
+    
+    # Spike test phase
+    - duration: 120
+      arrivalRate: 100
+      name: "Spike test"
+    
+    # Cool down phase
+    - duration: 60
+      arrivalRate: 10
+      name: "Cool down"
+
+  # Load test configuration
+  timeout: 30
+  defaults:
+    headers:
+      User-Agent: 'Flynn-LoadTest/1.0'
+      Accept: 'application/json'
+
+  # Performance thresholds
+  ensure:
+    - http.response_time.p95: 2000  # 95th percentile < 2s
+    - http.response_time.p99: 5000  # 99th percentile < 5s
+    - http.codes.200: 95            # 95%+ success rate
+    - http.codes.500: 1             # < 1% server errors
+
+# Test scenarios
+scenarios:
+  # Basic health check
+  - name: "Health Check"
+    weight: 20
+    flow:
+      - get:
+          url: "/api/performance/health"
+          headers:
+            Cache-Control: "no-cache"
+          expect:
+            - statusCode: 200
+            - contentType: "application/json"
+          capture:
+            - json: "$.status"
+              as: "health_status"
+      - think: 1
+
+  # Landing page load
+  - name: "Landing Page"
+    weight: 30
+    flow:
+      - get:
+          url: "/"
+          expect:
+            - statusCode: 200
+          capture:
+            - header: "content-length"
+              as: "page_size"
+      - think: 2
+
+  # Authentication endpoints
+  - name: "Auth Endpoints"
+    weight: 15
+    flow:
+      - get:
+          url: "/login"
+          expect:
+            - statusCode: [200, 302]
+      - think: 1
+      - get:
+          url: "/register"
+          expect:
+            - statusCode: [200, 302]
+      - think: 3
+
+  # API endpoint testing
+  - name: "API Performance"
+    weight: 25
+    flow:
+      - get:
+          url: "/api/performance/analytics"
+          headers:
+            Authorization: "Bearer {{ $processEnvironment.TEST_API_TOKEN }}"
+          expect:
+            - statusCode: [200, 401]
+      - think: 1
+      - post:
+          url: "/api/webhooks/twilio/voice"
+          headers:
+            Content-Type: "application/x-www-form-urlencoded"
+          form:
+            CallSid: "CA{{ $randomString() }}"
+            From: "+15551234567"
+            To: "+15559876543"
+            CallStatus: "ringing"
+          expect:
+            - statusCode: [200, 400, 405]
+      - think: 2
+
+  # Database-heavy operations
+  - name: "Database Operations"
+    weight: 10
+    flow:
+      - get:
+          url: "/api/performance/database"
+          expect:
+            - statusCode: 200
+          capture:
+            - json: "$.connectionTime"
+              as: "db_connection_time"
+      - think: 1
+
+# Custom functions for realistic data
+functions:
+  randomCallSid: |
+    return 'CA' + Math.random().toString(36).substr(2, 32);
+  
+  randomPhoneNumber: |
+    return '+1555' + Math.floor(Math.random() * 10000000).toString().padStart(7, '0');
+
+# Plugins for enhanced reporting
+plugins:
+  expect: {}
+  metrics-by-endpoint:
+    useOnlyRequestNames: true
+  
+  # Custom metrics
+  publish-metrics:
+    - type: datadog
+      host: "api.datadoghq.com"
+      prefix: "flynn.loadtest"
+      tags:
+        - "environment:production"
+        - "test:api-stress"
+    
+    - type: cloudwatch
+      region: "us-east-1"
+      namespace: "Flynn/LoadTest"
+
+# Post-test analysis
+after:
+  # Generate detailed report
+  - log: "Load test completed. Analyzing results..."
+  - log: "95th percentile response time: {{ http.response_time.p95 }}ms"
+  - log: "99th percentile response time: {{ http.response_time.p99 }}ms"
+  - log: "Success rate: {{ http.codes.200 }}%"
+  - log: "Error rate: {{ http.codes.500 }}%"
+
+# Environment-specific settings
+environments:
+  development:
+    target: 'http://localhost:3000'
+    phases:
+      - duration: 30
+        arrivalRate: 5
+  
+  staging:
+    target: 'https://staging.flynn.ai'
+    phases:
+      - duration: 120
+        arrivalRate: 20
+  
+  production:
+    target: 'https://flynn.ai'
+    # Use full test configuration above
