@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { googleCalendarAuth } from '@/lib/calendar/googleCalendarAuth';
+import { googleCalendarAuth, isGoogleCalendarConfigured } from '@/lib/calendar/googleCalendarAuth';
 import { createAdminClient } from '@/utils/supabase/server';
 
 export async function GET(request: NextRequest) {
   try {
+    // Check if Google Calendar is configured
+    if (!isGoogleCalendarConfigured()) {
+      console.error('Google Calendar OAuth not configured');
+      return NextResponse.redirect(
+        new URL('/settings?calendar_error=not_configured', request.url)
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const code = searchParams.get('code');
     const state = searchParams.get('state'); // User ID

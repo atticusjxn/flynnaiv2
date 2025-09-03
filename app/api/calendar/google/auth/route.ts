@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { googleCalendarAuth } from '@/lib/calendar/googleCalendarAuth';
+import { googleCalendarAuth, isGoogleCalendarConfigured } from '@/lib/calendar/googleCalendarAuth';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
 export async function GET(request: NextRequest) {
   try {
+    // Check if Google Calendar is configured
+    if (!isGoogleCalendarConfigured()) {
+      return NextResponse.json(
+        { error: 'Google Calendar integration not configured' },
+        { status: 503 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('user_id');
 
@@ -40,6 +48,14 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if Google Calendar is configured
+    if (!isGoogleCalendarConfigured()) {
+      return NextResponse.json(
+        { error: 'Google Calendar integration not configured' },
+        { status: 503 }
+      );
+    }
+
     // Get current user from Supabase auth
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
