@@ -201,6 +201,30 @@ export const WebhookSignatureSchema = z.object({
 
 // Export validation helper functions
 export const validateEnvironment = () => {
+  // Skip validation during build time to avoid blocking Vercel builds
+  if (process.env.NODE_ENV === 'production' && !process.env.VERCEL_ENV) {
+    return {
+      OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+      TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
+      TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
+      SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+      SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    };
+  }
+
+  // Skip validation during Next.js build phase
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return {
+      OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
+      TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID || '',
+      TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN || '',
+      SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+      SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+      SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
+    };
+  }
+
   try {
     return EnvironmentSchema.parse({
       OPENAI_API_KEY: process.env.OPENAI_API_KEY,

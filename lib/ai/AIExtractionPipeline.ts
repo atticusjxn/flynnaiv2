@@ -18,8 +18,7 @@ import {
   CallProcessingError,
 } from '@/lib/utils/errorHandling';
 
-// Validate environment on startup
-validateEnvironment();
+// Environment validation will be done lazily when needed
 
 // Initialize OpenAI client with validation
 const openai = new OpenAI({
