@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
+import { NextUIProvider } from '@/components/NextUIProvider';
 import PWARegister from '@/components/PWARegister';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -128,10 +129,12 @@ export default function RootLayout({
         <link rel="preload" href="/sw.js" as="script" />
       </head>
       <body className={`${inter.className} w-full min-h-screen m-0 p-0`}>
-        <AuthProvider>
-          {children}
-          <PWARegister />
-        </AuthProvider>
+        <NextUIProvider>
+          <AuthProvider>
+            {children}
+            <PWARegister />
+          </AuthProvider>
+        </NextUIProvider>
       </body>
     </html>
   );
