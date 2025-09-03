@@ -137,7 +137,7 @@ export default function UsageMetrics({ period = 'month' }: UsageMetricsProps) {
               }`}
               initial={{ width: 0 }}
               animate={{ width: `${Math.min(usagePercentage, 100)}%` }}
-              transition={{ duration: 1, ease: 'easeOut' }}
+              transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
             />
           </div>
         </div>

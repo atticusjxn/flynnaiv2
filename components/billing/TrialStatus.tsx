@@ -94,7 +94,7 @@ export default function TrialStatus({
               className="h-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-600"
               initial={{ width: 0 }}
               animate={{ width: `${100 - getProgressPercentage()}%` }}
-              transition={{ duration: 1, ease: 'easeOut' }}
+              transition={{ duration: 1, ease: [0.23, 1, 0.32, 1] }}
             />
           </div>
         </div>
