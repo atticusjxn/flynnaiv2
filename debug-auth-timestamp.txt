@@ -1,0 +1,1 @@
+Auth debug timestamp: 2025-09-07 - Testing Supabase Site URL configuration
