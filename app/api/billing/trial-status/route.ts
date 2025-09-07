@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { SubscriptionService } from '@/lib/stripe/subscriptionService';
 import { createClient } from '@/utils/supabase/server';
 
+// Force dynamic rendering - this route uses cookies
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 const subscriptionService = new SubscriptionService();
 
 export async function GET(request: NextRequest) {

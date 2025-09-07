@@ -3,6 +3,10 @@ import { createClient } from '@/utils/supabase/server';
 import { z } from 'zod';
 import type { Database } from '@/types/database.types';
 
+// Force dynamic rendering - this route uses cookies
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 const MetricsQuerySchema = z.object({
   start_date: z.string().optional(),
   end_date: z.string().optional(),

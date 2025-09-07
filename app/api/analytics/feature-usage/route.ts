@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { z } from 'zod';
 
+// Force dynamic rendering - this route uses cookies
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 const FeatureUsageQuerySchema = z.object({
   start_date: z.string().optional(),
   end_date: z.string().optional(),

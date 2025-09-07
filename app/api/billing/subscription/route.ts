@@ -4,6 +4,10 @@ import { SubscriptionService } from '@/lib/stripe/subscriptionService';
 import { createClient } from '@/utils/supabase/server';
 import { z } from 'zod';
 
+// Force dynamic rendering - this route uses cookies
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 const subscriptionService = new SubscriptionService();
 
 const updateSubscriptionSchema = z.object({

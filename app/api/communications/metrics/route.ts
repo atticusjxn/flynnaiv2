@@ -5,6 +5,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { communicationLogger } from '@/lib/communication/CommunicationLogger';
 
+// Force dynamic rendering - this route uses cookies
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 // GET /api/communications/metrics - Get communication analytics
 export async function GET(request: NextRequest) {
   try {
