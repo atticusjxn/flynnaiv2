@@ -29,9 +29,10 @@ const nextConfig = {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
-    // Force cache invalidation - remove old auth system completely
+    // Force complete cache invalidation - remove all old auth code
     BUILD_TIMESTAMP: Date.now().toString(),
     DISABLE_OLD_AUTH: 'true',
+    FORCE_REBUILD: 'complete-auth-cleanup-v2',
   },
 
   // Experimental Features for Performance

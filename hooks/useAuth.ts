@@ -23,17 +23,16 @@ interface AuthState {
 }
 
 export function useAuth(): AuthState {
-  const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(false);
+  // Completely static state - no API calls, no effects, no Supabase clients
+  console.log('useAuth: v2.1 COMPLETELY DISABLED - Static stub only');
 
-  console.log('useAuth: DISABLED - All functionality moved to Server Actions');
+  const staticState = {
+    user: null,
+    profile: null,
+    loading: false,
+  };
 
-  // No client initialization - completely disabled
-  useEffect(() => {
-    console.log('useAuth initialization DISABLED - Server Actions handle all authentication');
-    setLoading(false);
-  }, []);
+  // No useEffect, no useState - completely static
 
   const signIn = async (email: string, password: string) => {
     console.log('useAuth signIn: DISABLED - Use Server Actions for authentication');
@@ -55,9 +54,9 @@ export function useAuth(): AuthState {
   };
 
   return {
-    user,
-    profile,
-    loading,
+    user: staticState.user,
+    profile: staticState.profile,
+    loading: staticState.loading,
     signIn,
     signUp,
     signOut,

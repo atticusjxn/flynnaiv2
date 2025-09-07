@@ -21,6 +21,9 @@ interface MinimalAuthContextType {
 const MinimalAuthContext = createContext<MinimalAuthContextType | undefined>(undefined);
 
 export function MinimalAuthProvider({ children }: { children: ReactNode }) {
+  // Force client-side bundle rebuild - v2.1 complete auth cleanup
+  console.log('MinimalAuthProvider: v2.1 - All client-side authentication disabled');
+  
   const authValue: MinimalAuthContextType = {
     user: null,
     profile: null,
