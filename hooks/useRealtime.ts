@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import { useAuth } from './useAuth';
+import { useAuthContext } from '@/components/MinimalAuthProvider';
 
 interface RealtimeSubscription {
   unsubscribe: () => void;
@@ -29,7 +29,7 @@ export function useRealtime<T = any>({
   event = ['INSERT', 'UPDATE', 'DELETE'],
   enabled = true,
 }: UseRealtimeOptions) {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const subscriptionRef = useRef<RealtimeSubscription | null>(null);

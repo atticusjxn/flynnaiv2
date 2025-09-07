@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useEventsRealtime, useCallsRealtime } from './useRealtime';
-import { useAuth } from './useAuth';
+import { useAuthContext } from '@/components/MinimalAuthProvider';
 
 export interface DashboardStats {
   totalCalls: number;
@@ -20,7 +20,7 @@ export interface RecentActivity {
 }
 
 export function useDashboardRealtime() {
-  const { user } = useAuth();
+  const { user } = useAuthContext();
   const eventsRealtime = useEventsRealtime();
   const callsRealtime = useCallsRealtime();
 
