@@ -27,7 +27,7 @@ export function useAuth(): AuthState {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  console.log('useAuth: Initializing...');
+  console.log('useAuth: Initializing authentication...');
 
   // Create supabase client with error handling - memoized to prevent infinite re-renders
   const supabase = useMemo(() => {
@@ -49,21 +49,6 @@ export function useAuth(): AuthState {
     const getInitialSession = async () => {
       console.log('Starting getInitialSession...');
 
-      // TEMPORARY: Fast bypass for testing
-      console.log('TEMP: Setting dummy user for testing');
-      setUser({
-        id: '00000000-0000-0000-0000-000000000123',
-        email: 'atticusjxn@gmail.com',
-      } as any);
-      setProfile({
-        id: '00000000-0000-0000-0000-000000000123',
-        email: 'atticusjxn@gmail.com',
-        full_name: 'Test User',
-        phone_number: null,
-        settings: { phone_verified: false },
-      } as any);
-      setLoading(false);
-      return;
 
       if (!supabase) {
         console.log('No Supabase client available, skipping auth');
