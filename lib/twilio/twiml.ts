@@ -114,12 +114,12 @@ export function generateCallHandlingWithDTMFTwiML(
   <Gather 
     action="${baseUrl}/api/webhooks/twilio/dtmf"
     method="POST"
-    numDigits="2"
+    numDigits="1"
     timeout="1"
     finishOnKey=""
     input="dtmf"
   >
-    <!-- Gather runs continuously in background to detect *7 -->
+    <!-- Gather runs continuously in background to detect 0 -->
   </Gather>
   <Record 
     action="${baseUrl}/api/webhooks/twilio/recording"
@@ -198,11 +198,11 @@ export function generateEnhancedCallHandlingTwiML(
     </Stream>
   </Start>
   
-  <!-- Continuous DTMF gathering for *7 detection -->
+  <!-- Continuous DTMF gathering for 0 detection -->
   <Gather 
     action="${baseUrl}/api/webhooks/twilio/dtmf"
     method="POST"
-    numDigits="2"
+    numDigits="1"
     timeout="1"
     finishOnKey=""
     input="dtmf"

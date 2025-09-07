@@ -1,4 +1,4 @@
-// Keypad Activation Handler for Flynn.ai v2 - Silent *7 Activation
+// Keypad Activation Handler for Flynn.ai v2 - Silent 0 Activation
 
 import { dtmfHandler, DTMFEvent } from '@/lib/twilio/dtmfHandler';
 import { startRealTimeProcessing } from '@/lib/ai/RealTimeProcessor';
@@ -70,7 +70,7 @@ export class KeypadActivationManager {
   }
 
   /**
-   * Initialize AI processing pipeline after *7 activation
+   * Initialize AI processing pipeline after 0 activation
    */
   private async initializeAIProcessing(
     callSid: string,
@@ -168,7 +168,7 @@ export class KeypadActivationManager {
       const isActive = this.isAIActive(callSid);
       if (!isActive) {
         // Auto-activate AI for emergency calls
-        await this.processKeypadInput(callSid, '*7', '', '');
+        await this.processKeypadInput(callSid, '0', '', '');
       }
     } catch (error) {
       console.error(

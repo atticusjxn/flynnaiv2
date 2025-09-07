@@ -72,11 +72,11 @@ Payments: Stripe
 ```
 [Customer Calls User] → [Call Forwarding] → [Flynn.ai Twilio Number] → [User's Phone]
          ↓                       ↓                      ↓                    ↓
-[Call Connects Immediately] → [AI Processing Check] → [Dashboard Toggle ON?] → [Normal Call]
+[Call Connects Immediately] → [User Presses 0] → [AI Activation Triggered] → [Normal Call Continues]
          ↓                       ↓                      ↓
-[AI Listens & Transcribes] → [Business Call Detection] → [Real-time Processing]
+[AI Starts Listening] → [Real-time Transcription] → [Event Extraction]
          ↓                       ↓                      ↓
-[Event Extraction] → [Calendar Event Creation] → [SMS Summary Sent]
+[Calendar Event Creation] → [Call End Detection] → [SMS Summary Sent]
          ↓                       ↓                      ↓
 [Dashboard Update] → [Email Summary] → [User Receives Organized Info]
 ```
@@ -107,14 +107,14 @@ interface AlwaysOnCallFeatures {
   setup: {
     method: 'Simple call forwarding - 10 second setup';
     compatibility: 'Any phone, any carrier, any location';
-    user_experience: 'SMS with forwarding code, done forever';
-    activation_time: 'Immediate - all calls processed automatically';
+    user_experience: 'SMS with forwarding code, press 0 to activate AI';
+    activation_time: 'AI activates when user presses 0 during call';
   };
 
   automatic_processing: {
-    audio_processing: 'Every call recorded and transcribed';
-    ai_extraction: 'Automatic business call detection and processing';
-    user_control: 'Dashboard toggle to enable/disable processing';
+    audio_processing: 'Call recorded and transcribed after 0 keypress';
+    ai_extraction: 'AI processing starts when user presses 0';
+    user_control: 'Press 0 during call to activate AI processing';
     caller_experience: 'Normal call experience, zero awareness of AI';
   };
 
@@ -132,9 +132,9 @@ interface AlwaysOnCallFeatures {
 
   technical_implementation: {
     call_forwarding: 'Standard telecom forwarding via Twilio';
-    always_on_transcription: 'Full conversation Whisper processing';
-    business_detection: 'AI determines business vs personal calls';
-    processing_control: 'User dashboard toggle for AI processing';
+    keypad_activation: 'DTMF detection for 0 keypress activation';
+    conditional_transcription: 'Whisper processing after 0 keypress';
+    processing_control: 'User presses 0 to start AI processing';
     multi_carrier_support: 'Works with all Australian carriers';
   };
 }
@@ -307,7 +307,7 @@ flynnv2/
 │   ├── ai/               # AI processing logic
 │   │   ├── AIExtractionPipeline.ts # Main AI orchestrator
 │   │   ├── RealTimeProcessor.ts # Live audio processing
-│   │   ├── KeypadActivation.ts # Silent *7 activation handling
+│   │   ├── KeypadActivation.ts # Silent 0 activation handling
 │   │   ├── prompts/      # Industry-specific prompts
 │   │   │   ├── base.ts   # Universal prompts
 │   │   │   ├── plumbing.ts # Plumbing-specific

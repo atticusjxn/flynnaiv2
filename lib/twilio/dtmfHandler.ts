@@ -1,4 +1,4 @@
-// DTMF Handler for Flynn.ai v2 - Silent Keypad Activation
+// DTMF Handler for Flynn.ai v2 - Silent 0 Keypad Activation
 
 export interface DTMFEvent {
   callSid: string;
@@ -16,7 +16,7 @@ export interface KeypadActivationResult {
 }
 
 export class DTMFHandler {
-  private static readonly AI_ACTIVATION_SEQUENCE = '*7';
+  private static readonly AI_ACTIVATION_SEQUENCE = '0';
   private activatedCalls: Set<string> = new Set();
 
   /**

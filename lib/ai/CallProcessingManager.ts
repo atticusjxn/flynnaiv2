@@ -109,7 +109,7 @@ export class CallProcessingManager {
   }
 
   /**
-   * Handle keypad activation (*7 pressed)
+   * Handle keypad activation (0 pressed)
    */
   public async handleKeypadActivation(callSid: string): Promise<void> {
     const state = this.callStates.get(callSid);

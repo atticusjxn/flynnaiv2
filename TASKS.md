@@ -146,10 +146,10 @@
 
 ### Task 10: Keypad-Activated AI Call Processing Implementation (6-8 hours)
 
-**Description**: Implement silent \*7 keypad activation for AI call processing
+**Description**: Implement silent 0 keypad activation for AI call processing
 **Deliverables**:
 
-- DTMF detection system for \*7 keypress
+- DTMF detection system for 0 keypress
 - Silent activation with no user feedback
 - Real-time audio streaming setup
 - Live transcription pipeline
@@ -157,7 +157,7 @@
 - Email delivery system within 2 minutes
   **Dependencies**: Task 7
   **Acceptance Criteria**:
-- \*7 keypress activates AI processing silently
+- 0 keypress activates AI processing silently
 - Caller has zero awareness of AI activation
 - Real-time audio processing functions
 - Email delivered within 2 minutes of call end
@@ -165,7 +165,7 @@
 
 ### Task 10a: Twilio DTMF Detection & Silent Activation (3-4 hours)
 
-**Description**: Configure Twilio to detect \*7 keypress and activate AI processing silently
+**Description**: Configure Twilio to detect 0 keypress and activate AI processing silently
 **Deliverables**:
 
 - Twilio webhook for DTMF tone detection
@@ -174,7 +174,7 @@
 - Media stream initialization
   **Dependencies**: Task 10
   **Acceptance Criteria**:
-- \*7 keypress detected reliably during calls
+- 0 keypress detected reliably during calls
 - No audio feedback or confirmation to user
 - Caller completely unaware of activation
 - Media streams start without interruption
