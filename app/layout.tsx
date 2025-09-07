@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { AuthProvider } from '@/components/AuthProvider';
+// import { AuthProvider } from '@/components/AuthProvider'; // Temporarily disabled for Server Actions auth
 import { NextUIProvider } from '@/components/NextUIProvider';
 import PWARegister from '@/components/PWARegister';
 
@@ -149,10 +149,8 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} w-full min-h-screen m-0 p-0`}>
         <NextUIProvider>
-          <AuthProvider>
-            {children}
-            <PWARegister />
-          </AuthProvider>
+          {children}
+          <PWARegister />
         </NextUIProvider>
       </body>
     </html>
