@@ -3,7 +3,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { User } from '@supabase/supabase-js';
-import { getSupabaseClient } from '@/utils/supabase/client';
+import { getSupabaseClient, getSupabaseClientAsync } from '@/utils/supabase/client';
 import { Database } from '@/types/database.types';
 
 type UserProfile = Database['public']['Tables']['users']['Row'];
@@ -30,25 +30,57 @@ export function useAuth(): AuthState {
   console.log('useAuth: Initializing authentication...');
 
   // Create supabase client with error handling - memoized to prevent infinite re-renders
-  const supabase = useMemo(() => {
-    console.log('Creating Supabase client...');
-    const client = getSupabaseClient();
+  const [supabase, setSupabase] = useState<any>(null);
+  const [clientLoading, setClientLoading] = useState(true);
 
-    if (client) {
-      console.log('Supabase client created successfully');
-    } else {
-      console.error(
-        'Failed to create Supabase client - missing environment variables'
-      );
-    }
+  // Initialize Supabase client asynchronously
+  useEffect(() => {
+    const initClient = async () => {
+      try {
+        console.log('Initializing Supabase client...');
+        const client = await getSupabaseClientAsync();
+        
+        if (client) {
+          console.log('Async Supabase client created successfully');
+          setSupabase(client);
+        } else {
+          console.error('Failed to create async Supabase client');
+          // Fallback to sync client
+          const syncClient = getSupabaseClient();
+          if (syncClient) {
+            console.log('Fallback to sync client successful');
+            setSupabase(syncClient);
+          }
+        }
+      } catch (error) {
+        console.error('Error initializing Supabase client:', error);
+        // Try fallback sync client
+        try {
+          const syncClient = getSupabaseClient();
+          if (syncClient) {
+            console.log('Fallback sync client created');
+            setSupabase(syncClient);
+          }
+        } catch (syncError) {
+          console.error('Fallback sync client also failed:', syncError);
+        }
+      } finally {
+        setClientLoading(false);
+      }
+    };
 
-    return client;
+    initClient();
   }, []);
 
   useEffect(() => {
     const getInitialSession = async () => {
       console.log('Starting getInitialSession...');
 
+      // Wait for client to be ready
+      if (clientLoading) {
+        console.log('Client still loading, waiting...');
+        return;
+      }
 
       if (!supabase) {
         console.log('No Supabase client available, skipping auth');
@@ -155,7 +187,7 @@ export function useAuth(): AuthState {
         subscription.unsubscribe();
       }
     };
-  }, [supabase]);
+  }, [supabase, clientLoading]);
 
   const signIn = async (email: string, password: string) => {
     if (!supabase) return { error: new Error('Supabase not available') };
