@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuthContext } from '@/components/AuthProvider';
+import { useAuthContext } from '@/components/MinimalAuthProvider';
 import OnboardingFlow from '@/components/onboarding/OnboardingFlow';
 
 export default function OnboardingPage() {

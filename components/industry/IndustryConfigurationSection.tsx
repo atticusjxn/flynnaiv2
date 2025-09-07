@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuthContext } from '@/components/AuthProvider';
+import { useAuthContext } from '@/components/MinimalAuthProvider';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/utils/cn';
 import {

@@ -11,7 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import IndustrySelectionWizard from './IndustrySelectionWizard';
 import PhoneSetupGuide from './PhoneSetupGuide';
-import { useAuthContext } from '@/components/AuthProvider';
+import { useAuthContext } from '@/components/MinimalAuthProvider';
 
 interface OnboardingFlowProps {
   onComplete: () => void;

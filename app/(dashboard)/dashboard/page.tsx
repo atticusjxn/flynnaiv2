@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuthContext } from '@/components/AuthProvider';
+import { useAuthContext } from '@/components/MinimalAuthProvider';
 import KPICards from '@/components/dashboard/KPICards';
 import RecentActivity from '@/components/dashboard/RecentActivity';
 import QuickActions from '@/components/dashboard/QuickActions';

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useAuthContext } from '@/components/AuthProvider';
+import { useAuthContext } from '@/components/MinimalAuthProvider';
 import { useSettings } from '@/hooks/useSettings';
 import { Button } from '@/components/ui/Button';
 import AccountSettings from '@/components/settings/AccountSettings';

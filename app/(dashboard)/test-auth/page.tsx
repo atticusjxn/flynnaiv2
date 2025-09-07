@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuthContext } from '@/components/AuthProvider';
+import { useAuthContext } from '@/components/MinimalAuthProvider';
 import AuthTest from '@/components/AuthTest';
 
 const formatIndustryName = (industryType: string) => {

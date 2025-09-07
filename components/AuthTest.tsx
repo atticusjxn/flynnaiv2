@@ -1,7 +1,7 @@
 // Flynn.ai v2 - Authentication Test Component
 'use client';
 
-import { useAuthContext } from './AuthProvider';
+import { useAuthContext } from './MinimalAuthProvider';
 
 export default function AuthTest() {
   const { user, profile, loading } = useAuthContext();

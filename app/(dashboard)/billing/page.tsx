@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useAuthContext } from '@/components/AuthProvider';
+import { useAuthContext } from '@/components/MinimalAuthProvider';
 import TrialStatus from '@/components/billing/TrialStatus';
 import SubscriptionDashboard from '@/components/billing/SubscriptionDashboard';
 import UsageMetrics from '@/components/billing/UsageMetrics';
