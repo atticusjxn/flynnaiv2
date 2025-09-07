@@ -29,10 +29,11 @@ const nextConfig = {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
-    // Force complete cache invalidation - remove all old auth code
-    BUILD_TIMESTAMP: Date.now().toString(),
+    // NUCLEAR CACHE BUSTING - Force complete rebuild 
+    BUILD_TIMESTAMP: '1757251829',
     DISABLE_OLD_AUTH: 'true',
-    FORCE_REBUILD: 'complete-auth-cleanup-v2',
+    FORCE_REBUILD: 'complete-auth-cleanup-v3',
+    VERCEL_FORCE_REBUILD: 'auth-system-v3-final',
   },
 
   // Experimental Features for Performance

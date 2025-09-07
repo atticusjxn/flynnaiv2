@@ -112,6 +112,7 @@ export const viewport: Viewport = {
   colorScheme: 'light',
 };
 
+// Force complete bundle rebuild - v3 cache busting
 export default function RootLayout({
   children,
 }: {

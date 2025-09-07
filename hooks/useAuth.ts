@@ -23,8 +23,8 @@ interface AuthState {
 }
 
 export function useAuth(): AuthState {
-  // Completely static state - no API calls, no effects, no Supabase clients
-  console.log('useAuth: v2.1 COMPLETELY DISABLED - Static stub only');
+  // V3 NUCLEAR CACHE BUST - Completely static state - no API calls, no effects, no Supabase clients
+  console.log('useAuth: v3.0 NUCLEAR CACHE BUST - Static stub only - NO SUPABASE CLIENTS');
 
   const staticState = {
     user: null,
