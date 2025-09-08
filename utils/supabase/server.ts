@@ -3,12 +3,18 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { Database } from '@/types/database.types';
 
+// Sanitize environment variables to avoid hidden whitespace/newlines causing invalid keys
+const sanitizeEnvVar = (value: string | undefined): string => {
+  if (!value) throw new Error('Missing required environment variable');
+  return value.trim().replace(/[\r\n\t]/g, '');
+};
+
 export const createClient = () => {
   const cookieStore = cookies();
 
   return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    sanitizeEnvVar(process.env.NEXT_PUBLIC_SUPABASE_URL),
+    sanitizeEnvVar(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
     {
       cookies: {
         get(name: string) {
@@ -36,8 +42,8 @@ export const createClient = () => {
 // Create service role client for admin operations
 export const createAdminClient = () => {
   return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    sanitizeEnvVar(process.env.NEXT_PUBLIC_SUPABASE_URL),
+    sanitizeEnvVar(process.env.SUPABASE_SERVICE_ROLE_KEY),
     {
       cookies: {
         get() {
