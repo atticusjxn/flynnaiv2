@@ -149,5 +149,6 @@ export const getSupabaseClientAsync = async () => {
   }
 };
 
-// Default export for convenience (fallback)
-export const supabase = getSupabaseClient();
+// REMOVED: Default export that was creating client at module load time
+// This was causing client-side authentication to run in production
+// export const supabase = getSupabaseClient();

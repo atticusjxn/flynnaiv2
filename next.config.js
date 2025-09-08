@@ -28,11 +28,11 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    // FINAL AUTH FIX: Force complete rebuild - 2025-01-08
-    BUILD_TIMESTAMP: '1757291529',
-    DISABLE_OLD_AUTH: 'true',
-    FORCE_REBUILD: 'final-auth-fix-v4-20250108',
-    VERCEL_FORCE_REBUILD: 'auth-system-final-fix',
+    // ULTIMATE AUTH FIX: Remove client-side imports - 2025-01-08
+    BUILD_TIMESTAMP: '1757306000',
+    CLIENT_SIDE_AUTH_DISABLED: 'true',
+    FORCE_REBUILD: 'ultimate-auth-fix-v5-20250108',
+    VERCEL_FORCE_REBUILD: 'client-side-imports-removed',
   },
 
   // Experimental Features for Performance

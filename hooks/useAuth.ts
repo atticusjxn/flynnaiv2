@@ -1,12 +1,15 @@
 // Flynn.ai v2 - Authentication Hook
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
-import { User } from '@supabase/supabase-js';
-import { getSupabaseClient, getSupabaseClientAsync } from '@/utils/supabase/client';
-import { Database } from '@/types/database.types';
+// IMPORTANT: NO IMPORTS OF SUPABASE CLIENT TO PREVENT CLIENT-SIDE AUTHENTICATION
+// import { useEffect, useState, useMemo } from 'react'; // Not needed for static stub
+// import { User } from '@supabase/supabase-js'; // Removed to prevent client creation
+// import { getSupabaseClient, getSupabaseClientAsync } from '@/utils/supabase/client'; // REMOVED - THIS WAS CAUSING CLIENT-SIDE AUTH
+// import { Database } from '@/types/database.types'; // Not needed
 
-type UserProfile = Database['public']['Tables']['users']['Row'];
+// Use minimal types to avoid importing Supabase
+type User = null;
+type UserProfile = null;
 
 interface AuthState {
   user: User | null;
