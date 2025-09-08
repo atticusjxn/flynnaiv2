@@ -21,8 +21,8 @@ interface MinimalAuthContextType {
 const MinimalAuthContext = createContext<MinimalAuthContextType | undefined>(undefined);
 
 export function MinimalAuthProvider({ children }: { children: ReactNode }) {
-  // V3 NUCLEAR CACHE BUST - Force client-side bundle rebuild
-  console.log('MinimalAuthProvider: v3.0 NUCLEAR CACHE BUST - All client-side authentication disabled');
+  // FINAL AUTH FIX v4.0 - Force client-side bundle rebuild - 2025-01-08
+  console.log('MinimalAuthProvider: v4.0 FINAL AUTH FIX - All client-side authentication disabled');
   
   const authValue: MinimalAuthContextType = {
     user: null,
