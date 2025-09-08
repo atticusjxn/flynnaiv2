@@ -1,7 +1,7 @@
 // Flynn.ai v2 - Subscription Management API Route
 import { NextRequest, NextResponse } from 'next/server';
 import { SubscriptionService } from '@/lib/stripe/subscriptionService';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { z } from 'zod';
 
 // Force dynamic rendering - this route uses cookies

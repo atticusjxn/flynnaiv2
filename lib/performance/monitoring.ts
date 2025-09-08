@@ -245,7 +245,7 @@ export class PerformanceMonitor {
 
   private async checkDatabase(): Promise<boolean> {
     try {
-      const { createClient } = await import('@/utils/supabase/server');
+      const { createClient } = await import('@/lib/supabase/server');
       const supabase = createClient();
       const { error } = await supabase
         .from('users')

@@ -1,5 +1,5 @@
 // Flynn.ai v2 - User Database Operations
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { Database } from '@/types/database.types';
 import { UserSettings } from '@/types/settings.types';
 

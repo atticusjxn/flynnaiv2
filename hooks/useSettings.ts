@@ -8,7 +8,7 @@ import {
   SettingsUpdateRequest,
   SettingsSaveResponse,
 } from '@/types/settings.types';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 
 interface UseSettingsReturn {
   // Current settings state

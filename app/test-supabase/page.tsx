@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { getSupabaseClient } from '@/utils/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 
 // Test page to isolate Supabase issues
 export default function TestSupabase() {
@@ -14,7 +14,7 @@ export default function TestSupabase() {
 
     try {
       console.log('Testing Supabase connection...');
-      const supabase = getSupabaseClient();
+      const supabase = createClient();
 
       if (!supabase) {
         setResult('❌ Failed to create Supabase client');
@@ -65,7 +65,7 @@ export default function TestSupabase() {
 
     try {
       console.log('Testing database connection...');
-      const supabase = getSupabaseClient();
+      const supabase = createClient();
 
       if (!supabase) {
         setResult('❌ Failed to create Supabase client');

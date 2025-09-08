@@ -1,5 +1,5 @@
 // Flynn.ai v2 - Call Database Operations
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { Database } from '@/types/database.types';
 
 type Call = Database['public']['Tables']['calls']['Row'];

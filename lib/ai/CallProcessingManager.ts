@@ -9,7 +9,7 @@ import {
   stopRealTimeProcessing,
 } from '@/lib/ai/RealTimeProcessor';
 import { updateCallProcessingStatus } from '@/lib/supabase/calls';
-import { createAdminClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import { sendInstantAppointmentEmail } from '@/lib/email/InstantEmailService';
 import {
   validateCallCompliance,

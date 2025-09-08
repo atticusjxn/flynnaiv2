@@ -11,7 +11,7 @@ import {
   googleCalendarAuth,
   GoogleCalendarTokens,
 } from '../googleCalendarAuth';
-import { createAdminClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 
 export class GoogleCalendarProvider implements CalendarProvider {
   readonly providerId = 'google' as const;

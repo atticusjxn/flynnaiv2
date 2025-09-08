@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { googleCalendarAuth, isGoogleCalendarConfigured } from '@/lib/calendar/googleCalendarAuth';
-import { createAdminClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 
 // Force dynamic rendering - this route uses request.url
 export const runtime = 'nodejs';

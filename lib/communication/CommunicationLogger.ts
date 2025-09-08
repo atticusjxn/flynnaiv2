@@ -1,7 +1,7 @@
 // Flynn.ai v2 - Communication Logger
 // Track and manage all customer communications
 
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { Database } from '@/types/database.types';
 
 type CommunicationLog =

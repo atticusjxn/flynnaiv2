@@ -28,3 +28,21 @@ export const createClient = async () => {
     }
   )
 }
+
+// Admin client with service role key for server-side operations
+export const createAdminClient = () => {
+  return createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return []
+        },
+        setAll() {
+          // Admin client doesn't need to set cookies
+        },
+      },
+    }
+  )
+}

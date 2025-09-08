@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createAdminClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 
 export async function POST() {
   try {

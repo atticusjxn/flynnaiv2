@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 import { useAuthContext } from '@/components/MinimalAuthProvider';
 
 interface RealtimeSubscription {

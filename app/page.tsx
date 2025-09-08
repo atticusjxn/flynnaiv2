@@ -1,9 +1,6 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuthContext } from '@/components/MinimalAuthProvider';
+import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 import {
   PhoneIcon,
   BoltIcon,
@@ -18,29 +15,13 @@ import {
   HeartIcon,
 } from '@heroicons/react/24/outline';
 
-export default function HomePage() {
-  const { user, loading } = useAuthContext();
-  const router = useRouter();
-  const [showDemo, setShowDemo] = useState(false);
+export default async function HomePage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  // Redirect authenticated users to dashboard (but allow override)
-  useEffect(() => {
-    if (!loading && user && !window.location.hash.includes('demo')) {
-      router.push('/dashboard');
-    }
-  }, [user, loading, router]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="flex items-center space-x-4">
-          <div className="animate-spin rounded-full h-10 w-10 border-4 border-primary/20 border-t-primary"></div>
-          <span className="text-lg font-medium text-gray-700">
-            Loading Flynn.ai...
-          </span>
-        </div>
-      </div>
-    );
+  // Redirect authenticated users to dashboard
+  if (user) {
+    redirect('/dashboard');
   }
 
   const australianIndustries = [
@@ -87,12 +68,9 @@ export default function HomePage() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <button
-                onClick={() => setShowDemo(!showDemo)}
-                className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
-              >
+              <span className="text-gray-600 font-medium">
                 See Demo
-              </button>
+              </span>
               <Link
                 href="/login"
                 className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
@@ -148,13 +126,13 @@ export default function HomePage() {
                 <BoltIcon className="w-5 h-5 group-hover:animate-pulse" />
               </Link>
 
-              <button
-                onClick={() => setShowDemo(true)}
+              <Link
+                href="#demo"
                 className="group bg-white/90 backdrop-blur text-gray-700 font-semibold px-8 py-4 rounded-2xl border border-gray-200 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center space-x-3"
               >
                 <PhoneIcon className="w-5 h-5" />
                 <span>Watch 2-Minute Demo</span>
-              </button>
+              </Link>
             </div>
 
             {/* Trust Indicators */}

@@ -2,7 +2,7 @@
 // S-tier metrics endpoint for dashboard analytics
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { communicationLogger } from '@/lib/communication/CommunicationLogger';
 
 // Force dynamic rendering - this route uses cookies

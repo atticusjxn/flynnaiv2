@@ -2,7 +2,7 @@
 // S-tier retry mechanism for failed communications
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { communicationLogger } from '@/lib/communication/CommunicationLogger';
 
 // POST /api/communications/retry - Retry a failed communication

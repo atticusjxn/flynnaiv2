@@ -5,7 +5,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Database } from '@/types/database.types';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 
 type CommunicationLog =
   Database['public']['Tables']['communication_logs']['Row'];

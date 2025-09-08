@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { Database } from '@/types/database.types';
 
 type CallRecord = Database['public']['Tables']['calls']['Row'];

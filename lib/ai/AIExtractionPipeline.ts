@@ -2,7 +2,7 @@
 // Processes recorded calls from transcription through to email delivery
 
 import OpenAI from 'openai';
-import { createAdminClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import {
   liveEventExtractor,
   ExtractedEvent,

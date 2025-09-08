@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { render } from '@react-email/render';
 import { Resend } from 'resend';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import WelcomeEmail from '@/components/email-templates/WelcomeEmail';
 import SetupCompleteEmail from '@/components/email-templates/SetupCompleteEmail';
 

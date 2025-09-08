@@ -1,6 +1,6 @@
 // Media Stream Handler for Flynn.ai v2 - Real-time Audio Processing
 
-import { createAdminClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 
 export interface MediaStreamConfig {
   callSid: string;

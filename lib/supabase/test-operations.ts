@@ -1,7 +1,7 @@
 // Flynn.ai v2 - Database Operations Test
 // This file can be used to test database operations once Supabase is configured
 
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { UserService } from './users';
 import { CallService } from './calls';
 import { EventService } from './events';

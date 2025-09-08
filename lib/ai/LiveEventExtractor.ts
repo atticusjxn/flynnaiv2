@@ -2,7 +2,7 @@
 // Enhanced with industry-specific prompts and advanced confidence scoring
 
 import OpenAI from 'openai';
-import { createAdminClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import { buildPlumbingPrompt } from '@/lib/ai/prompts/plumbing';
 import { buildRealEstatePrompt } from '@/lib/ai/prompts/real-estate';
 import { buildLegalPrompt } from '@/lib/ai/prompts/legal';

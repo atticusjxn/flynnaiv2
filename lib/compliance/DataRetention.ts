@@ -1,6 +1,6 @@
 // Data Retention & Cleanup Service for Flynn.ai v2 - GDPR/CCPA compliance
 
-import { createAdminClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 
 export interface RetentionPolicy {
   recordType: string;

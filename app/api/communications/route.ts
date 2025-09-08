@@ -2,7 +2,7 @@
 // S-tier API for communication management
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { communicationLogger } from '@/lib/communication/CommunicationLogger';
 
 // GET /api/communications - Get communication logs with filtering

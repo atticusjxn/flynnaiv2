@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { DatabaseOptimizer } from '@/lib/performance/database-optimization';
 import { withPerformanceMonitoring } from '@/lib/performance/monitoring';
 

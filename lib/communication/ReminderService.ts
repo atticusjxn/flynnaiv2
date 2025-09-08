@@ -1,7 +1,7 @@
 // Flynn.ai v2 - Automated Reminder Service
 // Scheduled reminders for customer appointments
 
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { smsService } from './SMSService';
 import { Database } from '@/types/database.types';
 import { render } from '@react-email/render';

@@ -1,7 +1,7 @@
 // Real-Time AI Processor for Flynn.ai v2 - Live Audio Processing
 
 import OpenAI from 'openai';
-import { createAdminClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import { updateCallProcessingStatus } from '@/lib/supabase/calls';
 import { extractLiveEvents } from '@/lib/ai/LiveEventExtractor';
 

@@ -1,6 +1,6 @@
 // Flynn.ai v2 - Subscription Service for Australian Market
 import { stripe, STRIPE_CONFIG, PRICE_IDS, SUBSCRIPTION_TIERS } from './client';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 
 export interface TrialUser {
   id: string;

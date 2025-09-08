@@ -1,7 +1,7 @@
 // Instant Email Service for Flynn.ai v2 - Professional email delivery within 2 minutes
 
 import { Resend } from 'resend';
-import { createAdminClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import { generateAppointmentSummaryEmail } from '@/lib/email/EmailTemplates';
 import { generateICSFile } from '@/lib/calendar/icsGenerator';
 

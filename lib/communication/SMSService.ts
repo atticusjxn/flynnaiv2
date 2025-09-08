@@ -2,7 +2,7 @@
 // Twilio SMS messaging for customer notifications
 
 import { twilioClient } from '@/lib/twilio/client';
-import { createClient } from '@/utils/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { Database } from '@/types/database.types';
 
 type CommunicationLog =

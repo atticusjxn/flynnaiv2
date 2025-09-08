@@ -2,7 +2,7 @@
 
 import { Resend } from 'resend';
 import { render } from '@react-email/render';
-import { createAdminClient } from '@/utils/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import CallOverviewEmail, {
   CallOverviewEmailProps,
 } from '@/components/email-templates/CallOverviewEmail';
