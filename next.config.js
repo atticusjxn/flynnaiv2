@@ -28,12 +28,8 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    // ULTIMATE AUTH FIX: Remove client-side imports - 2025-01-08
-    BUILD_TIMESTAMP: '1757311000',
-    CLIENT_SIDE_AUTH_DISABLED: 'true',
-    FORCE_REBUILD: 'cdn-cache-bust-v7-20250108',
-    VERCEL_FORCE_REBUILD: 'aggressive-cache-invalidation',
-    FORCE_NEW_BUNDLES: 'true',
+    // Fresh Auth System - 2025-01-08
+    FRESH_AUTH_SYSTEM: 'true',
   },
 
   // Experimental Features for Performance

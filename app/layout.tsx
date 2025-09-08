@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { MinimalAuthProvider } from '@/components/MinimalAuthProvider';
+// Removed MinimalAuthProvider - using fresh auth system
 import { NextUIProvider } from '@/components/NextUIProvider';
 import PWARegister from '@/components/PWARegister';
 
@@ -112,7 +112,7 @@ export const viewport: Viewport = {
   colorScheme: 'light',
 };
 
-// CDN CACHE BUST: Force fresh JavaScript bundles - v7.0 - 2025-01-08
+// Fresh Authentication System - Clean Build - 2025-01-08
 export default function RootLayout({
   children,
 }: {
@@ -150,10 +150,8 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} w-full min-h-screen m-0 p-0`}>
         <NextUIProvider>
-          <MinimalAuthProvider>
-            {children}
-            <PWARegister />
-          </MinimalAuthProvider>
+          {children}
+          <PWARegister />
         </NextUIProvider>
       </body>
     </html>
