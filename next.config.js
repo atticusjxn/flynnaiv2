@@ -29,10 +29,11 @@ const nextConfig = {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     // ULTIMATE AUTH FIX: Remove client-side imports - 2025-01-08
-    BUILD_TIMESTAMP: '1757310000',
+    BUILD_TIMESTAMP: '1757311000',
     CLIENT_SIDE_AUTH_DISABLED: 'true',
-    FORCE_REBUILD: 'ultimate-auth-fix-v6-domain-fix-20250108',
-    VERCEL_FORCE_REBUILD: 'production-domain-alias-update',
+    FORCE_REBUILD: 'cdn-cache-bust-v7-20250108',
+    VERCEL_FORCE_REBUILD: 'aggressive-cache-invalidation',
+    FORCE_NEW_BUNDLES: 'true',
   },
 
   // Experimental Features for Performance

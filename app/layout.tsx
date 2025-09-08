@@ -112,7 +112,7 @@ export const viewport: Viewport = {
   colorScheme: 'light',
 };
 
-// FINAL AUTH FIX: Force complete bundle rebuild - v4.0 - 2025-01-08
+// CDN CACHE BUST: Force fresh JavaScript bundles - v7.0 - 2025-01-08
 export default function RootLayout({
   children,
 }: {
